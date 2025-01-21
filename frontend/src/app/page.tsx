@@ -66,7 +66,7 @@ export default function ComingSoonPage() {
 
       <footer className="p-4 md:p-6 text-center text-gray-600">
         <p className="flex items-center justify-center gap-1">
-          Made with <Heart className="text-red-500 w-4 h-4 inline" fill="currentColor" /> by Aftaab Siddiqui
+          Made with <Heart className="text-violet-600 w-4 h-4 inline" fill="currentColor" /> by Aftaab Siddiqui
         </p>
         <p className="mt-2">&copy; {new Date().getFullYear()} HashPrep. All rights reserved.</p>
       </footer>
