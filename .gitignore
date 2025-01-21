@@ -1,47 +1,18 @@
 # Node.js / Bun related
 node_modules/            # Node.js dependencies
 .bun/                    # Bun specific cache
-/.pnp/                   # Yarn Plug'n'Play cache
-.pnp.js                  # Yarn Plug'n'Play file
 
-# Next.js related
-.next/                   # Next.js build output
-out/                     # Static output for Next.js export
-*.log                    # Log files
-*.tgz                    # Yarn archive files
-npm-debug.log*           # NPM debug logs
-
-# TypeScript
-*.tsbuildinfo            # TypeScript build info
-*.d.ts                   # TypeScript declaration files
-
-shadcn/
-
-# Spring Boot related
-*.log                    # Application logs
-*.jar                    # Java archive files (e.g., Spring Boot JARs)
-*.war                    # Web archive files (for deployable Java web apps)
-target/                  # Target folder where Maven builds the app
-build/                   # Build directory if you're using Gradle
-
-# Java related
-*.class                  # Compiled Java classes
-*.iml                    # IntelliJ IDEA project files
-.idea/                   # IDE-specific project files (for IntelliJ, WebStorm, etc.)
-*.jar                    # JAR files (Java archives)
-*.war                    # WAR files (Web Archives)
+# OS generated files
+.DS_Store                # macOS folder settings
+Thumbs.db                # Windows thumbs cache
+Desktop.ini              # Windows folder settings
 
 # IDE and Editor files
-.vscode/                 # Visual Studio Code project settings
+.vscode/                 # VSCode project settings
 .idea/                   # IntelliJ IDEA project settings
 *.sublime-project        # Sublime Text project files
 *.sublime-workspace      # Sublime Text workspace files
-.DS_Store                # macOS directory settings
-
-# OS generated files
-Thumbs.db                # Windows thumbs cache
-Desktop.ini              # Windows folder settings
-*.swp                    # Swap files from vim
+*.log                    # Log files
 
 # Build and dependency directories (for other tools)
 dist/                    # Distribution folder
@@ -53,9 +24,4 @@ tmp/                     # Temporary files
 coverage/                # Coverage reports (if using tools like Jest or Mocha)
 *.lcov                   # LCOV coverage data
 *.nyc_output/            # NYC output directory for code coverage
-
-# Package distribution files
-*.tgz                    # Package files (e.g., tarballs)
-*.tar.gz                 # Compressed tarballs
-*.zip                    # Compressed zip files
 
