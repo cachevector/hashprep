@@ -1,0 +1,99 @@
+# ==============================
+# Frontend (Next.js + Bun + shadcn)
+# ==============================
+
+# Next.js build output
+.next
+out
+
+# Bun runtime files
+.bun
+
+# Node modules
+node_modules
+
+# Dependency directories
+**/node_modules
+
+# Environment variables
+.env*.local
+.env
+
+# Logs
+*.log
+
+# Cache directories
+.cache
+
+# Bun lockfile
+bun.lockb
+
+# IDE and editor files
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# macOS files
+.DS_Store
+
+# ==============================
+# Backend (Flask)
+# ==============================
+
+# Python virtual environment
+venv/
+env/
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Flask cache
+instance/
+
+# Environment variables
+.env
+.env.local
+
+# SQLite databases
+*.sqlite3
+
+# Logs
+*.log
+
+# IDE and editor files
+.vscode
+.idea
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ==============================
+# General
+# ==============================
+
+# System files
+Thumbs.db
+Desktop.ini
+
+# Ignore all .env files (except .env.example)
+.env*
+!.env.example
+
+# Ignore all .DS_Store files
+**/.DS_Store
+
+# Ignore build directories
+build/
+dist/
+
+hashprep-dev.json
+todo.txt
