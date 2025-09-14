@@ -96,4 +96,5 @@ build/
 dist/
 
 hashprep-dev.json
-todo.txt
+todo.md
+test.json

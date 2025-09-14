@@ -2,6 +2,8 @@ from dataclasses import dataclass
 from typing import Dict, Optional
 import pandas as pd
 import hashlib
+from scipy.stats import chi2_contingency
+import numpy as np
 
 
 @dataclass
@@ -36,8 +38,24 @@ class DatasetAnalyzer:
         self._summarize_variable_types()
         self._add_reproduction_info()
         self._summarize_variables()
+        self._summarize_interactions()
+        self._summarize_missing_values()
 
         return self._generate_summary()
+
+    # =========================================================================
+    # Sample Section
+    # =========================================================================
+    def _get_dataset_preview(self):
+        head = self.df.head()
+        tail = self.df.tail()
+        sample = self.df.sample(min(10, len(self.df)))
+        dataset_preview = {
+            "head": head.to_dict(orient="records"),
+            "tail": tail.to_dict(orient="records"),
+            "sample": sample.to_dict(orient="records"),
+        }
+        self.summaries.update(dataset_preview)
 
     # =========================================================================
     # Overview Section
@@ -143,7 +161,7 @@ class DatasetAnalyzer:
         stats = {
             "count": int(series.count()),
             "unique": int(series.nunique()),
-            "top_values": series.value_counts().head(10).to_dict(), # top 10 only
+            "top_values": series.value_counts().head(10).to_dict(),  # top 10 only
             "most_frequent": series.mode().iloc[0] if not series.empty else None,
             "missing": int(self.df[col].isna().sum()),
         }
@@ -164,12 +182,15 @@ class DatasetAnalyzer:
             "avg_length": float(lengths.mean()) if not lengths.empty else None,
             "min_length": float(lengths.min()) if not lengths.empty else None,
             "max_length": float(lengths.max()) if not lengths.empty else None,
-            "common_lengths": lengths.value_counts().head(5).to_dict(), # top 5
+            "common_lengths": lengths.value_counts().head(5).to_dict(),  # top 5
             "char_freq": (
-                pd.Series(list("".join(series))).value_counts().head(10).to_dict() # top 10
+                pd.Series(list("".join(series)))
+                .value_counts()
+                .head(10)
+                .to_dict()  # top 10
                 if not series.empty
                 else None
-            ), # top 10 only
+            ),  # top 10 only
         }
 
         if "variables" not in self.summaries:
@@ -201,18 +222,112 @@ class DatasetAnalyzer:
         self.summaries["variables"][col] = stats
 
     # =========================================================================
-    # Sample Section
+    # Interactions and Correlations Section
     # =========================================================================
-    def _get_dataset_preview(self):
-        head = self.df.head()
-        tail = self.df.tail()
-        sample = self.df.sample(min(10, len(self.df)))
-        dataset_preview = {
-            "head": head.to_dict(orient="records"),
-            "tail": tail.to_dict(orient="records"),
-            "sample": sample.to_dict(orient="records"),
+    def _summarize_interactions(self):
+        """Run interactions between variables"""
+        self._scatter_plots_numeric()
+        self._compute_correlation_matrices()
+        self._compute_categorical_correlations()
+        self._compute_mixed_correlations()
+
+    def _scatter_plots_numeric(self):
+        """
+        Generate scatter plots between numeric variables
+        for CLI: just the pairs
+        for Web/Report: Plot them
+        """
+        numeric_columns = self.df.select_dtypes(include="number").columns
+        pairs = [
+            (c1, c2)
+            for i, c1 in enumerate(numeric_columns)
+            for c2 in numeric_columns[i + 1 :]
+        ]
+        self.summaries["scatter_pairs"] = pairs  # TODO: Plot these
+
+    def _compute_correlation_matrices(self):
+        """Compute Pearson/Spearman/Kendall correlations"""
+        numeric_df = self.df.select_dtypes(include="number")
+        corrs = {}
+        if not numeric_df.empty:
+            corrs["pearson"] = numeric_df.corr(method="pearson").to_dict()
+            corrs["spearman"] = numeric_df.corr(method="spearman").to_dict()
+            corrs["kendall"] = numeric_df.corr(method="kendall").to_dict()
+        self.summaries["numeric_correlations"] = corrs
+
+    def _compute_categorical_correlations(self):
+        """Compute Cramer's V for categorical pairs"""
+        categorical = self.df.select_dtypes(include="object").columns
+        results = {}
+        for i, c1 in enumerate(categorical):
+            for c2 in categorical[i + 1 :]:
+                try:
+                    table = pd.crosstab(self.df[c1], self.df[c2])
+                    chi2, _, _, _ = chi2_contingency(table)
+                    n = table.sum().sum()
+                    phi2 = chi2 / n
+                    r, k = table.shape
+                    cramers_v = (phi2 / min(k - 1, r - 1)) ** 0.5
+                    results[f"{c1}__{c2}"] = cramers_v
+                except Exception:
+                    continue
+
+        self.summaries["categorical_correlations"] = results
+
+    def _compute_mixed_correlations(self):
+        """
+        Compute correlation between categorical and numeric using ANOVA F-test as proxy
+        """
+        from scipy.stats import f_oneway
+        import numpy as np
+
+        cat_cols = self.df.select_dtypes(include=["object", "category"]).columns
+        num_cols = self.df.select_dtypes(include=["int64", "float64"]).columns
+        mixed_corr = {}
+
+        for cat in cat_cols:
+            for num in num_cols:
+                # Build groups for each level of categorical variable
+                groups = []
+                for level in self.df[cat].dropna().unique():
+                    vals = self.df.loc[self.df[cat] == level, num].dropna().to_numpy()
+                    if len(vals) > 1:  # Only include groups with more than 1 value
+                        groups.append(vals)
+
+                if len(groups) < 2:
+                    continue  # Need at least 2 valid groups for ANOVA
+
+                # Skip if all groups have zero variance
+                if all(np.var(g, ddof=1) == 0 for g in groups):
+                    continue
+
+                try:
+                    f_stat, p_val = f_oneway(*groups)
+                    mixed_corr[f"{cat}__{num}"] = {"f_stat": f_stat, "p_value": p_val}
+                except Exception as e:
+                    mixed_corr[f"{cat}__{num}"] = {"error": str(e)}
+
+        self.summaries["mixed_correlations"] = mixed_corr
+
+    # =========================================================================
+    # Missing Value Section
+    # =========================================================================
+    def _summarize_missing_values(self):
+        """Summarize missing value patterns"""
+        missing_count = self.df.isnull().sum().to_dict()
+        missing_percentage = (self.df.isnull().mean() * 100).round(2).to_dict()
+
+        self.summaries["missing_values"] = {
+            "count": missing_count,
+            "percentage": missing_percentage,
         }
-        self.summaries.update(dataset_preview)
+
+        # Simple missingness heatmap structure (list of missing row indexes)
+        self.summaries["missing_patterns"] = {
+            col: self.df[self.df[col].isna()].index.tolist()
+            for col in self.df.columns
+            if self.df[col].isna().any()
+        }
 
     # =========================================================================
     # Generate Summary
