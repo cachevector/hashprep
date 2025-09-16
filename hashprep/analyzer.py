@@ -333,6 +333,7 @@ class DatasetAnalyzer:
         self.summaries["missing_values"] = {
             "count": missing_count,
             "percentage": missing_percentage,
+
         }
 
         # Simple missingness heatmap structure (list of missing row indexes)
@@ -549,6 +550,16 @@ class DatasetAnalyzer:
                     quick_fix="Consider dropping one of the correlated features.",
                 )
             )
+
+        }
+
+        # Simple missingness heatmap structure (list of missing row indexes)
+        self.summaries["missing_patterns"] = {
+            col: self.df[self.df[col].isna()].index.tolist()
+            for col in self.df.columns
+            if self.df[col].isna().any()
+        }
+
 
     # =========================================================================
     # Generate Summary
