@@ -551,7 +551,6 @@ class DatasetAnalyzer:
                 )
             )
 
-        }
 
         # Simple missingness heatmap structure (list of missing row indexes)
         self.summaries["missing_patterns"] = {
