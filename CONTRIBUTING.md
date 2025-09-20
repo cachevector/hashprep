@@ -13,22 +13,20 @@ For new contributors, we suggest starting with Easy tasks.
 ### Fork and clone the repository
 ```bash
 git clone https://github.com/cachevector/hashprep.git
+cd hashprep
 ```
 
-### CLI
+### Create a virtual environment
 
 ```bash
-cd /hashprep/cli/
-python -m venv .venv
+uv venv
 source .venv/bin/activate
-
-pip install -r requirements.txt 
 ```
 
-### Run the CLI
+### Install in development mode
 
 ```bash
-python hashprep/cli/main.py --help
+uv sync --extra dev 
 ```
 
 <!-- To keep your fork updated:
