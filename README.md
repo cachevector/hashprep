@@ -1,29 +1,28 @@
 <div align="center">
   <picture>
     <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hashprep-wobg.svg" width="100">
-    <img alt="Shows an illustrated sun in light color mode and a moon with stars in dark color mode." src="docs/hashprep-dark.svg" width="100">
+    <img alt="HashPrep Logo" src="docs/assets/hashprep-dark.svg" width="100">
   </picture>
 
   <h1>HashPrep</h1>
   <p>
-    <b> Dataset Debugging Playground </b>
+    <b> Dataset Profiler & Debugger for Machine Learning </b>
   </p>
 
   <p align="center">
-    <!-- Deployment -->
-    <img src="https://img.shields.io/badge/Web%20Version-Self%20Hosted-0A66C2" />
-    <img src="https://img.shields.io/badge/CLI-Supported-orange" />
-    <!-- Stack -->
-    <img src="https://img.shields.io/badge/UI-Svelte-ff3e00?logo=svelte" />
-    <img src="https://img.shields.io/badge/Backend-FastAPI-009688?logo=fastapi" />
-    <img src="https://img.shields.io/badge/DB-Postgres-336791?logo=postgresql" />
+    <!-- Distribution -->
+    <!-- <img src="https://img.shields.io/pypi/v/hashprep?color=blue&label=PyPI" /> -->
+    <img src="https://img.shields.io/badge/PyPI-Coming%20Soon-blue" />
     <!-- License -->
     <img src="https://img.shields.io/badge/License-MIT-green" />
+    <img src="https://img.shields.io/badge/CLI-Supported-orange" />
+  </p>
+  <p>
     <!-- Features -->
     <img src="https://img.shields.io/badge/Feature-Dataset%20Quality%20Assurance-critical" />
     <img src="https://img.shields.io/badge/Feature-Preprocessing%20%2B%20Profiling-blueviolet" />
     <img src="https://img.shields.io/badge/Feature-Report%20Generation-3f4f75" />
-    <img src="https://img.shields.io/badge/Feature-AutoML%20Integration-success" />
+    <img src="https://img.shields.io/badge/Feature-Quick%20Fixes-success" />
   </p>
 </div>
 
@@ -32,9 +31,12 @@
 
 ## Overview
 
-**HashPrep** is an intelligent dataset debugging and preparation platform that acts as a comprehensive pre-training quality assurance tool for machine learning projects. Think of it as **"Pandas Profiling + ESLint + AutoML"** specifically designed for ML datasets.
+**HashPrep** is a Python library for intelligent dataset profiling and debugging that acts as a comprehensive pre-training quality assurance tool for machine learning projects.
+Think of it as **"Pandas Profiling + PyLint for datasets"**, designed specifically for machine learning workflows.
 
-The platform catches critical dataset issues before they derail your ML pipeline, automatically suggests fixes, and generates production-ready cleaning code - saving hours of manual data debugging and preparation work.
+It catches critical dataset issues before they derail your ML pipeline, explains the problems, and suggests context-aware fixes.  
+If you want, HashPrep can even apply those fixes for you automatically.
+
 
 ---
 
@@ -44,11 +46,11 @@ Key features include:
 
 - **Intelligent Profiling**: Detect missing values, skewed distributions, outliers, and data type inconsistencies.
 - **ML-Specific Checks**: Identify data leakage, dataset drift, class imbalance, and high-cardinality features.
-- **Automated Preparation**: Get context-aware suggestions for encoding, imputation, scaling, and transformations.
-- **Rich Reporting**: Generate interactive dashboards, statistical summaries, and exportable reports for collaboration.
-- **Production-Ready Pipelines**: Automatically create reproducible cleaning and preprocessing code that integrates seamlessly with ML workflows.
+- **Automated Preparation**: Get suggestions for encoding, imputation, scaling, and transformations, and optionally apply them automatically.
+- **Rich Reporting**: Generate statistical summaries and exportable reports for collaboration.
+- **Production-Ready Pipelines**: Output reproducible cleaning and preprocessing code that integrates seamlessly with ML workflows.
 
-HashPrep turns data debugging into a guided, automated process - saving time, improving model reliability, and standardizing best practices across teams.
+HashPrep turns dataset debugging into a guided, automated process - saving time, improving model reliability, and standardizing best practices across teams.
 
 ---
 

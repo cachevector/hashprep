@@ -92,9 +92,11 @@ Desktop.ini
 **/.DS_Store
 
 # Ignore build directories
+*.egg-info
 build/
 dist/
 
 hashprep-dev.json
 todo.md
 test.json
+
