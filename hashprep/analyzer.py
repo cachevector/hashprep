@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Dict, Optional
+from typing import Dict, List, Optional
 import pandas as pd
 import hashlib
 from scipy.stats import chi2_contingency
@@ -22,9 +22,10 @@ class DatasetAnalyzer:
     Detects critical issues and warnings, generates report
     """
 
-    def __init__(self, df: pd.DataFrame):
+    def __init__(self, df: pd.DataFrame, target_col: Optional[str] = None):
         self.df = df
-        self.issues: Optional[str] = []
+        self.target_col = target_col
+        self.issues: List[Issues] = []
         self.summaries: Dict = {}
 
     def analyze(self) -> Dict:
@@ -42,12 +43,12 @@ class DatasetAnalyzer:
         self._summarize_missing_values()
 
         # ---- Warnings and Critical Issues ----
-        self._check_data_leakage()
+        self._check_data_leakage(self.target_col)
         self._check_high_missing_values()
         self._check_empty_columns()
         self._check_single_value_columns()
-        self._check_target_leakage_patterns()
-        self._check_class_imbalance()
+        self._check_target_leakage_patterns(self.target_col)
+        self._check_class_imbalance(self.target_col)
         self._check_high_cardinality()
         self._check_duplicates()
         self._check_mixed_data_types()
@@ -217,8 +218,8 @@ class DatasetAnalyzer:
         stats = {
             "count": int(series.count()),
             "missing": int(self.df[col].isna().sum()),
-            "min": str(series.min()) if not series.empty() else None,
-            "max": str(series.max()) if not series.empty() else None,
+            "min": str(series.min()) if not series.empty else None,
+            "max": str(series.max()) if not series.empty else None,
             "year_counts": (
                 series.dt.year.value_counts().to_dict() if not series.empty else None
             ),
@@ -503,7 +504,6 @@ class DatasetAnalyzer:
 
     def _check_outliers(self, z_threshold: float = 4.0):
         """Flag numeric columns with extreme outliers based on Z-score"""
-        from scipy.stats import zscore
 
         numeric_df = self.df.select_dtypes(include="number").dropna()
         if numeric_df.empty:
@@ -536,7 +536,7 @@ class DatasetAnalyzer:
             (col, row, val)
             for row in upper.index
             for col, val in upper[row].dropna().items()
-            if val > threshold
+            if val > threshold and col != row
         ]
 
         for col1, col2, corr in correlated_pairs:
@@ -550,14 +550,6 @@ class DatasetAnalyzer:
                     quick_fix="Consider dropping one of the correlated features.",
                 )
             )
-
-
-        # Simple missingness heatmap structure (list of missing row indexes)
-        self.summaries["missing_patterns"] = {
-            col: self.df[self.df[col].isna()].index.tolist()
-            for col in self.df.columns
-            if self.df[col].isna().any()
-        }
 
 
     # =========================================================================
