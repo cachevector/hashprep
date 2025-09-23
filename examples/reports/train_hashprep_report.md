@@ -1,7 +1,7 @@
 # Dataset Quality Report
 
 File: datasets/train.csv
-Generated: 2025-09-22 23:22:53
+Generated: 2025-09-23 18:45:51
 HashPrep Version: 1.0.0-MVP
 
 ## Executive Summary
@@ -90,18 +90,18 @@ HashPrep Version: 1.0.0-MVP
 
 ### Sample
 
-|   PassengerId |   Survived |   Pclass | Name                                                     | Sex    |   Age |   SibSp |   Parch | Ticket     |    Fare | Cabin   | Embarked   |
-|--------------:|-----------:|---------:|:---------------------------------------------------------|:-------|------:|--------:|--------:|:-----------|--------:|:--------|:-----------|
-|           770 |          0 |        3 | Gronnestad, Mr. Daniel Danielsen                         | male   |    32 |       0 |       0 | 8471       |  8.3625 | nan     | S          |
-|           760 |          1 |        1 | Rothes, the Countess. of (Lucy Noel Martha Dyer-Edwards) | female |    33 |       0 |       0 | 110152     | 86.5    | B77     | S          |
-|           807 |          0 |        1 | Andrews, Mr. Thomas Jr                                   | male   |    39 |       0 |       0 | 112050     |  0      | A36     | S          |
-|            54 |          1 |        2 | Faunthorpe, Mrs. Lizzie (Elizabeth Anne Wilkinson)       | female |    29 |       1 |       0 | 2926       | 26      | nan     | S          |
-|           802 |          1 |        2 | Collyer, Mrs. Harvey (Charlotte Annie Tate)              | female |    31 |       1 |       1 | C.A. 31921 | 26.25   | nan     | S          |
-|           455 |          0 |        3 | Peduzzi, Mr. Joseph                                      | male   |   nan |       0 |       0 | A/5 2817   |  8.05   | nan     | S          |
-|           725 |          1 |        1 | Chambers, Mr. Norman Campbell                            | male   |    27 |       1 |       0 | 113806     | 53.1    | E8      | S          |
-|           275 |          1 |        3 | Healy, Miss. Hanora "Nora"                               | female |   nan |       0 |       0 | 370375     |  7.75   | nan     | Q          |
-|           419 |          0 |        2 | Matthews, Mr. William John                               | male   |    30 |       0 |       0 | 28228      | 13      | nan     | S          |
-|           763 |          1 |        3 | Barah, Mr. Hanna Assi                                    | male   |    20 |       0 |       0 | 2663       |  7.2292 | nan     | C          |
+|   PassengerId |   Survived |   Pclass | Name                           | Sex    |   Age |   SibSp |   Parch | Ticket            |    Fare | Cabin       | Embarked   |
+|--------------:|-----------:|---------:|:-------------------------------|:-------|------:|--------:|--------:|:------------------|--------:|:------------|:-----------|
+|           584 |          0 |        1 | Ross, Mr. John Hugo            | male   |    36 |       0 |       0 | 13049             | 40.125  | A10         | C          |
+|           414 |          0 |        2 | Cunningham, Mr. Alfred Fleming | male   |   nan |       0 |       0 | 239853            |  0      | nan         | S          |
+|           769 |          0 |        3 | Moran, Mr. Daniel J            | male   |   nan |       1 |       0 | 371110            | 24.15   | nan         | Q          |
+|            72 |          0 |        3 | Goodwin, Miss. Lillian Amy     | female |    16 |       5 |       2 | CA 2144           | 46.9    | nan         | S          |
+|            90 |          0 |        3 | Celotti, Mr. Francesco         | male   |    24 |       0 |       0 | 343275            |  8.05   | nan         | S          |
+|           641 |          0 |        3 | Jensen, Mr. Hans Peder         | male   |    20 |       0 |       0 | 350050            |  7.8542 | nan         | S          |
+|            76 |          0 |        3 | Moen, Mr. Sigurd Hansen        | male   |    25 |       0 |       0 | 348123            |  7.65   | F G73       | S          |
+|           873 |          0 |        1 | Carlsson, Mr. Frans Olof       | male   |    33 |       0 |       0 | 695               |  5      | B51 B53 B55 | S          |
+|           401 |          1 |        3 | Niskanen, Mr. Juha             | male   |    39 |       0 |       0 | STON/O 2. 3101289 |  7.925  | nan         | S          |
+|            40 |          1 |        3 | Nicola-Yarred, Miss. Jamila    | female |    14 |       1 |       0 | 2651              | 11.2417 | nan         | C          |
 
 ## Variables
 
@@ -111,7 +111,7 @@ HashPrep Version: 1.0.0-MVP
 count: 891
 histogram:
   bin_edges:
-  - 0.10999999999999999
+  - 1.0
   - 90.0
   - 179.0
   - 268.0
@@ -123,129 +123,16 @@ histogram:
   - 802.0
   - 891.0
   counts:
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - &id001 !!python/object/apply:numpy.dtype
-        args:
-        - f8
-        - false
-        - true
-        state: !!python/tuple
-        - 3
-        - <
-        - null
-        - null
-        - null
-        - -1
-        - -1
-        - 0
-      - !!binary |
-        gZVDi2znuz8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAACAVkA=
-    - right
-    : 90
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAACAVkA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAABgZkA=
-    - right
-    : 89
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAABgZkA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAADAcEA=
-    - right
-    : 89
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAADAcEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAABQdkA=
-    - right
-    : 89
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAABQdkA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAADge0A=
-    - right
-    : 89
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAADge0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAC4gEA=
-    - right
-    : 89
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAC4gEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAACAg0A=
-    - right
-    : 89
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAACAg0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAABIhkA=
-    - right
-    : 89
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAABIhkA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAQiUA=
-    - right
-    : 89
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAQiUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAADYi0A=
-    - right
-    : 89
+  - 89
+  - 89
+  - 89
+  - 89
+  - 89
+  - 89
+  - 89
+  - 89
+  - 89
+  - 90
 max: 891.0
 mean: 446.0
 min: 1.0
@@ -264,7 +151,7 @@ zeros: 0
 count: 891
 histogram:
   bin_edges:
-  - -0.001
+  - 0.0
   - 0.1
   - 0.2
   - 0.30000000000000004
@@ -276,129 +163,16 @@ histogram:
   - 0.9
   - 1.0
   counts:
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - &id001 !!python/object/apply:numpy.dtype
-        args:
-        - f8
-        - false
-        - true
-        state: !!python/tuple
-        - 3
-        - <
-        - null
-        - null
-        - null
-        - -1
-        - -1
-        - 0
-      - !!binary |
-        /Knx0k1iYL8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZuT8=
-    - right
-    : 549
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZuT8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZyT8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZyT8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz0z8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz0z8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ2T8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ2T8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAA4D8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAA4D8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz4z8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz4z8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ZmZmZmZm5j8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ZmZmZmZm5j8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ6T8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ6T8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzM7D8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzM7D8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAA8D8=
-    - right
-    : 342
+  - 549
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 0
+  - 342
 max: 1.0
 mean: 0.3838383838383838
 min: 0.0
@@ -417,7 +191,7 @@ zeros: 549
 count: 891
 histogram:
   bin_edges:
-  - 0.998
+  - 1.0
   - 1.2
   - 1.4
   - 1.6
@@ -429,129 +203,16 @@ histogram:
   - 2.8
   - 3.0
   counts:
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - &id001 !!python/object/apply:numpy.dtype
-        args:
-        - f8
-        - false
-        - true
-        state: !!python/tuple
-        - 3
-        - <
-        - null
-        - null
-        - null
-        - -1
-        - -1
-        - 0
-      - !!binary |
-        gZVDi2zn7z8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz8z8=
-    - right
-    : 216
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz8z8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ZmZmZmZm9j8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ZmZmZmZm9j8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ+T8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ+T8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzM/D8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzM/D8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAAAEA=
-    - right
-    : 184
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAAAEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZAUA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZAUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzA0A=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzA0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzMBEA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzMBEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ZmZmZmZmBkA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ZmZmZmZmBkA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAACEA=
-    - right
-    : 491
+  - 216
+  - 0
+  - 0
+  - 0
+  - 0
+  - 184
+  - 0
+  - 0
+  - 0
+  - 491
 max: 3.0
 mean: 2.308641975308642
 min: 1.0
@@ -616,7 +277,7 @@ missing: 0
 count: 714
 histogram:
   bin_edges:
-  - 0.34042
+  - 0.42
   - 8.378
   - 16.336000000000002
   - 24.294000000000004
@@ -628,129 +289,16 @@ histogram:
   - 72.042
   - 80.0
   counts:
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - &id001 !!python/object/apply:numpy.dtype
-        args:
-        - f8
-        - false
-        - true
-        state: !!python/tuple
-        - 3
-        - <
-        - null
-        - null
-        - null
-        - -1
-        - -1
-        - 0
-      - !!binary |
-        GQRWDi2y1T8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        qMZLN4nBIEA=
-    - right
-    : 54
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        qMZLN4nBIEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        vHSTGARWMEA=
-    - right
-    : 46
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        vHSTGARWMEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        JQaBlUNLOEA=
-    - right
-    : 177
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        JQaBlUNLOEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        x0s3iUEgQEA=
-    - right
-    : 169
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        x0s3iUEgQEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        exSuR+EaREA=
-    - right
-    : 118
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        exSuR+EaREA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        L90kBoEVSEA=
-    - right
-    : 70
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        L90kBoEVSEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        46WbxCAQTEA=
-    - right
-    : 45
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        46WbxCAQTEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        TDeJQWAFUEA=
-    - right
-    : 24
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        TDeJQWAFUEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ppvEILACUkA=
-    - right
-    : 9
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ppvEILACUkA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAAVEA=
-    - right
-    : 2
+  - 54
+  - 46
+  - 177
+  - 169
+  - 118
+  - 70
+  - 45
+  - 24
+  - 9
+  - 2
 max: 80.0
 mean: 29.69911764705882
 min: 0.42
@@ -769,7 +317,7 @@ zeros: 0
 count: 891
 histogram:
   bin_edges:
-  - -0.008
+  - 0.0
   - 0.8
   - 1.6
   - 2.4000000000000004
@@ -781,129 +329,16 @@ histogram:
   - 7.2
   - 8.0
   counts:
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - &id001 !!python/object/apply:numpy.dtype
-        args:
-        - f8
-        - false
-        - true
-        state: !!python/tuple
-        - 3
-        - <
-        - null
-        - null
-        - null
-        - -1
-        - -1
-        - 0
-      - !!binary |
-        PN9PjZdugr8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ6T8=
-    - right
-    : 608
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ6T8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ+T8=
-    - right
-    : 209
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZ+T8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzA0A=
-    - right
-    : 28
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzA0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZCUA=
-    - right
-    : 16
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZCUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAAEEA=
-    - right
-    : 18
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAAEEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzE0A=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzE0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ZmZmZmZmFkA=
-    - right
-    : 5
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        ZmZmZmZmFkA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZGUA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZGUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzMHEA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzMHEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAAIEA=
-    - right
-    : 7
+  - 608
+  - 209
+  - 28
+  - 16
+  - 0
+  - 18
+  - 5
+  - 0
+  - 0
+  - 7
 max: 8.0
 mean: 0.5230078563411896
 min: 0.0
@@ -922,7 +357,7 @@ zeros: 608
 count: 891
 histogram:
   bin_edges:
-  - -0.006
+  - 0.0
   - 0.6
   - 1.2
   - 1.7999999999999998
@@ -934,129 +369,16 @@ histogram:
   - 5.3999999999999995
   - 6.0
   counts:
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - &id001 !!python/object/apply:numpy.dtype
-        args:
-        - f8
-        - false
-        - true
-        state: !!python/tuple
-        - 3
-        - <
-        - null
-        - null
-        - null
-        - -1
-        - -1
-        - 0
-      - !!binary |
-        eekmMQisfL8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz4z8=
-    - right
-    : 678
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz4z8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz8z8=
-    - right
-    : 118
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMz8z8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzM/D8=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzM/D8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzA0A=
-    - right
-    : 80
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzA0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAACEA=
-    - right
-    : 5
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAACEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzMDEA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzMDEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzMEEA=
-    - right
-    : 4
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        zczMzMzMEEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzE0A=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        MzMzMzMzE0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZFUA=
-    - right
-    : 5
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        mpmZmZmZFUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        AAAAAAAAGEA=
-    - right
-    : 1
+  - 678
+  - 118
+  - 0
+  - 80
+  - 0
+  - 5
+  - 4
+  - 0
+  - 5
+  - 1
 max: 6.0
 mean: 0.38159371492704824
 min: 0.0
@@ -1102,7 +424,7 @@ missing: 0
 count: 891
 histogram:
   bin_edges:
-  - -0.5123292
+  - 0.0
   - 51.23292
   - 102.46584
   - 153.69876
@@ -1114,129 +436,16 @@ histogram:
   - 461.09628
   - 512.3292
   counts:
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - &id001 !!python/object/apply:numpy.dtype
-        args:
-        - f8
-        - false
-        - true
-        state: !!python/tuple
-        - 3
-        - <
-        - null
-        - null
-        - null
-        - -1
-        - -1
-        - 0
-      - !!binary |
-        0SLb+X5q4L8=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        5/up8dKdSUA=
-    - right
-    : 732
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        5/up8dKdSUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        5/up8dKdWUA=
-    - right
-    : 106
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        5/up8dKdWUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        7nw/NV42Y0A=
-    - right
-    : 31
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        7nw/NV42Y0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        5/up8dKdaUA=
-    - right
-    : 2
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        5/up8dKdaUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        cT0K16MCcEA=
-    - right
-    : 11
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        cT0K16MCcEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        7nw/NV42c0A=
-    - right
-    : 6
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        7nw/NV42c0A=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        rkfhehRqdkA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        rkfhehRqdkA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        K4cW2c6deUA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        K4cW2c6deUA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        qMZLN4nRfEA=
-    - right
-    : 0
-    ? !!python/object/apply:pandas._libs.interval.Interval
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        qMZLN4nRfEA=
-    - !!python/object/apply:numpy._core.multiarray.scalar
-      - *id001
-      - !!binary |
-        EoPAyqECgEA=
-    - right
-    : 3
+  - 732
+  - 106
+  - 31
+  - 2
+  - 11
+  - 6
+  - 0
+  - 0
+  - 0
+  - 3
 max: 512.3292
 mean: 32.204207968574636
 min: 0.0
@@ -1287,7 +496,71 @@ unique: 3
 ### Numeric (Pearson)
 
 ```json
-{json.dumps(summary['summaries'].get('numeric_correlations', {}).get('pearson', {}), indent=2)}
+{
+  "PassengerId": {
+    "PassengerId": 1.0,
+    "Survived": -0.0050066607670665175,
+    "Pclass": -0.03514399403038102,
+    "Age": 0.036847197861327674,
+    "SibSp": -0.0575268337844415,
+    "Parch": -0.0016520124027188366,
+    "Fare": 0.012658219287491099
+  },
+  "Survived": {
+    "PassengerId": -0.0050066607670665175,
+    "Survived": 1.0,
+    "Pclass": -0.33848103596101514,
+    "Age": -0.07722109457217756,
+    "SibSp": -0.035322498885735576,
+    "Parch": 0.08162940708348335,
+    "Fare": 0.2573065223849626
+  },
+  "Pclass": {
+    "PassengerId": -0.03514399403038102,
+    "Survived": -0.33848103596101514,
+    "Pclass": 1.0,
+    "Age": -0.36922601531551735,
+    "SibSp": 0.08308136284568686,
+    "Parch": 0.018442671310748508,
+    "Fare": -0.5494996199439076
+  },
+  "Age": {
+    "PassengerId": 0.036847197861327674,
+    "Survived": -0.07722109457217756,
+    "Pclass": -0.36922601531551735,
+    "Age": 1.0,
+    "SibSp": -0.30824675892365666,
+    "Parch": -0.1891192626320352,
+    "Fare": 0.09606669176903912
+  },
+  "SibSp": {
+    "PassengerId": -0.0575268337844415,
+    "Survived": -0.035322498885735576,
+    "Pclass": 0.08308136284568686,
+    "Age": -0.30824675892365666,
+    "SibSp": 1.0,
+    "Parch": 0.41483769862015624,
+    "Fare": 0.159651043242161
+  },
+  "Parch": {
+    "PassengerId": -0.0016520124027188366,
+    "Survived": 0.08162940708348335,
+    "Pclass": 0.018442671310748508,
+    "Age": -0.1891192626320352,
+    "SibSp": 0.41483769862015624,
+    "Parch": 1.0,
+    "Fare": 0.21622494477076448
+  },
+  "Fare": {
+    "PassengerId": 0.012658219287491099,
+    "Survived": 0.2573065223849626,
+    "Pclass": -0.5494996199439076,
+    "Age": 0.09606669176903912,
+    "SibSp": 0.159651043242161,
+    "Parch": 0.21622494477076448,
+    "Fare": 1.0
+  }
+}
 ```
 ### Categorical (Cramer's V)
 
@@ -1346,7 +619,880 @@ unique: 3
 ## Missing Patterns
 
 ```json
-{json.dumps(summary['summaries']['missing_patterns'], indent=2)}
+{
+  "Age": [
+    5,
+    17,
+    19,
+    26,
+    28,
+    29,
+    31,
+    32,
+    36,
+    42,
+    45,
+    46,
+    47,
+    48,
+    55,
+    64,
+    65,
+    76,
+    77,
+    82,
+    87,
+    95,
+    101,
+    107,
+    109,
+    121,
+    126,
+    128,
+    140,
+    154,
+    158,
+    159,
+    166,
+    168,
+    176,
+    180,
+    181,
+    185,
+    186,
+    196,
+    198,
+    201,
+    214,
+    223,
+    229,
+    235,
+    240,
+    241,
+    250,
+    256,
+    260,
+    264,
+    270,
+    274,
+    277,
+    284,
+    295,
+    298,
+    300,
+    301,
+    303,
+    304,
+    306,
+    324,
+    330,
+    334,
+    335,
+    347,
+    351,
+    354,
+    358,
+    359,
+    364,
+    367,
+    368,
+    375,
+    384,
+    388,
+    409,
+    410,
+    411,
+    413,
+    415,
+    420,
+    425,
+    428,
+    431,
+    444,
+    451,
+    454,
+    457,
+    459,
+    464,
+    466,
+    468,
+    470,
+    475,
+    481,
+    485,
+    490,
+    495,
+    497,
+    502,
+    507,
+    511,
+    517,
+    522,
+    524,
+    527,
+    531,
+    533,
+    538,
+    547,
+    552,
+    557,
+    560,
+    563,
+    564,
+    568,
+    573,
+    578,
+    584,
+    589,
+    593,
+    596,
+    598,
+    601,
+    602,
+    611,
+    612,
+    613,
+    629,
+    633,
+    639,
+    643,
+    648,
+    650,
+    653,
+    656,
+    667,
+    669,
+    674,
+    680,
+    692,
+    697,
+    709,
+    711,
+    718,
+    727,
+    732,
+    738,
+    739,
+    740,
+    760,
+    766,
+    768,
+    773,
+    776,
+    778,
+    783,
+    790,
+    792,
+    793,
+    815,
+    825,
+    826,
+    828,
+    832,
+    837,
+    839,
+    846,
+    849,
+    859,
+    863,
+    868,
+    878,
+    888
+  ],
+  "Cabin": [
+    0,
+    2,
+    4,
+    5,
+    7,
+    8,
+    9,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    22,
+    24,
+    25,
+    26,
+    28,
+    29,
+    30,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39,
+    40,
+    41,
+    42,
+    43,
+    44,
+    45,
+    46,
+    47,
+    48,
+    49,
+    50,
+    51,
+    53,
+    56,
+    57,
+    58,
+    59,
+    60,
+    63,
+    64,
+    65,
+    67,
+    68,
+    69,
+    70,
+    71,
+    72,
+    73,
+    74,
+    76,
+    77,
+    78,
+    79,
+    80,
+    81,
+    82,
+    83,
+    84,
+    85,
+    86,
+    87,
+    89,
+    90,
+    91,
+    93,
+    94,
+    95,
+    98,
+    99,
+    100,
+    101,
+    103,
+    104,
+    105,
+    106,
+    107,
+    108,
+    109,
+    111,
+    112,
+    113,
+    114,
+    115,
+    116,
+    117,
+    119,
+    120,
+    121,
+    122,
+    125,
+    126,
+    127,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    138,
+    140,
+    141,
+    142,
+    143,
+    144,
+    145,
+    146,
+    147,
+    149,
+    150,
+    152,
+    153,
+    154,
+    155,
+    156,
+    157,
+    158,
+    159,
+    160,
+    161,
+    162,
+    163,
+    164,
+    165,
+    167,
+    168,
+    169,
+    171,
+    172,
+    173,
+    175,
+    176,
+    178,
+    179,
+    180,
+    181,
+    182,
+    184,
+    186,
+    187,
+    188,
+    189,
+    190,
+    191,
+    192,
+    196,
+    197,
+    198,
+    199,
+    200,
+    201,
+    202,
+    203,
+    204,
+    206,
+    207,
+    208,
+    210,
+    211,
+    212,
+    213,
+    214,
+    216,
+    217,
+    219,
+    220,
+    221,
+    222,
+    223,
+    225,
+    226,
+    227,
+    228,
+    229,
+    231,
+    232,
+    233,
+    234,
+    235,
+    236,
+    237,
+    238,
+    239,
+    240,
+    241,
+    242,
+    243,
+    244,
+    246,
+    247,
+    249,
+    250,
+    253,
+    254,
+    255,
+    256,
+    258,
+    259,
+    260,
+    261,
+    264,
+    265,
+    266,
+    267,
+    270,
+    271,
+    272,
+    274,
+    276,
+    277,
+    278,
+    279,
+    280,
+    281,
+    282,
+    283,
+    285,
+    286,
+    287,
+    288,
+    289,
+    290,
+    293,
+    294,
+    295,
+    296,
+    300,
+    301,
+    302,
+    304,
+    306,
+    308,
+    312,
+    313,
+    314,
+    315,
+    316,
+    317,
+    320,
+    321,
+    322,
+    323,
+    324,
+    326,
+    328,
+    330,
+    333,
+    334,
+    335,
+    338,
+    342,
+    343,
+    344,
+    346,
+    347,
+    348,
+    349,
+    350,
+    352,
+    353,
+    354,
+    355,
+    357,
+    358,
+    359,
+    360,
+    361,
+    362,
+    363,
+    364,
+    365,
+    367,
+    368,
+    371,
+    372,
+    373,
+    374,
+    375,
+    376,
+    378,
+    379,
+    380,
+    381,
+    382,
+    383,
+    384,
+    385,
+    386,
+    387,
+    388,
+    389,
+    391,
+    392,
+    395,
+    396,
+    397,
+    398,
+    399,
+    400,
+    401,
+    402,
+    403,
+    404,
+    405,
+    406,
+    407,
+    408,
+    409,
+    410,
+    411,
+    413,
+    414,
+    415,
+    416,
+    417,
+    418,
+    419,
+    420,
+    421,
+    422,
+    423,
+    424,
+    425,
+    426,
+    427,
+    428,
+    431,
+    432,
+    433,
+    436,
+    437,
+    439,
+    440,
+    441,
+    442,
+    443,
+    444,
+    446,
+    447,
+    448,
+    450,
+    451,
+    454,
+    455,
+    458,
+    459,
+    461,
+    463,
+    464,
+    465,
+    466,
+    467,
+    468,
+    469,
+    470,
+    471,
+    472,
+    474,
+    476,
+    477,
+    478,
+    479,
+    480,
+    481,
+    482,
+    483,
+    485,
+    488,
+    489,
+    490,
+    491,
+    493,
+    494,
+    495,
+    497,
+    499,
+    500,
+    501,
+    502,
+    503,
+    506,
+    507,
+    508,
+    509,
+    510,
+    511,
+    513,
+    514,
+    517,
+    518,
+    519,
+    521,
+    522,
+    524,
+    525,
+    526,
+    528,
+    529,
+    530,
+    531,
+    532,
+    533,
+    534,
+    535,
+    537,
+    538,
+    541,
+    542,
+    543,
+    545,
+    546,
+    547,
+    548,
+    549,
+    551,
+    552,
+    553,
+    554,
+    555,
+    557,
+    559,
+    560,
+    561,
+    562,
+    563,
+    564,
+    565,
+    566,
+    567,
+    568,
+    569,
+    570,
+    573,
+    574,
+    575,
+    576,
+    578,
+    579,
+    580,
+    582,
+    584,
+    586,
+    588,
+    589,
+    590,
+    592,
+    593,
+    594,
+    595,
+    596,
+    597,
+    598,
+    600,
+    601,
+    602,
+    603,
+    604,
+    605,
+    606,
+    607,
+    608,
+    610,
+    611,
+    612,
+    613,
+    614,
+    615,
+    616,
+    617,
+    619,
+    620,
+    622,
+    623,
+    624,
+    626,
+    628,
+    629,
+    631,
+    633,
+    634,
+    635,
+    636,
+    637,
+    638,
+    639,
+    640,
+    642,
+    643,
+    644,
+    646,
+    648,
+    649,
+    650,
+    651,
+    652,
+    653,
+    654,
+    655,
+    656,
+    657,
+    658,
+    660,
+    661,
+    663,
+    664,
+    665,
+    666,
+    667,
+    668,
+    670,
+    672,
+    673,
+    674,
+    675,
+    676,
+    677,
+    678,
+    680,
+    682,
+    683,
+    684,
+    685,
+    686,
+    687,
+    688,
+    691,
+    692,
+    693,
+    694,
+    695,
+    696,
+    697,
+    702,
+    703,
+    704,
+    705,
+    706,
+    708,
+    709,
+    713,
+    714,
+    718,
+    719,
+    720,
+    721,
+    722,
+    723,
+    725,
+    726,
+    727,
+    728,
+    729,
+    731,
+    732,
+    733,
+    734,
+    735,
+    736,
+    738,
+    739,
+    743,
+    744,
+    746,
+    747,
+    749,
+    750,
+    752,
+    753,
+    754,
+    755,
+    756,
+    757,
+    758,
+    760,
+    761,
+    762,
+    764,
+    766,
+    767,
+    768,
+    769,
+    770,
+    771,
+    773,
+    774,
+    775,
+    777,
+    778,
+    780,
+    783,
+    784,
+    785,
+    786,
+    787,
+    788,
+    790,
+    791,
+    792,
+    793,
+    794,
+    795,
+    797,
+    798,
+    799,
+    800,
+    801,
+    803,
+    804,
+    805,
+    807,
+    808,
+    810,
+    811,
+    812,
+    813,
+    814,
+    816,
+    817,
+    818,
+    819,
+    821,
+    822,
+    824,
+    825,
+    826,
+    827,
+    828,
+    830,
+    831,
+    832,
+    833,
+    834,
+    836,
+    837,
+    838,
+    840,
+    841,
+    842,
+    843,
+    844,
+    845,
+    846,
+    847,
+    848,
+    850,
+    851,
+    852,
+    854,
+    855,
+    856,
+    858,
+    859,
+    860,
+    861,
+    863,
+    864,
+    865,
+    866,
+    868,
+    869,
+    870,
+    873,
+    874,
+    875,
+    876,
+    877,
+    878,
+    880,
+    881,
+    882,
+    883,
+    884,
+    885,
+    886,
+    888,
+    890
+  ],
+  "Embarked": [
+    61,
+    829
+  ]
+}
 ```
 
 ## Next Steps
