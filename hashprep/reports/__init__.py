@@ -1,0 +1,1 @@
+from .generators import generate_report
