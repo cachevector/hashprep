@@ -1,7 +1,6 @@
 # Dataset Quality Report
 
-File: datasets/train.csv
-Generated: 2025-09-23 18:45:51
+Generated: 2025-09-24 22:18:04
 HashPrep Version: 1.0.0-MVP
 
 ## Executive Summary
@@ -90,18 +89,18 @@ HashPrep Version: 1.0.0-MVP
 
 ### Sample
 
-|   PassengerId |   Survived |   Pclass | Name                           | Sex    |   Age |   SibSp |   Parch | Ticket            |    Fare | Cabin       | Embarked   |
-|--------------:|-----------:|---------:|:-------------------------------|:-------|------:|--------:|--------:|:------------------|--------:|:------------|:-----------|
-|           584 |          0 |        1 | Ross, Mr. John Hugo            | male   |    36 |       0 |       0 | 13049             | 40.125  | A10         | C          |
-|           414 |          0 |        2 | Cunningham, Mr. Alfred Fleming | male   |   nan |       0 |       0 | 239853            |  0      | nan         | S          |
-|           769 |          0 |        3 | Moran, Mr. Daniel J            | male   |   nan |       1 |       0 | 371110            | 24.15   | nan         | Q          |
-|            72 |          0 |        3 | Goodwin, Miss. Lillian Amy     | female |    16 |       5 |       2 | CA 2144           | 46.9    | nan         | S          |
-|            90 |          0 |        3 | Celotti, Mr. Francesco         | male   |    24 |       0 |       0 | 343275            |  8.05   | nan         | S          |
-|           641 |          0 |        3 | Jensen, Mr. Hans Peder         | male   |    20 |       0 |       0 | 350050            |  7.8542 | nan         | S          |
-|            76 |          0 |        3 | Moen, Mr. Sigurd Hansen        | male   |    25 |       0 |       0 | 348123            |  7.65   | F G73       | S          |
-|           873 |          0 |        1 | Carlsson, Mr. Frans Olof       | male   |    33 |       0 |       0 | 695               |  5      | B51 B53 B55 | S          |
-|           401 |          1 |        3 | Niskanen, Mr. Juha             | male   |    39 |       0 |       0 | STON/O 2. 3101289 |  7.925  | nan         | S          |
-|            40 |          1 |        3 | Nicola-Yarred, Miss. Jamila    | female |    14 |       1 |       0 | 2651              | 11.2417 | nan         | C          |
+|   PassengerId |   Survived |   Pclass | Name                                    | Sex    |   Age |   SibSp |   Parch | Ticket        |     Fare | Cabin       | Embarked   |
+|--------------:|-----------:|---------:|:----------------------------------------|:-------|------:|--------:|--------:|:--------------|---------:|:------------|:-----------|
+|           475 |          0 |        3 | Strandberg, Miss. Ida Sofia             | female |    22 |       0 |       0 | 7553          |   9.8375 | nan         | S          |
+|           505 |          1 |        1 | Maioni, Miss. Roberta                   | female |    16 |       0 |       0 | 110152        |  86.5    | B79         | S          |
+|           473 |          1 |        2 | West, Mrs. Edwy Arthur (Ada Mary Worth) | female |    33 |       1 |       2 | C.A. 34651    |  27.75   | nan         | S          |
+|           138 |          0 |        1 | Futrelle, Mr. Jacques Heath             | male   |    37 |       1 |       0 | 113803        |  53.1    | C123        | S          |
+|           450 |          1 |        1 | Peuchen, Major. Arthur Godfrey          | male   |    52 |       0 |       0 | 113786        |  30.5    | C104        | S          |
+|           867 |          1 |        2 | Duran y More, Miss. Asuncion            | female |    27 |       1 |       0 | SC/PARIS 2149 |  13.8583 | nan         | C          |
+|           314 |          0 |        3 | Hendekovic, Mr. Ignjac                  | male   |    28 |       0 |       0 | 349243        |   7.8958 | nan         | S          |
+|           342 |          1 |        1 | Fortune, Miss. Alice Elizabeth          | female |    24 |       3 |       2 | 19950         | 263      | C23 C25 C27 | S          |
+|           256 |          1 |        3 | Touma, Mrs. Darwis (Hanne Youssef Razi) | female |    29 |       0 |       2 | 2650          |  15.2458 | nan         | C          |
+|           407 |          0 |        3 | Widegren, Mr. Carl/Charles Peter        | male   |    51 |       0 |       0 | 347064        |   7.75   | nan         | S          |
 
 ## Variables
 
