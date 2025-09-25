@@ -1,6 +1,6 @@
 # Dataset Quality Report
 
-Generated: 2025-09-25 11:48:04  
+Generated: 2025-09-26 02:09:07  
 HashPrep Version: 0.1.0-alpha
 
 ## Executive Summary
@@ -89,18 +89,18 @@ HashPrep Version: 0.1.0-alpha
 
 ### Sample
 
-|   PassengerId |   Survived |   Pclass | Name                                                | Sex    |   Age |   SibSp |   Parch | Ticket        |    Fare | Cabin       | Embarked   |
-|--------------:|-----------:|---------:|:----------------------------------------------------|:-------|------:|--------:|--------:|:--------------|--------:|:------------|:-----------|
-|           768 |          0 |        3 | Mangan, Miss. Mary                                  | female |  30.5 |       0 |       0 | 364850        |  7.75   |             | Q          |
-|           686 |          0 |        2 | Laroche, Mr. Joseph Philippe Lemercier              | male   |  25   |       1 |       2 | SC/Paris 2123 | 41.5792 |             | C          |
-|           345 |          0 |        2 | Fox, Mr. Stanley Hubert                             | male   |  36   |       0 |       0 | 229236        | 13      |             | S          |
-|           281 |          0 |        3 | Duane, Mr. Frank                                    | male   |  65   |       0 |       0 | 336439        |  7.75   |             | Q          |
-|           276 |          1 |        1 | Andrews, Miss. Kornelia Theodosia                   | female |  63   |       1 |       0 | 13502         | 77.9583 | D7          | S          |
-|           290 |          1 |        3 | Connolly, Miss. Kate                                | female |  22   |       0 |       0 | 370373        |  7.75   |             | Q          |
-|           433 |          1 |        2 | Louch, Mrs. Charles Alexander (Alice Adelaide Slow) | female |  42   |       1 |       0 | SC/AH 3085    | 26      |             | S          |
-|           873 |          0 |        1 | Carlsson, Mr. Frans Olof                            | male   |  33   |       0 |       0 | 695           |  5      | B51 B53 B55 | S          |
-|           603 |          0 |        1 | Harrington, Mr. Charles H                           | male   | nan   |       0 |       0 | 113796        | 42.4    |             | S          |
-|            16 |          1 |        2 | Hewlett, Mrs. (Mary D Kingcome)                     | female |  55   |       0 |       0 | 248706        | 16      |             | S          |
+|   PassengerId |   Survived |   Pclass | Name                                                   | Sex    |   Age |   SibSp |   Parch | Ticket      |    Fare | Cabin   | Embarked   |
+|--------------:|-----------:|---------:|:-------------------------------------------------------|:-------|------:|--------:|--------:|:------------|--------:|:--------|:-----------|
+|           353 |          0 |        3 | Elias, Mr. Tannous                                     | male   |    15 |       1 |       1 | 2695        |  7.2292 |         | C          |
+|            13 |          0 |        3 | Saundercock, Mr. William Henry                         | male   |    20 |       0 |       0 | A/5. 2151   |  8.05   |         | S          |
+|           497 |          1 |        1 | Eustis, Miss. Elizabeth Mussey                         | female |    54 |       1 |       0 | 36947       | 78.2667 | D20     | C          |
+|           800 |          0 |        3 | Van Impe, Mrs. Jean Baptiste (Rosalie Paula Govaert)   | female |    30 |       1 |       1 | 345773      | 24.15   |         | S          |
+|           592 |          1 |        1 | Stephenson, Mrs. Walter Bertram (Martha Eustis)        | female |    52 |       1 |       0 | 36947       | 78.2667 | D20     | C          |
+|           842 |          0 |        2 | Mudd, Mr. Thomas Charles                               | male   |    16 |       0 |       0 | S.O./P.P. 3 | 10.5    |         | S          |
+|           424 |          0 |        3 | Danbom, Mrs. Ernst Gilbert (Anna Sigrid Maria Brogren) | female |    28 |       1 |       1 | 347080      | 14.4    |         | S          |
+|            14 |          0 |        3 | Andersson, Mr. Anders Johan                            | male   |    39 |       1 |       5 | 347082      | 31.275  |         | S          |
+|           235 |          0 |        2 | Leyson, Mr. Robert William Norman                      | male   |    24 |       0 |       0 | C.A. 29566  | 10.5    |         | S          |
+|           103 |          0 |        1 | White, Mr. Richard Frasar                              | male   |    21 |       0 |       1 | 35281       | 77.2875 | D26     | S          |
 
 ## Variables
 
