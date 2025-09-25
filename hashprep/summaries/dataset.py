@@ -1,7 +1,10 @@
 import pandas as pd
+import numpy as np
 import hashlib
 
 def get_dataset_preview(df):
+    # replace NaN with None before conversion to dictionary
+    df = df.replace({pd.NA: None, np.nan: None})
     head = df.head().to_dict(orient="records")
     tail = df.tail().to_dict(orient="records")
     sample = df.sample(min(10, len(df))).to_dict(orient="records")
