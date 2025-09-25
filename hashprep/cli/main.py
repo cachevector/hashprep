@@ -4,6 +4,7 @@ from datetime import datetime
 import json
 import os
 import yaml
+import hashprep
 from hashprep.analyzer import DatasetAnalyzer
 import numpy as np
 from hashprep.reports import generate_report
@@ -25,7 +26,7 @@ def cli():
 
 @cli.command()
 def version():
-    click.echo("HashPrep Version: 0.1.0-alpha")
+    click.echo(f"HashPrep Version: {hashprep.__version__}")
 
 @cli.command()
 @click.argument("file_path", type=click.Path(exists=True))

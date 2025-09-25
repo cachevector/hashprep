@@ -3,6 +3,7 @@ from datetime import datetime
 import pandas as pd
 import json
 import yaml
+import hashprep
 
 class HtmlReport:
     def generate(self, summary, full=False, output_file=None):
@@ -21,7 +22,7 @@ class HtmlReport:
 <body>
     <h1>Dataset Quality Report</h1>
     <p>Generated: {{ generated }}</p>
-    <p>HashPrep Version: 0.1.0-alpha</p>
+    <p>HashPrep Version: {{ version }}</p>
     <h2>Executive Summary</h2>
     <ul>
         <li>Critical Issues: {{ critical_count }}</li>
@@ -123,6 +124,7 @@ class HtmlReport:
             'missing_patterns': summary['summaries'].get('missing_patterns', {}),
             'yaml_dump': yaml.safe_dump,
             'json_dump': lambda x: json.dumps(x, indent=2),
+            'version': hashprep.__version__
         }
         html_content = template.render(context)
         if output_file:
