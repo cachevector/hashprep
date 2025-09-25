@@ -1,0 +1,13 @@
+include README.md LICENSE
+recursive-include hashprep *.py
+
+prune datasets
+prune examples
+prune tests
+prune docs
+prune web
+prune scripts
+exclude *.pyc
+exclude __pycache__/*
+exclude test.json
+exclude todo.md
