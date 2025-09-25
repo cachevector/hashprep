@@ -6,8 +6,8 @@ from datetime import datetime
 class MarkdownReport:
     def generate(self, summary, full=False, output_file=None):
         content = "# Dataset Quality Report\n\n"
-        content += f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}\n"
-        content += "HashPrep Version: 1.0.0-MVP\n\n"
+        content += f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}  \n"
+        content += "HashPrep Version: 0.1.0-alpha\n\n"
         content += "## Executive Summary\n"
         content += f"- Critical Issues: {summary['critical_count']}\n"
         content += f"- Warnings: {summary['warning_count']}\n"
