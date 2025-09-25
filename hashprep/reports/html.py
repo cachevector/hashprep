@@ -21,7 +21,7 @@ class HtmlReport:
 <body>
     <h1>Dataset Quality Report</h1>
     <p>Generated: {{ generated }}</p>
-    <p>HashPrep Version: 1.0.0-MVP</p>
+    <p>HashPrep Version: 0.1.0-alpha</p>
     <h2>Executive Summary</h2>
     <ul>
         <li>Critical Issues: {{ critical_count }}</li>

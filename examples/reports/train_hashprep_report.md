@@ -1,7 +1,7 @@
 # Dataset Quality Report
 
-Generated: 2025-09-24 22:18:04
-HashPrep Version: 1.0.0-MVP
+Generated: 2025-09-25 11:48:04  
+HashPrep Version: 0.1.0-alpha
 
 ## Executive Summary
 - Critical Issues: 13
@@ -71,36 +71,36 @@ HashPrep Version: 1.0.0-MVP
 
 |   PassengerId |   Survived |   Pclass | Name                                                | Sex    |   Age |   SibSp |   Parch | Ticket           |    Fare | Cabin   | Embarked   |
 |--------------:|-----------:|---------:|:----------------------------------------------------|:-------|------:|--------:|--------:|:-----------------|--------:|:--------|:-----------|
-|             1 |          0 |        3 | Braund, Mr. Owen Harris                             | male   |    22 |       1 |       0 | A/5 21171        |  7.25   | nan     | S          |
+|             1 |          0 |        3 | Braund, Mr. Owen Harris                             | male   |    22 |       1 |       0 | A/5 21171        |  7.25   |         | S          |
 |             2 |          1 |        1 | Cumings, Mrs. John Bradley (Florence Briggs Thayer) | female |    38 |       1 |       0 | PC 17599         | 71.2833 | C85     | C          |
-|             3 |          1 |        3 | Heikkinen, Miss. Laina                              | female |    26 |       0 |       0 | STON/O2. 3101282 |  7.925  | nan     | S          |
+|             3 |          1 |        3 | Heikkinen, Miss. Laina                              | female |    26 |       0 |       0 | STON/O2. 3101282 |  7.925  |         | S          |
 |             4 |          1 |        1 | Futrelle, Mrs. Jacques Heath (Lily May Peel)        | female |    35 |       1 |       0 | 113803           | 53.1    | C123    | S          |
-|             5 |          0 |        3 | Allen, Mr. William Henry                            | male   |    35 |       0 |       0 | 373450           |  8.05   | nan     | S          |
+|             5 |          0 |        3 | Allen, Mr. William Henry                            | male   |    35 |       0 |       0 | 373450           |  8.05   |         | S          |
 
 ### Tail
 
 |   PassengerId |   Survived |   Pclass | Name                                     | Sex    |   Age |   SibSp |   Parch | Ticket     |   Fare | Cabin   | Embarked   |
 |--------------:|-----------:|---------:|:-----------------------------------------|:-------|------:|--------:|--------:|:-----------|-------:|:--------|:-----------|
-|           887 |          0 |        2 | Montvila, Rev. Juozas                    | male   |    27 |       0 |       0 | 211536     |  13    | nan     | S          |
+|           887 |          0 |        2 | Montvila, Rev. Juozas                    | male   |    27 |       0 |       0 | 211536     |  13    |         | S          |
 |           888 |          1 |        1 | Graham, Miss. Margaret Edith             | female |    19 |       0 |       0 | 112053     |  30    | B42     | S          |
-|           889 |          0 |        3 | Johnston, Miss. Catherine Helen "Carrie" | female |   nan |       1 |       2 | W./C. 6607 |  23.45 | nan     | S          |
+|           889 |          0 |        3 | Johnston, Miss. Catherine Helen "Carrie" | female |   nan |       1 |       2 | W./C. 6607 |  23.45 |         | S          |
 |           890 |          1 |        1 | Behr, Mr. Karl Howell                    | male   |    26 |       0 |       0 | 111369     |  30    | C148    | C          |
-|           891 |          0 |        3 | Dooley, Mr. Patrick                      | male   |    32 |       0 |       0 | 370376     |   7.75 | nan     | Q          |
+|           891 |          0 |        3 | Dooley, Mr. Patrick                      | male   |    32 |       0 |       0 | 370376     |   7.75 |         | Q          |
 
 ### Sample
 
-|   PassengerId |   Survived |   Pclass | Name                                    | Sex    |   Age |   SibSp |   Parch | Ticket        |     Fare | Cabin       | Embarked   |
-|--------------:|-----------:|---------:|:----------------------------------------|:-------|------:|--------:|--------:|:--------------|---------:|:------------|:-----------|
-|           475 |          0 |        3 | Strandberg, Miss. Ida Sofia             | female |    22 |       0 |       0 | 7553          |   9.8375 | nan         | S          |
-|           505 |          1 |        1 | Maioni, Miss. Roberta                   | female |    16 |       0 |       0 | 110152        |  86.5    | B79         | S          |
-|           473 |          1 |        2 | West, Mrs. Edwy Arthur (Ada Mary Worth) | female |    33 |       1 |       2 | C.A. 34651    |  27.75   | nan         | S          |
-|           138 |          0 |        1 | Futrelle, Mr. Jacques Heath             | male   |    37 |       1 |       0 | 113803        |  53.1    | C123        | S          |
-|           450 |          1 |        1 | Peuchen, Major. Arthur Godfrey          | male   |    52 |       0 |       0 | 113786        |  30.5    | C104        | S          |
-|           867 |          1 |        2 | Duran y More, Miss. Asuncion            | female |    27 |       1 |       0 | SC/PARIS 2149 |  13.8583 | nan         | C          |
-|           314 |          0 |        3 | Hendekovic, Mr. Ignjac                  | male   |    28 |       0 |       0 | 349243        |   7.8958 | nan         | S          |
-|           342 |          1 |        1 | Fortune, Miss. Alice Elizabeth          | female |    24 |       3 |       2 | 19950         | 263      | C23 C25 C27 | S          |
-|           256 |          1 |        3 | Touma, Mrs. Darwis (Hanne Youssef Razi) | female |    29 |       0 |       2 | 2650          |  15.2458 | nan         | C          |
-|           407 |          0 |        3 | Widegren, Mr. Carl/Charles Peter        | male   |    51 |       0 |       0 | 347064        |   7.75   | nan         | S          |
+|   PassengerId |   Survived |   Pclass | Name                                                | Sex    |   Age |   SibSp |   Parch | Ticket        |    Fare | Cabin       | Embarked   |
+|--------------:|-----------:|---------:|:----------------------------------------------------|:-------|------:|--------:|--------:|:--------------|--------:|:------------|:-----------|
+|           768 |          0 |        3 | Mangan, Miss. Mary                                  | female |  30.5 |       0 |       0 | 364850        |  7.75   |             | Q          |
+|           686 |          0 |        2 | Laroche, Mr. Joseph Philippe Lemercier              | male   |  25   |       1 |       2 | SC/Paris 2123 | 41.5792 |             | C          |
+|           345 |          0 |        2 | Fox, Mr. Stanley Hubert                             | male   |  36   |       0 |       0 | 229236        | 13      |             | S          |
+|           281 |          0 |        3 | Duane, Mr. Frank                                    | male   |  65   |       0 |       0 | 336439        |  7.75   |             | Q          |
+|           276 |          1 |        1 | Andrews, Miss. Kornelia Theodosia                   | female |  63   |       1 |       0 | 13502         | 77.9583 | D7          | S          |
+|           290 |          1 |        3 | Connolly, Miss. Kate                                | female |  22   |       0 |       0 | 370373        |  7.75   |             | Q          |
+|           433 |          1 |        2 | Louch, Mrs. Charles Alexander (Alice Adelaide Slow) | female |  42   |       1 |       0 | SC/AH 3085    | 26      |             | S          |
+|           873 |          0 |        1 | Carlsson, Mr. Frans Olof                            | male   |  33   |       0 |       0 | 695           |  5      | B51 B53 B55 | S          |
+|           603 |          0 |        1 | Harrington, Mr. Charles H                           | male   | nan   |       0 |       0 | 113796        | 42.4    |             | S          |
+|            16 |          1 |        2 | Hewlett, Mrs. (Mary D Kingcome)                     | female |  55   |       0 |       0 | 248706        | 16      |             | S          |
 
 ## Variables
 

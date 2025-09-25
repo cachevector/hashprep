@@ -25,7 +25,7 @@ def cli():
 
 @cli.command()
 def version():
-    click.echo("HashPrep Version: 1.0.0-MVP")
+    click.echo("HashPrep Version: 0.1.0-alpha")
 
 @cli.command()
 @click.argument("file_path", type=click.Path(exists=True))
@@ -68,7 +68,7 @@ def scan(file_path, critical_only, quiet, json_out, target, checks):
         click.echo(json.dumps(json_data, default=json_numpy_handler))
         return
     if quiet:
-        click.echo(f"CRITICAL: {len(critical)}, WARNINGS: {len(warnings)}")
+        click.echo(f"CRITICAL ISSUES: {len(critical)}, WARNINGS: {len(warnings)}")
         return
     click.echo(f"Dataset Health Check: {file_path}")
     click.echo(
