@@ -1,5 +1,7 @@
+from statistics import correlation
 from typing import Dict, List, Optional
 import pandas as pd
+from .checks.type_inference import infer_types
 
 from .checks import run_checks
 from .summaries import (
@@ -18,12 +20,15 @@ class DatasetAnalyzer:
         df: pd.DataFrame,
         target_col: Optional[str] = None,
         selected_checks: Optional[List[str]] = None,
+        include_plots: bool = False,
     ):
         self.df = df
         self.target_col = target_col
         self.selected_checks = selected_checks
+        self.include_plots = include_plots
         self.issues = []
         self.summaries = {}
+        self.column_types = infer_types(df)
         self.all_checks = [
             "data_leakage", "high_missing_values", "empty_columns", "single_value_columns",
             "target_leakage_patterns", "class_imbalance", "high_cardinality", "duplicates",
@@ -32,15 +37,19 @@ class DatasetAnalyzer:
             "extreme_text_lengths", "datetime_skew", "missing_patterns",
         ]
 
+
     def analyze(self) -> Dict:
+        # """analyze columns first for better results"""
+        # classifications = self.classify_columns()
+        # print(classifications)
         """Run all summaries and checks, return summary"""
         self.summaries.update(get_dataset_preview(self.df))
         self.summaries.update(summarize_dataset_info(self.df))
-        self.summaries["variable_types"] = summarize_variable_types(self.df)
+        self.summaries["variable_types"] = summarize_variable_types(self.df, column_types=self.column_types) # Todo: Implement this arg
         self.summaries["reproduction_info"] = add_reproduction_info(self.df)
-        self.summaries["variables"] = summarize_variables(self.df)
-        self.summaries.update(summarize_interactions(self.df))
-        self.summaries.update(summarize_missing_values(self.df))
+        self.summaries["variables"] = summarize_variables(self.df, include_plots=self.include_plots)
+        self.summaries.update(summarize_interactions(self.df, include_plots=self.include_plots))
+        self.summaries.update(summarize_missing_values(self.df, include_plots=self.include_plots))
 
         checks_to_run = self.all_checks if self.selected_checks is None else [
             check for check in self.selected_checks if check in self.all_checks
@@ -67,4 +76,5 @@ class DatasetAnalyzer:
                 } for issue in self.issues
             ],
             "summaries": self.summaries,
+            "column_types": self.column_types,
         }
