@@ -1,32 +1,74 @@
 import pandas as pd
 from scipy.stats import chi2_contingency, f_oneway
 import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+import io
+import base64
 
-def summarize_interactions(df):
+
+def summarize_interactions(df, include_plots=False):
     interactions = {}
-    interactions["scatter_pairs"] = _scatter_plots_numeric(df)
-    interactions["numeric_correlations"] = _compute_correlation_matrices(df)
+    interactions["scatter_pairs"] = _scatter_plots_numeric(df, include_plots)
+    interactions["numeric_correlations"] = _compute_correlation_matrices(
+        df, include_plots
+    )
     interactions["categorical_correlations"] = _compute_categorical_correlations(df)
     interactions["mixed_correlations"] = _compute_mixed_correlations(df)
     return interactions
 
-def _scatter_plots_numeric(df):
+
+def _scatter_plots_numeric(df, include_plots):
     numeric_columns = df.select_dtypes(include="number").columns.tolist()
     pairs = [
         (c1, c2)
         for i, c1 in enumerate(numeric_columns)
         for c2 in numeric_columns[i + 1 :]
     ]
-    return pairs
+    if not include_plots:
+        return pairs
 
-def _compute_correlation_matrices(df):
+    plots = {}
+    for c1, c2 in pairs:
+        fig, ax = plt.subplots(figsize=(4, 3))
+        sns.scatterplot(data=df, x=c1, y=c2, ax=ax)
+        ax.set_title(f"{c1} vs {c2}")
+        ax.set_xlabel(c1)
+        ax.set_ylabel(c2)
+        buf = io.BytesIO()
+        fig.savefig(buf, format="png", bbox_inches="tight")
+        buf.seek(0)
+        img_str = base64.b64encode(buf.getvalue()).decode("utf-8")
+        plt.close(fig)
+        plots[f"{c1}__{c2}"] = img_str
+
+    return {"pairs": pairs, "plots": plots}
+
+
+def _compute_correlation_matrices(df, include_plots):
     numeric_df = df.select_dtypes(include="number")
     corrs = {}
     if not numeric_df.empty:
         corrs["pearson"] = numeric_df.corr(method="pearson").to_dict()
         corrs["spearman"] = numeric_df.corr(method="spearman").to_dict()
         corrs["kendall"] = numeric_df.corr(method="kendall").to_dict()
+        if include_plots:
+            corrs["plots"] = {}
+            for method in ["pearson", "spearman", "kendall"]:
+                corr_matrix = numeric_df.corr(method=method)
+                fig, ax = plt.subplots(figsize=(5, 4))
+                sns.heatmap(
+                    corr_matrix, annot=True, cmap="coolwarm", vmin=-1, vmax=1, ax=ax
+                )
+                ax.set_title(f"{method.capitalize()} Correlation")
+                buf = io.BytesIO()
+                fig.savefig(buf, format="png", bbox_inches="tight")
+                buf.seek(0)
+                img_str = base64.b64encode(buf.getvalue()).decode("utf-8")
+                plt.close(fig)
+                corrs["plots"][method] = img_str
     return corrs
+
 
 def _compute_categorical_correlations(df):
     categorical = df.select_dtypes(include="object").columns.tolist()
@@ -44,6 +86,7 @@ def _compute_categorical_correlations(df):
             except Exception:
                 continue
     return results
+
 
 def _compute_mixed_correlations(df):
     cat_cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
