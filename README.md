@@ -1,7 +1,6 @@
 <div align="center">
   <picture>
-    <source media="(prefers-color-scheme: dark)" srcset="docs/assets/hashprep-wobg.svg" width="100">
-    <img alt="HashPrep Logo" src="docs/assets/hashprep-dark.svg" width="100">
+    <img src="https://raw.githubusercontent.com/cachevector/hashprep/refs/heads/main/docs/assets/hashprep-wobg.svg" width="80">
   </picture>
 
   <h1>HashPrep</h1>
@@ -11,8 +10,8 @@
 
   <p align="center">
     <!-- Distribution -->
-    <!-- <img src="https://img.shields.io/pypi/v/hashprep?color=blue&label=PyPI" /> -->
-    <img src="https://img.shields.io/badge/PyPI-Coming%20Soon-blue" />
+    <img src="https://img.shields.io/pypi/v/hashprep?color=blue&label=PyPI" />
+    <!-- <img src="https://img.shields.io/badge/PyPI-Coming%20Soon-blue" /> -->
     <!-- License -->
     <img src="https://img.shields.io/badge/License-MIT-green" />
     <img src="https://img.shields.io/badge/CLI-Supported-orange" />

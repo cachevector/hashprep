@@ -40,8 +40,6 @@ class DatasetAnalyzer:
 
     def analyze(self) -> Dict:
         # """analyze columns first for better results"""
-        # classifications = self.classify_columns()
-        # print(classifications)
         """Run all summaries and checks, return summary"""
         self.summaries.update(get_dataset_preview(self.df))
         self.summaries.update(summarize_dataset_info(self.df))
