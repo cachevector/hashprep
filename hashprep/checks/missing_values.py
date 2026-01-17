@@ -1,5 +1,5 @@
 from scipy.stats import chi2_contingency, mannwhitneyu
-from .core import Issues
+from .core import Issue
 import pandas as pd
 from collections import defaultdict
 import numpy as np
@@ -17,7 +17,7 @@ def _check_high_missing_values(analyzer, threshold: float = 0.4, critical_thresh
                 else "Options: \n- Impute values: Use simple methods (e.g., mean, mode) or domain knowledge (Pros: Retains feature; Cons: Risk of bias if not careful).\n- Drop column: If feature is less critical (Pros: Simplifies model; Cons: Loses info).\n- Test model impact: Evaluate feature importance (Pros: Data-driven decision; Cons: Requires computation)."
             )
             issues.append(
-                Issues(
+                Issue(
                     category="missing_values",
                     severity=severity,
                     column=col,
@@ -33,7 +33,7 @@ def _check_empty_columns(analyzer):
     for col in analyzer.df.columns:
         if int(analyzer.df[col].notna().sum()) == 0:
             issues.append(
-                Issues(
+                Issue(
                     category="empty_column",
                     severity="critical",
                     column=col,
@@ -58,7 +58,7 @@ def _check_dataset_missingness(analyzer, threshold: float = 20.0, critical_thres
             else "Options: \n- Impute missing values: Use simple or domain-informed methods (Pros: Retains features; Cons: Risk of bias).\n- Drop sparse columns: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without missing data (Pros: Data-driven; Cons: Requires computation)."
         )
         issues.append(
-            Issues(
+            Issue(
                 category="dataset_missingness",
                 severity=severity,
                 column="__all__",
@@ -172,7 +172,7 @@ def _check_missing_patterns(analyzer, threshold: float = 0.01,
             )
 
             issues.append(
-                Issues(
+                Issue(
                     category="missing_patterns",
                     severity=severity,
                     column=col,

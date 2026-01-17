@@ -1,4 +1,4 @@
-from .core import Issues
+from .core import Issue
 import pandas as pd
 from scipy.stats import chi2_contingency, f_oneway
 import numpy as np
@@ -12,7 +12,7 @@ def _check_data_leakage(analyzer):
                 continue
             if analyzer.df[col].equals(target):
                 issues.append(
-                    Issues(
+                    Issue(
                         category="data_leakage",
                         severity="critical",
                         column=col,
@@ -46,7 +46,7 @@ def _check_target_leakage_patterns(analyzer):
                             else "Options: \n- Drop column: Reduces leakage risk (Pros: Safer model; Cons: May lose predictive info).\n- Retain and test: Use robust models (e.g., trees) and evaluate (Pros: Keeps potential signal; Cons: Risk of overfitting).\n- Engineer feature: Transform to reduce correlation (Pros: Retains info; Cons: Adds complexity)."
                         )
                         issues.append(
-                            Issues(
+                            Issue(
                                 category="target_leakage",
                                 severity=severity,
                                 column=col,
@@ -79,7 +79,7 @@ def _check_target_leakage_patterns(analyzer):
                             else "Options: \n- Drop column: Reduces leakage risk (Pros: Safer model; Cons: May lose predictive info).\n- Retain and test: Use robust models (e.g., trees) and evaluate (Pros: Keeps potential signal; Cons: Risk of overfitting).\n- Engineer feature: Transform to reduce correlation (Pros: Retains info; Cons: Adds complexity)."
                         )
                         issues.append(
-                            Issues(
+                            Issue(
                                 category="target_leakage",
                                 severity=severity,
                                 column=col,
@@ -115,7 +115,7 @@ def _check_target_leakage_patterns(analyzer):
                             else "Options: \n- Drop column: Reduces leakage risk (Pros: Safer model; Cons: May lose predictive info).\n- Retain and test: Use robust models (e.g., trees) and evaluate (Pros: Keeps potential signal; Cons: Risk of overfitting).\n- Engineer feature: Transform to reduce correlation (Pros: Retains info; Cons: Adds complexity)."
                         )
                         issues.append(
-                            Issues(
+                            Issue(
                                 category="target_leakage",
                                 severity=severity,
                                 column=col,

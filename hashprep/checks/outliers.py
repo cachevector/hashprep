@@ -1,4 +1,4 @@
-from .core import Issues
+from .core import Issue
 import pandas as pd
 import numpy as np
 
@@ -20,7 +20,7 @@ def _check_outliers(analyzer, z_threshold: float = 4.0):
                 else "Options: \n- Investigate outliers: Verify if valid or errors (Pros: Ensures accuracy; Cons: Time-consuming).\n- Transform: Use log/sqrt to reduce impact (Pros: Retains data; Cons: Changes interpretation).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
             )
             issues.append(
-                Issues(
+                Issue(
                     category="outliers",
                     severity=severity,
                     column=col,
@@ -47,7 +47,7 @@ def _check_high_zero_counts(analyzer, threshold: float = 0.5, critical_threshold
                 else "Options: \n- Transform: Create binary indicator for zeros (Pros: Captures pattern; Cons: Adds complexity).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: May skew results).\n- Investigate zeros: Verify validity (Pros: Ensures accuracy; Cons: Time-consuming)."
             )
             issues.append(
-                Issues(
+                Issue(
                     category="high_zero_counts",
                     severity=severity,
                     column=col,
@@ -77,11 +77,40 @@ def _check_extreme_text_lengths(analyzer, max_threshold: int = 1000, min_thresho
                 else "Options: \n- Investigate extremes: Verify if valid or errors (Pros: Ensures accuracy; Cons: Time-consuming).\n- Transform: Truncate or normalize lengths (Pros: Retains info; Cons: Changes interpretation).\n- Retain and test: Use robust models (Pros: Keeps info; Cons: May affect sensitive models)."
             )
             issues.append(
-                Issues(
+                Issue(
                     category="extreme_text_lengths",
                     severity=severity,
                     column=col,
                     description=f"Column '{col}' has extreme lengths (min: {int(lengths.min())}, max: {int(lengths.max())}; {extreme_ratio:.1%} extreme)",
+                    impact_score=impact,
+                    quick_fix=quick_fix,
+                )
+            )
+    return issues
+
+def _check_skewness(analyzer, skew_threshold: float = 3.0, critical_skew_threshold: float = 10.0):
+    issues = []
+    for col in analyzer.df.select_dtypes(include="number").columns:
+        series = analyzer.df[col].dropna()
+        if len(series) < 10:
+            continue
+        skewness = float(series.skew())
+        abs_skew = abs(skewness)
+        
+        if abs_skew > skew_threshold:
+            severity = "critical" if abs_skew > critical_skew_threshold else "warning"
+            impact = "high" if severity == "critical" else "medium"
+            quick_fix = (
+                "Options: \n- Log transformation: Handles right skew (Pros: Normalizes; Cons: Only for positive).\n- Box-Cox/Yeo-Johnson: General power transforms (Pros: Robust; Cons: More complex).\n- Retain: Some models (trees) handle skewness well."
+                if severity == "critical"
+                else "Options: \n- Square root transform: Reduces moderate skew.\n- Monitor: Evaluate model performance on skewed data."
+            )
+            issues.append(
+                Issue(
+                    category="skewness",
+                    severity=severity,
+                    column=col,
+                    description=f"Column '{col}' is highly skewed (skewness: {skewness:.2f})",
                     impact_score=impact,
                     quick_fix=quick_fix,
                 )
@@ -97,7 +126,7 @@ def _check_datetime_skew(analyzer, threshold: float = 0.8):
         year_counts = series.dt.year.value_counts(normalize=True)
         if year_counts.max() > threshold:
             issues.append(
-                Issues(
+                Issue(
                     category="datetime_skew",
                     severity="warning",
                     column=col,

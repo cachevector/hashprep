@@ -1,10 +1,10 @@
-from .core import Issues
+from .core import Issue
 import pandas as pd
 import numpy as np
 from scipy.stats import f_oneway, spearmanr, pearsonr, kendalltau, chi2_contingency
 from itertools import combinations
 from .discretizer import Discretizer, DiscretizationType
-from .type_inference import infer_types, is_usable_for_corr
+from ..utils.type_inference import infer_types, is_usable_for_corr
 
 
 # Thresholds
@@ -113,7 +113,7 @@ def _check_numeric_correlation(analyzer, numeric_cols: list, thresholds: dict, m
                     if severity == 'critical' else
                     f"Options: \n- Monitor in modeling.\n- Drop if redundant."
                 )
-                issues.append(Issues(
+                issues.append(Issue(
                     category="feature_correlation",
                     severity=severity,
                     column=f"{col1},{col2}",
@@ -149,7 +149,7 @@ def _check_feature_correlation(
             else "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of multicollinearity).\n- Engineer feature: Combine or transform features (Pros: Reduces redundancy; Cons: Adds complexity)."
         )
         issues.append(
-            Issues(
+            Issue(
                 category="feature_correlation",
                 severity=severity,
                 column=f"{col1},{col2}",
@@ -177,7 +177,7 @@ def _check_categorical_correlation(analyzer, cat_cols: list, thresholds: dict):
                 if severity == 'critical' else
                 "Options: \n- Monitor redundancy. \n- Re-encode."
             )
-            issues.append(Issues(
+            issues.append(Issue(
                 category="feature_correlation",
                 severity=severity,
                 column=f"{col1},{col2}",
@@ -207,7 +207,7 @@ def _check_mixed_correlation(analyzer, numeric_cols: list, cat_cols: list, thres
                 if severity == 'critical' else
                 "Options: \n- Monitor in modeling."
             )
-            issues.append(Issues(
+            issues.append(Issue(
                 category="feature_correlation",
                 severity=severity,
                 column=f"{cat_col},{num_col}",
