@@ -1,9 +1,12 @@
-from jinja2 import Template
-from datetime import datetime
-import pandas as pd
 import json
+from datetime import datetime
+
+import pandas as pd
 import yaml
+from jinja2 import Template
+
 import hashprep
+
 
 class HtmlReport:
     def generate(self, summary, full=False, output_file=None, theme="minimal"):
@@ -112,7 +115,7 @@ class HtmlReport:
                             </td>
                             <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">{{ issue.column }}</td>
                             <td class="px-6 py-4 text-sm text-gray-600">{{ issue.description }}</td>
-                            <td class="px-6 py-4 text-sm text-gray-500 italic">{{ issue.quick_fix | replace('\\n', '<br>') | safe }}</td>
+                            <td class="px-6 py-4 text-sm text-gray-500 italic">{{ issue.quick_fix | replace('\n', '<br>') | safe }}</td>
                         </tr>
                         {% endfor %}
                     </tbody>

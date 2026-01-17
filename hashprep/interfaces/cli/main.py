@@ -128,7 +128,7 @@ def details(file_path, target, checks):
     click.echo(f"- Rows: {info['rows']}")
     click.echo(f"- Columns: {info['columns']}")
     click.echo(f"- Memory: ~{info['memory_mb']} MB")
-    click.echo(f"- Missing: {info['missing_cells']} ({info['missing_percentage']}%)")
+    click.echo(f"- Missing: {info['missing_cells']} ({info['missing_percentage']} %)")
     click.echo("- Variable Types:")
     for col, typ in summary["summaries"]["variable_types"].items():
         click.echo(f"  {col}: {typ}")
