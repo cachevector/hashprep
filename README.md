@@ -45,11 +45,37 @@ Key features include:
 
 - **Intelligent Profiling**: Detect missing values, skewed distributions, outliers, and data type inconsistencies.
 - **ML-Specific Checks**: Identify data leakage, dataset drift, class imbalance, and high-cardinality features.
-- **Automated Preparation**: Get suggestions for encoding, imputation, scaling, and transformations, and optionally apply them automatically.
-- **Rich Reporting**: Generate statistical summaries and exportable reports for collaboration.
-- **Production-Ready Pipelines**: Output reproducible cleaning and preprocessing code that integrates seamlessly with ML workflows.
+- **Automated Preparation**: Get suggestions for encoding, imputation, scaling, and transformations.
+- **Rich Reporting**: Generate statistical summaries and exportable reports (HTML/PDF/Markdown/JSON) with embedded visualizations.
+- **Production-Ready Pipelines**: Output reproducible cleaning and preprocessing code (`fixes.py`) that integrates seamlessly with ML workflows.
+- **Modern Themes**: Choose between "Minimal" (professional) and "Neubrutalism" (bold) report styles.
 
-HashPrep turns dataset debugging into a guided, automated process - saving time, improving model reliability, and standardizing best practices across teams.
+---
+
+## Usage
+
+### 1. Quick Scan
+Get a quick summary of critical issues in your terminal.
+```bash
+hashprep scan dataset.csv
+```
+
+### 2. Generate Report
+Generate a comprehensive HTML report with visualizations.
+```bash
+hashprep report dataset.csv --format html --theme minimal
+```
+
+**Options:**
+- `--theme`: `minimal` (default) or `neubrutalism`
+- `--format`: `html`, `pdf`, `md`, or `json`
+- `--no-visualizations`: Disable plot generation for faster performance.
+
+### 3. Generate Fixes
+Automatically generate a Python script (`dataset_fixes.py`) to apply suggested fixes.
+```bash
+hashprep report dataset.csv --with-code
+```
 
 ---
 
