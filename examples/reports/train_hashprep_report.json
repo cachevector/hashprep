@@ -1,7 +1,7 @@
 {
-  "critical_count": 13,
-  "warning_count": 38,
-  "total_issues": 51,
+  "critical_count": 2,
+  "warning_count": 13,
+  "total_issues": 15,
   "issues": [
     {
       "category": "missing_values",
@@ -60,238 +60,6 @@
       "quick_fix": "Options: \n- Investigate outliers: Verify if valid or errors (Pros: Ensures accuracy; Cons: Time-consuming).\n- Transform: Use log/sqrt to reduce impact (Pros: Retains data; Cons: Changes interpretation).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
     },
     {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Name,Sex",
-      "description": "Columns 'Name' and 'Sex' are highly associated (Cramer's V: 1.00)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids overfitting from high redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Extract common patterns (e.g., group categories) (Pros: Retains info; Cons: Requires domain knowledge).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Name,Ticket",
-      "description": "Columns 'Name' and 'Ticket' are highly associated (Cramer's V: 1.00)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids overfitting from high redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Extract common patterns (e.g., group categories) (Pros: Retains info; Cons: Requires domain knowledge).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Name,Cabin",
-      "description": "Columns 'Name' and 'Cabin' are highly associated (Cramer's V: 1.00)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids overfitting from high redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Extract common patterns (e.g., group categories) (Pros: Retains info; Cons: Requires domain knowledge).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Name,Embarked",
-      "description": "Columns 'Name' and 'Embarked' are highly associated (Cramer's V: 1.00)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids overfitting from high redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Extract common patterns (e.g., group categories) (Pros: Retains info; Cons: Requires domain knowledge).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Sex,Ticket",
-      "description": "Columns 'Sex' and 'Ticket' are highly associated (Cramer's V: 0.86)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Group categories or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Sex,Cabin",
-      "description": "Columns 'Sex' and 'Cabin' are highly associated (Cramer's V: 0.86)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Group categories or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Ticket,Cabin",
-      "description": "Columns 'Ticket' and 'Cabin' are highly associated (Cramer's V: 0.95)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Group categories or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Ticket,Embarked",
-      "description": "Columns 'Ticket' and 'Embarked' are highly associated (Cramer's V: 1.00)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids overfitting from high redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Extract common patterns (e.g., group categories) (Pros: Retains info; Cons: Requires domain knowledge).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Cabin,Embarked",
-      "description": "Columns 'Cabin' and 'Embarked' are highly associated (Cramer's V: 0.95)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Group categories or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Sex,Survived",
-      "description": "Columns 'Sex' and 'Survived' show strong association (F: 372.41, p: 0.0000)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Transform categorical or numeric feature (Pros: Retains info; Cons: Adds complexity).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Sex,Pclass",
-      "description": "Columns 'Sex' and 'Pclass' show strong association (F: 15.74, p: 0.0001)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Sex,Age",
-      "description": "Columns 'Sex' and 'Age' show strong association (F: 6.25, p: 0.0127)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Sex,SibSp",
-      "description": "Columns 'Sex' and 'SibSp' show strong association (F: 11.84, p: 0.0006)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Sex,Parch",
-      "description": "Columns 'Sex' and 'Parch' show strong association (F: 57.01, p: 0.0000)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Transform categorical or numeric feature (Pros: Retains info; Cons: Adds complexity).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Sex,Fare",
-      "description": "Columns 'Sex' and 'Fare' show strong association (F: 30.57, p: 0.0000)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Transform categorical or numeric feature (Pros: Retains info; Cons: Adds complexity).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Ticket,Survived",
-      "description": "Columns 'Ticket' and 'Survived' show strong association (F: 3.03, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Ticket,Age",
-      "description": "Columns 'Ticket' and 'Age' show strong association (F: 1.72, p: 0.0007)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Ticket,SibSp",
-      "description": "Columns 'Ticket' and 'SibSp' show strong association (F: 9.63, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Ticket,Parch",
-      "description": "Columns 'Ticket' and 'Parch' show strong association (F: 4.28, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Ticket,Fare",
-      "description": "Columns 'Ticket' and 'Fare' show strong association (F: 12866198.63, p: 0.0000)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Transform categorical or numeric feature (Pros: Retains info; Cons: Adds complexity).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Cabin,PassengerId",
-      "description": "Columns 'Cabin' and 'PassengerId' show strong association (F: 1.90, p: 0.0109)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Cabin,Age",
-      "description": "Columns 'Cabin' and 'Age' show strong association (F: 2.48, p: 0.0012)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Cabin,SibSp",
-      "description": "Columns 'Cabin' and 'SibSp' show strong association (F: 10.23, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Cabin,Parch",
-      "description": "Columns 'Cabin' and 'Parch' show strong association (F: 11.93, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Cabin,Fare",
-      "description": "Columns 'Cabin' and 'Fare' show strong association (F: 5.13, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Embarked,Survived",
-      "description": "Columns 'Embarked' and 'Survived' show strong association (F: 13.61, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Embarked,Pclass",
-      "description": "Columns 'Embarked' and 'Pclass' show strong association (F: 46.51, p: 0.0000)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Transform categorical or numeric feature (Pros: Retains info; Cons: Adds complexity).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "warning",
-      "column": "Embarked,Parch",
-      "description": "Columns 'Embarked' and 'Parch' show strong association (F: 3.23, p: 0.0402)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of redundancy).\n- Engineer feature: Transform or encode differently (Pros: Reduces redundancy; Cons: Adds complexity)."
-    },
-    {
-      "category": "feature_correlation",
-      "severity": "critical",
-      "column": "Embarked,Fare",
-      "description": "Columns 'Embarked' and 'Fare' show strong association (F: 38.14, p: 0.0000)",
-      "impact_score": "high",
-      "quick_fix": "Options: \n- Drop one feature: Avoids redundancy (Pros: Simplifies model; Cons: Loses info).\n- Engineer feature: Transform categorical or numeric feature (Pros: Retains info; Cons: Adds complexity).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-    },
-    {
       "category": "high_zero_counts",
       "severity": "warning",
       "column": "Survived",
@@ -319,47 +87,7 @@
       "category": "missing_patterns",
       "severity": "warning",
       "column": "Age",
-      "description": "Missingness in 'Age' correlates with 'Ticket' (p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
-    },
-    {
-      "category": "missing_patterns",
-      "severity": "warning",
-      "column": "Age",
-      "description": "Missingness in 'Age' correlates with 'Embarked' (p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
-    },
-    {
-      "category": "missing_patterns",
-      "severity": "warning",
-      "column": "Age",
-      "description": "Missingness in 'Age' correlates with numeric 'Survived' (F: 7.62, p: 0.0059)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
-    },
-    {
-      "category": "missing_patterns",
-      "severity": "warning",
-      "column": "Age",
-      "description": "Missingness in 'Age' correlates with numeric 'Pclass' (F: 27.41, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
-    },
-    {
-      "category": "missing_patterns",
-      "severity": "warning",
-      "column": "Age",
-      "description": "Missingness in 'Age' correlates with numeric 'Parch' (F: 13.91, p: 0.0002)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
-    },
-    {
-      "category": "missing_patterns",
-      "severity": "warning",
-      "column": "Age",
-      "description": "Missingness in 'Age' correlates with numeric 'Fare' (F: 9.11, p: 0.0026)",
+      "description": "Missingness in 'Age' correlates with 6 columns (Pclass, Parch, Embarked)",
       "impact_score": "medium",
       "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
     },
@@ -367,49 +95,33 @@
       "category": "missing_patterns",
       "severity": "warning",
       "column": "Cabin",
-      "description": "Missingness in 'Cabin' correlates with 'Sex' (p: 0.0000)",
+      "description": "Missingness in 'Cabin' correlates with 6 columns (Pclass, Fare, Survived)",
       "impact_score": "medium",
       "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
     },
     {
-      "category": "missing_patterns",
+      "category": "skewness",
       "severity": "warning",
-      "column": "Cabin",
-      "description": "Missingness in 'Cabin' correlates with 'Embarked' (p: 0.0000)",
+      "column": "SibSp",
+      "description": "Column 'SibSp' is highly skewed (skewness: 3.70)",
       "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
+      "quick_fix": "Options: \n- Square root transform: Reduces moderate skew.\n- Monitor: Evaluate model performance on skewed data."
     },
     {
-      "category": "missing_patterns",
+      "category": "skewness",
       "severity": "warning",
-      "column": "Cabin",
-      "description": "Missingness in 'Cabin' correlates with numeric 'Survived' (F: 99.25, p: 0.0000)",
+      "column": "Fare",
+      "description": "Column 'Fare' is highly skewed (skewness: 4.79)",
       "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
+      "quick_fix": "Options: \n- Square root transform: Reduces moderate skew.\n- Monitor: Evaluate model performance on skewed data."
     },
     {
-      "category": "missing_patterns",
+      "category": "feature_correlation",
       "severity": "warning",
-      "column": "Cabin",
-      "description": "Missingness in 'Cabin' correlates with numeric 'Pclass' (F: 988.15, p: 0.0000)",
+      "column": "Survived,Sex",
+      "description": "Categorical columns 'Survived' and 'Sex' highly associated (Cramer's V: 0.540)",
       "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
-    },
-    {
-      "category": "missing_patterns",
-      "severity": "warning",
-      "column": "Cabin",
-      "description": "Missingness in 'Cabin' correlates with numeric 'Age' (F: 47.36, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
-    },
-    {
-      "category": "missing_patterns",
-      "severity": "warning",
-      "column": "Cabin",
-      "description": "Missingness in 'Cabin' correlates with numeric 'Fare' (F: 269.15, p: 0.0000)",
-      "impact_score": "medium",
-      "quick_fix": "Options: \n- Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias).\n- Drop column: If less critical (Pros: Simplifies model; Cons: Loses info).\n- Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation)."
+      "quick_fix": "Options: \n- Monitor redundancy. \n- Re-encode."
     }
   ],
   "summaries": {
@@ -559,144 +271,144 @@
     ],
     "sample": [
       {
-        "PassengerId": 362,
-        "Survived": 0,
-        "Pclass": 2,
-        "Name": "del Carlo, Mr. Sebastiano",
-        "Sex": "male",
-        "Age": 29.0,
-        "SibSp": 1,
-        "Parch": 0,
-        "Ticket": "SC/PARIS 2167",
-        "Fare": 27.7208,
-        "Cabin": null,
-        "Embarked": "C"
-      },
-      {
-        "PassengerId": 6,
+        "PassengerId": 72,
         "Survived": 0,
         "Pclass": 3,
-        "Name": "Moran, Mr. James",
+        "Name": "Goodwin, Miss. Lillian Amy",
+        "Sex": "female",
+        "Age": 16.0,
+        "SibSp": 5,
+        "Parch": 2,
+        "Ticket": "CA 2144",
+        "Fare": 46.9,
+        "Cabin": null,
+        "Embarked": "S"
+      },
+      {
+        "PassengerId": 861,
+        "Survived": 0,
+        "Pclass": 3,
+        "Name": "Hansen, Mr. Claus Peter",
+        "Sex": "male",
+        "Age": 41.0,
+        "SibSp": 2,
+        "Parch": 0,
+        "Ticket": "350026",
+        "Fare": 14.1083,
+        "Cabin": null,
+        "Embarked": "S"
+      },
+      {
+        "PassengerId": 181,
+        "Survived": 0,
+        "Pclass": 3,
+        "Name": "Sage, Miss. Constance Gladys",
+        "Sex": "female",
+        "Age": null,
+        "SibSp": 8,
+        "Parch": 2,
+        "Ticket": "CA. 2343",
+        "Fare": 69.55,
+        "Cabin": null,
+        "Embarked": "S"
+      },
+      {
+        "PassengerId": 826,
+        "Survived": 0,
+        "Pclass": 3,
+        "Name": "Flynn, Mr. John",
         "Sex": "male",
         "Age": null,
         "SibSp": 0,
         "Parch": 0,
-        "Ticket": "330877",
-        "Fare": 8.4583,
+        "Ticket": "368323",
+        "Fare": 6.95,
         "Cabin": null,
         "Embarked": "Q"
       },
       {
-        "PassengerId": 294,
+        "PassengerId": 783,
         "Survived": 0,
-        "Pclass": 3,
-        "Name": "Haas, Miss. Aloisia",
-        "Sex": "female",
-        "Age": 24.0,
+        "Pclass": 1,
+        "Name": "Long, Mr. Milton Clyde",
+        "Sex": "male",
+        "Age": 29.0,
         "SibSp": 0,
         "Parch": 0,
-        "Ticket": "349236",
-        "Fare": 8.85,
+        "Ticket": "113501",
+        "Fare": 30.0,
+        "Cabin": "D6",
+        "Embarked": "S"
+      },
+      {
+        "PassengerId": 85,
+        "Survived": 1,
+        "Pclass": 2,
+        "Name": "Ilett, Miss. Bertha",
+        "Sex": "female",
+        "Age": 17.0,
+        "SibSp": 0,
+        "Parch": 0,
+        "Ticket": "SO/C 14885",
+        "Fare": 10.5,
         "Cabin": null,
         "Embarked": "S"
       },
       {
-        "PassengerId": 191,
-        "Survived": 1,
+        "PassengerId": 365,
+        "Survived": 0,
+        "Pclass": 3,
+        "Name": "O'Brien, Mr. Thomas",
+        "Sex": "male",
+        "Age": null,
+        "SibSp": 1,
+        "Parch": 0,
+        "Ticket": "370365",
+        "Fare": 15.5,
+        "Cabin": null,
+        "Embarked": "Q"
+      },
+      {
+        "PassengerId": 696,
+        "Survived": 0,
         "Pclass": 2,
-        "Name": "Pinsky, Mrs. (Rosa)",
-        "Sex": "female",
+        "Name": "Chapman, Mr. Charles Henry",
+        "Sex": "male",
+        "Age": 52.0,
+        "SibSp": 0,
+        "Parch": 0,
+        "Ticket": "248731",
+        "Fare": 13.5,
+        "Cabin": null,
+        "Embarked": "S"
+      },
+      {
+        "PassengerId": 422,
+        "Survived": 0,
+        "Pclass": 3,
+        "Name": "Charters, Mr. David",
+        "Sex": "male",
+        "Age": 21.0,
+        "SibSp": 0,
+        "Parch": 0,
+        "Ticket": "A/5. 13032",
+        "Fare": 7.7333,
+        "Cabin": null,
+        "Embarked": "Q"
+      },
+      {
+        "PassengerId": 71,
+        "Survived": 0,
+        "Pclass": 2,
+        "Name": "Jenkin, Mr. Stephen Curnow",
+        "Sex": "male",
         "Age": 32.0,
         "SibSp": 0,
         "Parch": 0,
-        "Ticket": "234604",
-        "Fare": 13.0,
+        "Ticket": "C.A. 33111",
+        "Fare": 10.5,
         "Cabin": null,
         "Embarked": "S"
-      },
-      {
-        "PassengerId": 40,
-        "Survived": 1,
-        "Pclass": 3,
-        "Name": "Nicola-Yarred, Miss. Jamila",
-        "Sex": "female",
-        "Age": 14.0,
-        "SibSp": 1,
-        "Parch": 0,
-        "Ticket": "2651",
-        "Fare": 11.2417,
-        "Cabin": null,
-        "Embarked": "C"
-      },
-      {
-        "PassengerId": 131,
-        "Survived": 0,
-        "Pclass": 3,
-        "Name": "Drazenoic, Mr. Jozef",
-        "Sex": "male",
-        "Age": 33.0,
-        "SibSp": 0,
-        "Parch": 0,
-        "Ticket": "349241",
-        "Fare": 7.8958,
-        "Cabin": null,
-        "Embarked": "C"
-      },
-      {
-        "PassengerId": 651,
-        "Survived": 0,
-        "Pclass": 3,
-        "Name": "Mitkoff, Mr. Mito",
-        "Sex": "male",
-        "Age": null,
-        "SibSp": 0,
-        "Parch": 0,
-        "Ticket": "349221",
-        "Fare": 7.8958,
-        "Cabin": null,
-        "Embarked": "S"
-      },
-      {
-        "PassengerId": 329,
-        "Survived": 1,
-        "Pclass": 3,
-        "Name": "Goldsmith, Mrs. Frank John (Emily Alice Brown)",
-        "Sex": "female",
-        "Age": 31.0,
-        "SibSp": 1,
-        "Parch": 1,
-        "Ticket": "363291",
-        "Fare": 20.525,
-        "Cabin": null,
-        "Embarked": "S"
-      },
-      {
-        "PassengerId": 340,
-        "Survived": 0,
-        "Pclass": 1,
-        "Name": "Blackwell, Mr. Stephen Weart",
-        "Sex": "male",
-        "Age": 45.0,
-        "SibSp": 0,
-        "Parch": 0,
-        "Ticket": "113784",
-        "Fare": 35.5,
-        "Cabin": "T",
-        "Embarked": "S"
-      },
-      {
-        "PassengerId": 394,
-        "Survived": 1,
-        "Pclass": 1,
-        "Name": "Newell, Miss. Marjorie",
-        "Sex": "female",
-        "Age": 23.0,
-        "SibSp": 1,
-        "Parch": 0,
-        "Ticket": "35273",
-        "Fare": 113.275,
-        "Cabin": "D36",
-        "Embarked": "C"
       }
     ],
     "dataset_info": {
@@ -708,37 +420,65 @@
       "missing_percentage": 8.1
     },
     "variable_types": {
-      "PassengerId": "int64",
-      "Survived": "int64",
-      "Pclass": "int64",
-      "Name": "object",
-      "Sex": "object",
-      "Age": "float64",
-      "SibSp": "int64",
-      "Parch": "int64",
-      "Ticket": "object",
-      "Fare": "float64",
-      "Cabin": "object",
-      "Embarked": "object"
+      "PassengerId": "Numeric",
+      "Survived": "Categorical",
+      "Pclass": "Categorical",
+      "Name": "Text",
+      "Sex": "Categorical",
+      "Age": "Numeric",
+      "SibSp": "Categorical",
+      "Parch": "Categorical",
+      "Ticket": "Text",
+      "Fare": "Numeric",
+      "Cabin": "Text",
+      "Embarked": "Categorical"
     },
     "reproduction_info": {
       "dataset_hash": "9a4bcd798a058b35f2f8aeaeede9a159",
-      "analysis_timestamp": "2025-09-26T02:08:24.132176"
+      "analysis_timestamp": "2026-01-17T19:42:54.040071"
     },
     "variables": {
       "PassengerId": {
-        "count": 891,
+        "category": "Numeric",
+        "alerts": [],
+        "distinct_count": 891,
+        "distinct_percentage": 100.0,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 7256,
+        "infinite_count": 0,
+        "infinite_percentage": 0.0,
         "mean": 446.0,
-        "std": 257.3538420152301,
-        "min": 1.0,
-        "max": 891.0,
-        "quantiles": {
-          "25%": 223.5,
-          "50%": 446.0,
-          "75%": 668.5
+        "minimum": 1.0,
+        "maximum": 891.0,
+        "zeros_count": 0,
+        "zeros_percentage": 0.0,
+        "negative_count": 0,
+        "negative_percentage": 0.0,
+        "statistics": {
+          "quantiles": {
+            "minimum": 1.0,
+            "p5": 45.5,
+            "q1": 223.5,
+            "median": 446.0,
+            "q3": 668.5,
+            "p95": 846.5,
+            "maximum": 891.0,
+            "range": 890.0,
+            "iqr": 445.0
+          },
+          "descriptive": {
+            "standard_deviation": 257.3538420152301,
+            "coefficient_of_variation": 0.5770265516036549,
+            "kurtosis": -1.1999999999999997,
+            "mean": 446.0,
+            "mad": 223.0,
+            "skewness": 0.0,
+            "sum": 397386.0,
+            "variance": 66231.0,
+            "monotonicity": "increasing"
+          }
         },
-        "missing": 0,
-        "zeros": 0,
         "histogram": {
           "bin_edges": [
             1.0,
@@ -765,147 +505,606 @@
             89,
             90
           ]
-        }
+        },
+        "common_values": {
+          "891": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "1": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "2": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "3": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "4": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "5": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "6": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "7": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "8": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          },
+          "9": {
+            "count": 1,
+            "percentage": 0.11223344556677892
+          }
+        },
+        "extreme_values": {
+          "minimum_10": [
+            1.0,
+            2.0,
+            3.0,
+            4.0,
+            5.0,
+            6.0,
+            7.0,
+            8.0,
+            9.0,
+            10.0
+          ],
+          "maximum_10": [
+            882.0,
+            883.0,
+            884.0,
+            885.0,
+            886.0,
+            887.0,
+            888.0,
+            889.0,
+            890.0,
+            891.0
+          ]
+        },
+        "plots": {}
       },
       "Survived": {
-        "count": 891,
-        "mean": 0.3838383838383838,
-        "std": 0.4865924542648575,
-        "min": 0.0,
-        "max": 1.0,
-        "quantiles": {
-          "25%": 0.0,
-          "50%": 0.0,
-          "75%": 1.0
-        },
-        "missing": 0,
-        "zeros": 549,
-        "histogram": {
-          "bin_edges": [
-            0.0,
-            0.1,
-            0.2,
-            0.30000000000000004,
-            0.4,
-            0.5,
-            0.6000000000000001,
-            0.7000000000000001,
-            0.8,
-            0.9,
-            1.0
-          ],
-          "counts": [
-            549,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            0,
-            342
+        "category": "Categorical",
+        "alerts": [],
+        "distinct_count": 2,
+        "distinct_percentage": 0.22446689113355783,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 7256,
+        "overview": {
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          },
+          "characters_and_unicode": {
+            "total_characters": 891,
+            "distinct_characters": 2,
+            "distinct_categories": 1,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "0",
+            "1",
+            "1",
+            "1",
+            "0"
           ]
-        }
+        },
+        "categories": {
+          "common_values": {
+            "0": {
+              "count": 549,
+              "percentage": 61.61616161616161
+            },
+            "1": {
+              "count": 342,
+              "percentage": 38.38383838383838
+            }
+          },
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          }
+        },
+        "words": {
+          "011100001111000101010111010010011000100100011001000011011010010001101000001000110110110010000000011000000011010000000000000101011000010010000110001000010000100001000110000010000000000110110010111100100000100111010001101010001010001001000100010000011000000111110100000111011011000100010010111100000011110101110111000110110011010111100010011011000111100000001011000000111110000110001101000101110110000110000001000010101100000000110111100101001001111111000101011010000000010011000001000110100100000010000000101101101100101010010010001001010101100100110110011010110000000001111100110111000101000100001001100010011100100100100110000100101001000001011101010101000000100010000110010001010100000001111000010011000011111010001100100010110010000001001010100100110011000100110100000000100101110000101000000011000111100001000000000011010001111100010011001000000100010111100010011001010011000110000001010": {
+            "count": 1,
+            "frequency": 100.0
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            "0": {
+              "count": 549,
+              "percentage": 61.61616161616161
+            },
+            "1": {
+              "count": 342,
+              "percentage": 38.38383838383838
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Nd": {
+                "count": 891,
+                "percentage": 100.0
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Nd": {
+                "char": "0",
+                "count": 549,
+                "percentage": 61.61616161616161
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       },
       "Pclass": {
-        "count": 891,
-        "mean": 2.308641975308642,
-        "std": 0.836071240977049,
-        "min": 1.0,
-        "max": 3.0,
-        "quantiles": {
-          "25%": 2.0,
-          "50%": 3.0,
-          "75%": 3.0
-        },
-        "missing": 0,
-        "zeros": 0,
-        "histogram": {
-          "bin_edges": [
-            1.0,
-            1.2,
-            1.4,
-            1.6,
-            1.8,
-            2.0,
-            2.2,
-            2.4000000000000004,
-            2.6,
-            2.8,
-            3.0
-          ],
-          "counts": [
-            216,
-            0,
-            0,
-            0,
-            0,
-            184,
-            0,
-            0,
-            0,
-            491
+        "category": "Categorical",
+        "alerts": [],
+        "distinct_count": 3,
+        "distinct_percentage": 0.33670033670033667,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 7256,
+        "overview": {
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          },
+          "characters_and_unicode": {
+            "total_characters": 891,
+            "distinct_characters": 3,
+            "distinct_categories": 1,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "3",
+            "1",
+            "3",
+            "1",
+            "3"
           ]
-        }
+        },
+        "categories": {
+          "common_values": {
+            "3": {
+              "count": 491,
+              "percentage": 55.106621773288445
+            },
+            "1": {
+              "count": 216,
+              "percentage": 24.242424242424242
+            },
+            "2": {
+              "count": 184,
+              "percentage": 20.65095398428732
+            }
+          },
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          }
+        },
+        "words": {
+          "313133133231333232332231333133113211333332323333333312112323311313233323233333233331233313331333112233133333331333333213232213333333322211313333223322213331333332333313131333133123323231313322321133323333333331323231321232331323231323232222332331321233133311123311323311132131323333331333231123313111333231112111232322113322313231311313113121222223333133331233323333133113313131331331323232133133322233333232333312332223333333223313231132122332312131231133112313123321333322312333323313113333113313133333112133331131232313313321322333321131133211223212333111133323333333211333213321213121333133232331231313312133333233223133312133131132323331333131333233323321131332233121222333313133223331133312331311333221131113231233232213232313222331331113313213233322323133313113333323233331311333333132313213332213331321332331323313133332313233313331321333332133312311333213222133311323333123323321313": {
+            "count": 1,
+            "frequency": 100.0
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            "3": {
+              "count": 491,
+              "percentage": 55.106621773288445
+            },
+            "1": {
+              "count": 216,
+              "percentage": 24.242424242424242
+            },
+            "2": {
+              "count": 184,
+              "percentage": 20.65095398428732
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Nd": {
+                "count": 891,
+                "percentage": 100.0
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Nd": {
+                "char": "3",
+                "count": 491,
+                "percentage": 55.106621773288445
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       },
       "Name": {
-        "count": 891,
-        "missing": 0,
-        "avg_length": 26.9652076318743,
-        "min_length": 12.0,
-        "max_length": 82.0,
-        "common_lengths": {
-          "19": 64,
-          "25": 55,
-          "27": 50,
-          "18": 50,
-          "26": 49
+        "category": "Text",
+        "alerts": [],
+        "distinct_count": 891,
+        "distinct_percentage": 100.0,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 74941,
+        "overview": {
+          "length": {
+            "max_length": 82,
+            "median_length": 25.0,
+            "mean_length": 26.9652076318743,
+            "min_length": 12
+          },
+          "characters_and_unicode": {
+            "total_characters": 24026,
+            "distinct_characters": 60,
+            "distinct_categories": 7,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "Braund, Mr. Owen Harris",
+            "Cumings, Mrs. John Bradley (Florence Briggs Thayer)",
+            "Heikkinen, Miss. Laina",
+            "Futrelle, Mrs. Jacques Heath (Lily May Peel)",
+            "Allen, Mr. William Henry"
+          ]
         },
-        "char_freq": {
-          " ": 2735,
-          "r": 1958,
-          "e": 1703,
-          "a": 1657,
-          "i": 1325,
-          "n": 1304,
-          "s": 1297,
-          "M": 1128,
-          "l": 1067,
-          "o": 1008
-        }
+        "words": {
+          "mr": {
+            "count": 521,
+            "frequency": 17.757327880027265
+          },
+          "miss": {
+            "count": 182,
+            "frequency": 6.203135650988411
+          },
+          "mrs": {
+            "count": 129,
+            "frequency": 4.396728016359918
+          },
+          "william": {
+            "count": 49,
+            "frequency": 1.6700749829584187
+          },
+          "master": {
+            "count": 40,
+            "frequency": 1.3633265167007498
+          },
+          "john": {
+            "count": 28,
+            "frequency": 0.9543285616905249
+          },
+          "henry": {
+            "count": 19,
+            "frequency": 0.6475800954328562
+          },
+          "charles": {
+            "count": 17,
+            "frequency": 0.5794137695978187
+          },
+          "thomas": {
+            "count": 17,
+            "frequency": 0.5794137695978187
+          },
+          "george": {
+            "count": 16,
+            "frequency": 0.5453306066803
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            " ": {
+              "count": 2735,
+              "percentage": 11.383501207025722
+            },
+            "r": {
+              "count": 1958,
+              "percentage": 8.149504703238158
+            },
+            "e": {
+              "count": 1703,
+              "percentage": 7.0881544992924335
+            },
+            "a": {
+              "count": 1657,
+              "percentage": 6.896695246815949
+            },
+            "i": {
+              "count": 1325,
+              "percentage": 5.51485890285524
+            },
+            "n": {
+              "count": 1304,
+              "percentage": 5.427453591942063
+            },
+            "s": {
+              "count": 1297,
+              "percentage": 5.398318488304337
+            },
+            "M": {
+              "count": 1128,
+              "percentage": 4.694913843336385
+            },
+            "l": {
+              "count": 1067,
+              "percentage": 4.441022225921918
+            },
+            "o": {
+              "count": 1008,
+              "percentage": 4.195454923832514
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Ll": {
+                "count": 15446,
+                "percentage": 64.28868725547325
+              },
+              "Lu": {
+                "count": 3645,
+                "percentage": 15.171064679930076
+              },
+              "Zs": {
+                "count": 2735,
+                "percentage": 11.383501207025722
+              },
+              "Po": {
+                "count": 1899,
+                "percentage": 7.903937401148756
+              },
+              "Ps": {
+                "count": 144,
+                "percentage": 0.599350703404645
+              },
+              "Pe": {
+                "count": 144,
+                "percentage": 0.599350703404645
+              },
+              "Pd": {
+                "count": 13,
+                "percentage": 0.05410804961291934
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Lu": {
+                "char": "M",
+                "count": 1128,
+                "percentage": 4.694913843336385
+              },
+              "Ll": {
+                "char": "r",
+                "count": 1958,
+                "percentage": 8.149504703238158
+              },
+              "Po": {
+                "char": ".",
+                "count": 892,
+                "percentage": 3.7126446349787727
+              },
+              "Zs": {
+                "char": " ",
+                "count": 2735,
+                "percentage": 11.383501207025722
+              },
+              "Ps": {
+                "char": "(",
+                "count": 144,
+                "percentage": 0.599350703404645
+              },
+              "Pe": {
+                "char": ")",
+                "count": 144,
+                "percentage": 0.599350703404645
+              },
+              "Pd": {
+                "char": "-",
+                "count": 13,
+                "percentage": 0.05410804961291934
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       },
       "Sex": {
-        "count": 891,
-        "missing": 0,
-        "avg_length": 4.704826038159371,
-        "min_length": 4.0,
-        "max_length": 6.0,
-        "common_lengths": {
-          "4": 577,
-          "6": 314
+        "category": "Categorical",
+        "alerts": [],
+        "distinct_count": 2,
+        "distinct_percentage": 0.22446689113355783,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 55107,
+        "overview": {
+          "length": {
+            "max_length": 6,
+            "median_length": 4.0,
+            "mean_length": 4.704826038159371,
+            "min_length": 4
+          },
+          "characters_and_unicode": {
+            "total_characters": 4192,
+            "distinct_characters": 5,
+            "distinct_categories": 1,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "male",
+            "female",
+            "female",
+            "female",
+            "male"
+          ]
         },
-        "char_freq": {
-          "e": 1205,
-          "m": 891,
-          "a": 891,
-          "l": 891,
-          "f": 314
-        }
+        "categories": {
+          "common_values": {
+            "male": {
+              "count": 577,
+              "percentage": 64.75869809203144
+            },
+            "female": {
+              "count": 314,
+              "percentage": 35.24130190796858
+            }
+          },
+          "length": {
+            "max_length": 6,
+            "median_length": 4.0,
+            "mean_length": 4.704826038159371,
+            "min_length": 4
+          }
+        },
+        "words": {
+          "malefemalefemalefemalemalemalemalemalefemalefemalefemalefemalemalemalefemalefemalemalemalefemalefemalemalemalefemalemalefemalefemalemalemalefemalemalemalefemalefemalemalemalemalemalemalefemalefemalefemalefemalemalefemalefemalemalemalefemalemalefemalemalemalefemalefemalemalemalefemalemalefemalemalemalefemalemalemalemalemalefemalemalefemalemalemalefemalemalemalemalemalemalemalemalefemalemalemalefemalemalefemalefemalemalemalefemalemalemalemalemalemalemalemalemalemalefemalemalefemalemalemalemalemalemalefemalemalemalefemalemalefemalemalefemalefemalemalemalemalemalefemalemalemalemalefemalemalemalemalemalefemalemalemalemalefemalefemalemalemalefemalemalemalemalefemalefemalefemalemalemalemalemalefemalemalemalemalefemalemalemalemalemalefemalemalemalemalemalefemalemalemalemalemalefemalefemalemalemalemalemalefemalemalemalemalemalefemalemalemalefemalemalemalemalefemalemalefemalemalemalemalefemalemalefemalemalefemalefemalemalemalefemalefemalemalemalemalemalemalefemalemalemalefemalemalemalefemalemalemalemalefemalefemalemalefemalemalemalemalemalemalemalemalemalemalemalefemalefemalemalemalefemalemalefemalemalefemalemalemalefemalefemalemalemalemalemalefemalefemalemalemalemalefemalemalemalefemalefemalefemalefemalefemalefemalemalemalemalemalefemalemalemalemalefemalefemalemalemalefemalemalefemalefemalefemalemalemalefemalemalemalemalemalemalemalemalemalemalefemalefemalefemalemalefemalemalemalemalefemalemalefemalefemalemalemalefemalemalemalefemalefemalemalefemalefemalefemalefemalemalemalefemalefemalemalefemalefemalemalemalefemalefemalemalefemalemalefemalefemalefemalefemalemalemalemalefemalemalemalefemalemalemalemalefemalemalemalemalefemalefemalefemalemalemalemalemalemalemalemalemalefemalefemalefemalefemalemalemalefemalemalemalemalefemalefemalefemalefemalemalemalemalemalefemalefemalefemalemalemalemalefemalefemalemalefemalemalemalemalefemalemalefemalemalemalemalefemalefemalemalefemalemalemalefemalemalemalefemalemalefemalemalemalemalemalefemalemalemalefemalemalemalefemalefemalefemalemalefemalemalemalemalefemalemalemalefemalefemalemalemalemalefemalefemalemalemalefemalefemalefemalemalemalefemalemalemalefemalemalemalefemalemalefemalemalemalemalemalemalemalemalemalefemalefemalemalemalemalemalemalemalemalemalemalemalefemalemalemalefemalefemalefemalemalemalemalemalefemalemalemalemalefemalemalefemalefemalemalemalemalemalemalemalemalemalemalefemalemalefemalemalemalefemalefemalefemalefemalemalefemalemalemalemalemalemalemalefemalemalemalefemalemalefemalemalefemalemalemalefemalemalemalefemalemalemalemalefemalemalemalefemalefemalefemalemalefemalemalefemalefemalefemalefemalemalemalemalefemalemalemalemalemalemalemalemalefemalemalefemalemalefemalefemalemalemalemalemalefemalemalemalefemalemalemalemalefemalemalefemalemalemalefemalefemalefemalemalefemalefemalemalemalemalefemalemalemalemalemalemalefemalemalefemalemalemalefemalemalemalemalefemalemalemalemalemalemalemalemalefemalefemalefemalemalefemalemalemalefemalemalefemalefemalemalemalemalemalemalemalemalemalefemalemalemalemalemalemalemalefemalefemalemalemalefemalemalemalefemalefemalemalefemalemalemalemalemalefemalemalefemalemalefemalefemalemalemalefemalemalemalemalemalemalemalemalemalemalemalemalefemalefemalemalemalemalemalemalemalefemalefemalemalefemalemalemalemalemalemalemalemalemalefemalemalefemalemalemalemalemalemalefemalemalemalefemalemalefemalemalemalemalefemalemalefemalemalefemalemalemalemalemalemalefemalefemalemalemalefemalemalemalemalemalemalefemalefemalemalefemalefemalemalemalemalemalemalefemalemalemalemalemalemalefemalemalemalemalemalefemalemalemalefemalemalemalemalefemalemalemalemalemalefemalemalemalemalefemalemalefemalemalefemalemalemalemalemalefemalemalefemalemalemalefemalemalefemalefemalefemalemalemalemalemalefemalemalemalemalemalemalefemalemalemalemalefemalefemalemalefemalemalefemalemalemalemalemalemalefemalemalefemalemalemalemalefemalemalemalefemalemalemalemalefemalemalemalefemalemalemalemalemalemalefemalefemalemalemalemalemalefemalemalemalemalemalemalemalefemalemalemalemalemalemalemalefemalemalemalefemalefemalefemalefemalefemalemalefemalemalemalemalefemalefemalemalefemalefemalemalemalemalemalefemalemalemalefemalefemalemalemalemalefemalefemalemalefemalemalemalefemalemalefemalefemalemalemale": {
+            "count": 1,
+            "frequency": 100.0
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            "e": {
+              "count": 1205,
+              "percentage": 28.74522900763359
+            },
+            "m": {
+              "count": 891,
+              "percentage": 21.25477099236641
+            },
+            "a": {
+              "count": 891,
+              "percentage": 21.25477099236641
+            },
+            "l": {
+              "count": 891,
+              "percentage": 21.25477099236641
+            },
+            "f": {
+              "count": 314,
+              "percentage": 7.490458015267176
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Ll": {
+                "count": 4192,
+                "percentage": 100.0
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Ll": {
+                "char": "e",
+                "count": 1205,
+                "percentage": 28.74522900763359
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       },
       "Age": {
-        "count": 714,
+        "category": "Numeric",
+        "alerts": [],
+        "distinct_count": 88,
+        "distinct_percentage": 12.324929971988796,
+        "missing_count": 177,
+        "missing_percentage": 19.865319865319865,
+        "memory_size": 7256,
+        "infinite_count": 0,
+        "infinite_percentage": 0.0,
         "mean": 29.69911764705882,
-        "std": 14.526497332334042,
-        "min": 0.42,
-        "max": 80.0,
-        "quantiles": {
-          "25%": 20.125,
-          "50%": 28.0,
-          "75%": 38.0
+        "minimum": 0.42,
+        "maximum": 80.0,
+        "zeros_count": 0,
+        "zeros_percentage": 0.0,
+        "negative_count": 0,
+        "negative_percentage": 0.0,
+        "statistics": {
+          "quantiles": {
+            "minimum": 0.42,
+            "p5": 4.0,
+            "q1": 20.125,
+            "median": 28.0,
+            "q3": 38.0,
+            "p95": 56.0,
+            "maximum": 80.0,
+            "range": 79.58,
+            "iqr": 17.875
+          },
+          "descriptive": {
+            "standard_deviation": 14.526497332334042,
+            "coefficient_of_variation": 0.4891221855465675,
+            "kurtosis": 0.1782741536421022,
+            "mean": 29.69911764705882,
+            "mad": 9.0,
+            "skewness": 0.38910778230082693,
+            "sum": 21205.17,
+            "variance": 211.01912474630805,
+            "monotonicity": "none"
+          }
         },
-        "missing": 177,
-        "zeros": 0,
         "histogram": {
           "bin_edges": [
             0.42,
@@ -932,129 +1131,557 @@
             9,
             2
           ]
-        }
+        },
+        "common_values": {
+          "24.0": {
+            "count": 30,
+            "percentage": 4.201680672268908
+          },
+          "22.0": {
+            "count": 27,
+            "percentage": 3.7815126050420167
+          },
+          "18.0": {
+            "count": 26,
+            "percentage": 3.6414565826330536
+          },
+          "28.0": {
+            "count": 25,
+            "percentage": 3.5014005602240896
+          },
+          "30.0": {
+            "count": 25,
+            "percentage": 3.5014005602240896
+          },
+          "19.0": {
+            "count": 25,
+            "percentage": 3.5014005602240896
+          },
+          "21.0": {
+            "count": 24,
+            "percentage": 3.361344537815126
+          },
+          "25.0": {
+            "count": 23,
+            "percentage": 3.221288515406162
+          },
+          "36.0": {
+            "count": 22,
+            "percentage": 3.081232492997199
+          },
+          "29.0": {
+            "count": 20,
+            "percentage": 2.801120448179272
+          }
+        },
+        "extreme_values": {
+          "minimum_10": [
+            0.42,
+            0.67,
+            0.75,
+            0.75,
+            0.83,
+            0.83,
+            0.92,
+            1.0,
+            1.0,
+            1.0
+          ],
+          "maximum_10": [
+            65.0,
+            65.0,
+            66.0,
+            70.0,
+            70.0,
+            70.5,
+            71.0,
+            71.0,
+            74.0,
+            80.0
+          ]
+        },
+        "plots": {}
       },
       "SibSp": {
-        "count": 891,
-        "mean": 0.5230078563411896,
-        "std": 1.1027434322934317,
-        "min": 0.0,
-        "max": 8.0,
-        "quantiles": {
-          "25%": 0.0,
-          "50%": 0.0,
-          "75%": 1.0
-        },
-        "missing": 0,
-        "zeros": 608,
-        "histogram": {
-          "bin_edges": [
-            0.0,
-            0.8,
-            1.6,
-            2.4000000000000004,
-            3.2,
-            4.0,
-            4.800000000000001,
-            5.6000000000000005,
-            6.4,
-            7.2,
-            8.0
-          ],
-          "counts": [
-            608,
-            209,
-            28,
-            16,
-            0,
-            18,
-            5,
-            0,
-            0,
-            7
+        "category": "Categorical",
+        "alerts": [],
+        "distinct_count": 7,
+        "distinct_percentage": 0.7856341189674524,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 7256,
+        "overview": {
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          },
+          "characters_and_unicode": {
+            "total_characters": 891,
+            "distinct_characters": 7,
+            "distinct_categories": 1,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "1",
+            "1",
+            "0",
+            "1",
+            "0"
           ]
-        }
+        },
+        "categories": {
+          "common_values": {
+            "0": {
+              "count": 608,
+              "percentage": 68.23793490460157
+            },
+            "1": {
+              "count": 209,
+              "percentage": 23.456790123456788
+            },
+            "2": {
+              "count": 28,
+              "percentage": 3.1425364758698096
+            },
+            "4": {
+              "count": 18,
+              "percentage": 2.0202020202020203
+            },
+            "3": {
+              "count": 16,
+              "percentage": 1.7957351290684627
+            },
+            "8": {
+              "count": 7,
+              "percentage": 0.7856341189674524
+            },
+            "5": {
+              "count": 5,
+              "percentage": 0.5611672278338945
+            }
+          },
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          }
+        },
+        "words": {
+          "110100030110010040100000310300010011002111010010214011000015001301004205010000000000031030001100000100002000010101000104201001001000110001000010010200010000000800004001000410013000804200101000110000000800001000000011010000001000031004001000110002001101010000000410004100000001004100000000000100000100020001011002101010010001800010200210100013000001100011000000110010100011003100000001005000102100000000110101030010001000000110100001101122101010000020110100010000000000020010001100500013100110000010100000010000000100001000000000021010000000044110101100000010110000020000020000011011000001000100110001200001001010100111201110000000000030010100302100000000020100200012000111000000100005114000100000001010001000010010000000010010301100000010000121011010100011000000010100100000100000010100041000800000010110000001000400010310004000001100010000000000800140101010002108001001010010000000000000100": {
+            "count": 1,
+            "frequency": 100.0
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            "0": {
+              "count": 608,
+              "percentage": 68.23793490460157
+            },
+            "1": {
+              "count": 209,
+              "percentage": 23.456790123456788
+            },
+            "2": {
+              "count": 28,
+              "percentage": 3.1425364758698096
+            },
+            "4": {
+              "count": 18,
+              "percentage": 2.0202020202020203
+            },
+            "3": {
+              "count": 16,
+              "percentage": 1.7957351290684627
+            },
+            "8": {
+              "count": 7,
+              "percentage": 0.7856341189674524
+            },
+            "5": {
+              "count": 5,
+              "percentage": 0.5611672278338945
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Nd": {
+                "count": 891,
+                "percentage": 100.0
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Nd": {
+                "char": "0",
+                "count": 608,
+                "percentage": 68.23793490460157
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       },
       "Parch": {
-        "count": 891,
-        "mean": 0.38159371492704824,
-        "std": 0.8060572211299483,
-        "min": 0.0,
-        "max": 6.0,
-        "quantiles": {
-          "25%": 0.0,
-          "50%": 0.0,
-          "75%": 0.0
-        },
-        "missing": 0,
-        "zeros": 678,
-        "histogram": {
-          "bin_edges": [
-            0.0,
-            0.6,
-            1.2,
-            1.7999999999999998,
-            2.4,
-            3.0,
-            3.5999999999999996,
-            4.2,
-            4.8,
-            5.3999999999999995,
-            6.0
-          ],
-          "counts": [
-            678,
-            118,
-            0,
-            80,
-            0,
-            5,
-            4,
-            0,
-            5,
-            1
+        "category": "Categorical",
+        "alerts": [],
+        "distinct_count": 7,
+        "distinct_percentage": 0.7856341189674524,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 7256,
+        "overview": {
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          },
+          "characters_and_unicode": {
+            "total_characters": 891,
+            "distinct_characters": 7,
+            "distinct_categories": 1,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "0",
+            "0",
+            "0",
+            "0",
+            "0"
           ]
-        }
+        },
+        "categories": {
+          "common_values": {
+            "0": {
+              "count": 678,
+              "percentage": 76.0942760942761
+            },
+            "1": {
+              "count": 118,
+              "percentage": 13.243546576879911
+            },
+            "2": {
+              "count": 80,
+              "percentage": 8.978675645342312
+            },
+            "5": {
+              "count": 5,
+              "percentage": 0.5611672278338945
+            },
+            "3": {
+              "count": 5,
+              "percentage": 0.5611672278338945
+            },
+            "4": {
+              "count": 4,
+              "percentage": 0.44893378226711567
+            },
+            "6": {
+              "count": 1,
+              "percentage": 0.11223344556677892
+            }
+          },
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          }
+        },
+        "words": {
+          "000000012010050010000000150200000000000000020000001000100022000201002002000000200000003020000200011000100000000000000012000010001000000020002000010220000201000210001214000110011000202120001000010001000200010000000000000000000000010002000200000000021001002200010210001010001100001100000000000000000201000002000002101000210001200011001000000012000000100010001000401000000000001002000200002000200020000000000001010000001202000110000000000223401000021010200000000000000000010020000001200001000100000000200000002000000000000000010000011012020002222000001120000000100000000400000000000011000201000002010000100000002050000210100010000000000020015000201000000100000102000000000010000000610002121001010000001000100000010000000000100000000000000030000020011000110021000000020000000000300001000200012000200000010121000000000200010210011002000100010000000000201020110110300002000001010000000110000500200": {
+            "count": 1,
+            "frequency": 100.0
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            "0": {
+              "count": 678,
+              "percentage": 76.0942760942761
+            },
+            "1": {
+              "count": 118,
+              "percentage": 13.243546576879911
+            },
+            "2": {
+              "count": 80,
+              "percentage": 8.978675645342312
+            },
+            "5": {
+              "count": 5,
+              "percentage": 0.5611672278338945
+            },
+            "3": {
+              "count": 5,
+              "percentage": 0.5611672278338945
+            },
+            "4": {
+              "count": 4,
+              "percentage": 0.44893378226711567
+            },
+            "6": {
+              "count": 1,
+              "percentage": 0.11223344556677892
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Nd": {
+                "count": 891,
+                "percentage": 100.0
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Nd": {
+                "char": "0",
+                "count": 678,
+                "percentage": 76.0942760942761
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       },
       "Ticket": {
-        "count": 891,
-        "missing": 0,
-        "avg_length": 6.750841750841751,
-        "min_length": 3.0,
-        "max_length": 18.0,
-        "common_lengths": {
-          "6": 419,
-          "5": 131,
-          "4": 101,
-          "8": 76,
-          "10": 41
+        "category": "Text",
+        "alerts": [],
+        "distinct_count": 681,
+        "distinct_percentage": 76.43097643097643,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 56930,
+        "overview": {
+          "length": {
+            "max_length": 18,
+            "median_length": 6.0,
+            "mean_length": 6.750841750841751,
+            "min_length": 3
+          },
+          "characters_and_unicode": {
+            "total_characters": 6015,
+            "distinct_characters": 35,
+            "distinct_categories": 5,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "A/5 21171",
+            "PC 17599",
+            "STON/O2. 3101282",
+            "113803",
+            "373450"
+          ]
         },
-        "char_freq": {
-          "3": 746,
-          "1": 689,
-          "2": 594,
-          "7": 490,
-          "4": 464,
-          "6": 422,
-          "0": 406,
-          "5": 387,
-          "9": 328,
-          "8": 282
-        }
+        "words": {
+          "a": {
+            "count": 30,
+            "frequency": 7.263922518159806
+          },
+          "c": {
+            "count": 30,
+            "frequency": 7.263922518159806
+          },
+          "o": {
+            "count": 29,
+            "frequency": 7.021791767554479
+          },
+          "5": {
+            "count": 21,
+            "frequency": 5.084745762711865
+          },
+          "2": {
+            "count": 12,
+            "frequency": 2.9055690072639226
+          },
+          "paris": {
+            "count": 11,
+            "frequency": 2.663438256658596
+          },
+          "p": {
+            "count": 11,
+            "frequency": 2.663438256658596
+          },
+          "q": {
+            "count": 8,
+            "frequency": 1.937046004842615
+          },
+          "o2": {
+            "count": 8,
+            "frequency": 1.937046004842615
+          },
+          "4": {
+            "count": 7,
+            "frequency": 1.694915254237288
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            "3": {
+              "count": 746,
+              "percentage": 12.402327514546965
+            },
+            "1": {
+              "count": 689,
+              "percentage": 11.4546965918537
+            },
+            "2": {
+              "count": 594,
+              "percentage": 9.875311720698255
+            },
+            "7": {
+              "count": 490,
+              "percentage": 8.146300914380715
+            },
+            "4": {
+              "count": 464,
+              "percentage": 7.71404821280133
+            },
+            "6": {
+              "count": 422,
+              "percentage": 7.015793848711555
+            },
+            "0": {
+              "count": 406,
+              "percentage": 6.749792186201163
+            },
+            "5": {
+              "count": 387,
+              "percentage": 6.433915211970074
+            },
+            "9": {
+              "count": 328,
+              "percentage": 5.4530340814630085
+            },
+            "8": {
+              "count": 282,
+              "percentage": 4.688279301745636
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Nd": {
+                "count": 4808,
+                "percentage": 79.9334995843724
+              },
+              "Lu": {
+                "count": 652,
+                "percentage": 10.839567747298421
+              },
+              "Po": {
+                "count": 295,
+                "percentage": 4.904405652535329
+              },
+              "Zs": {
+                "count": 239,
+                "percentage": 3.973399833748961
+              },
+              "Ll": {
+                "count": 21,
+                "percentage": 0.3491271820448878
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Lu": {
+                "char": "C",
+                "count": 151,
+                "percentage": 2.5103906899418122
+              },
+              "Po": {
+                "char": ".",
+                "count": 197,
+                "percentage": 3.2751454696591855
+              },
+              "Nd": {
+                "char": "3",
+                "count": 746,
+                "percentage": 12.402327514546965
+              },
+              "Zs": {
+                "char": " ",
+                "count": 239,
+                "percentage": 3.973399833748961
+              },
+              "Ll": {
+                "char": "a",
+                "count": 6,
+                "percentage": 0.0997506234413965
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       },
       "Fare": {
-        "count": 891,
+        "category": "Numeric",
+        "alerts": [],
+        "distinct_count": 248,
+        "distinct_percentage": 27.83389450056117,
+        "missing_count": 0,
+        "missing_percentage": 0.0,
+        "memory_size": 7256,
+        "infinite_count": 0,
+        "infinite_percentage": 0.0,
         "mean": 32.204207968574636,
-        "std": 49.6934285971809,
-        "min": 0.0,
-        "max": 512.3292,
-        "quantiles": {
-          "25%": 7.9104,
-          "50%": 14.4542,
-          "75%": 31.0
+        "minimum": 0.0,
+        "maximum": 512.3292,
+        "zeros_count": 15,
+        "zeros_percentage": 1.6835016835016834,
+        "negative_count": 0,
+        "negative_percentage": 0.0,
+        "statistics": {
+          "quantiles": {
+            "minimum": 0.0,
+            "p5": 7.225,
+            "q1": 7.9104,
+            "median": 14.4542,
+            "q3": 31.0,
+            "p95": 112.07915,
+            "maximum": 512.3292,
+            "range": 512.3292,
+            "iqr": 23.0896
+          },
+          "descriptive": {
+            "standard_deviation": 49.6934285971809,
+            "coefficient_of_variation": 1.5430725278408497,
+            "kurtosis": 33.39814088089868,
+            "mean": 32.204207968574636,
+            "mad": 6.9042,
+            "skewness": 4.787316519674893,
+            "sum": 28693.9493,
+            "variance": 2469.436845743116,
+            "monotonicity": "none"
+          }
         },
-        "missing": 0,
-        "zeros": 15,
         "histogram": {
           "bin_edges": [
             0.0,
@@ -1081,36 +1708,334 @@
             0,
             3
           ]
-        }
+        },
+        "common_values": {
+          "8.05": {
+            "count": 43,
+            "percentage": 4.8260381593714925
+          },
+          "13.0": {
+            "count": 42,
+            "percentage": 4.713804713804714
+          },
+          "7.8958": {
+            "count": 38,
+            "percentage": 4.264870931537598
+          },
+          "7.75": {
+            "count": 34,
+            "percentage": 3.8159371492704826
+          },
+          "26.0": {
+            "count": 31,
+            "percentage": 3.479236812570146
+          },
+          "10.5": {
+            "count": 24,
+            "percentage": 2.6936026936026933
+          },
+          "7.925": {
+            "count": 18,
+            "percentage": 2.0202020202020203
+          },
+          "7.775": {
+            "count": 16,
+            "percentage": 1.7957351290684627
+          },
+          "7.2292": {
+            "count": 15,
+            "percentage": 1.6835016835016834
+          },
+          "26.55": {
+            "count": 15,
+            "percentage": 1.6835016835016834
+          }
+        },
+        "extreme_values": {
+          "minimum_10": [
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "maximum_10": [
+            247.5208,
+            262.375,
+            262.375,
+            263.0,
+            263.0,
+            263.0,
+            263.0,
+            512.3292,
+            512.3292,
+            512.3292
+          ]
+        },
+        "plots": {}
       },
       "Cabin": {
-        "count": 204,
-        "unique": 147,
-        "top_values": {
-          "G6": 4,
-          "C23 C25 C27": 4,
-          "B96 B98": 4,
-          "F2": 3,
-          "D": 3,
-          "E101": 3,
-          "C22 C26": 3,
-          "F33": 3,
-          "C83": 2,
-          "C123": 2
+        "category": "Text",
+        "alerts": [],
+        "distinct_count": 147,
+        "distinct_percentage": 72.05882352941177,
+        "missing_count": 687,
+        "missing_percentage": 77.10437710437711,
+        "memory_size": 34472,
+        "overview": {
+          "length": {
+            "max_length": 15,
+            "median_length": 3.0,
+            "mean_length": 3.588235294117647,
+            "min_length": 1
+          },
+          "characters_and_unicode": {
+            "total_characters": 732,
+            "distinct_characters": 19,
+            "distinct_categories": 3,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "C85",
+            "C123",
+            "E46",
+            "G6",
+            "C103"
+          ]
         },
-        "most_frequent": "B96 B98",
-        "missing": 687
+        "words": {
+          "c25": {
+            "count": 4,
+            "frequency": 11.428571428571429
+          },
+          "b63": {
+            "count": 2,
+            "frequency": 5.714285714285714
+          },
+          "b59": {
+            "count": 2,
+            "frequency": 5.714285714285714
+          },
+          "b53": {
+            "count": 2,
+            "frequency": 5.714285714285714
+          },
+          "c85c123e46g6c103d56a6c23": {
+            "count": 1,
+            "frequency": 2.857142857142857
+          },
+          "c27e31a5d10": {
+            "count": 1,
+            "frequency": 2.857142857142857
+          },
+          "g73c23": {
+            "count": 1,
+            "frequency": 2.857142857142857
+          },
+          "d12d26c110b58": {
+            "count": 1,
+            "frequency": 2.857142857142857
+          },
+          "b60e101d26f": {
+            "count": 1,
+            "frequency": 2.857142857142857
+          },
+          "c26c106b58": {
+            "count": 1,
+            "frequency": 2.857142857142857
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            "2": {
+              "count": 72,
+              "percentage": 9.836065573770492
+            },
+            "C": {
+              "count": 71,
+              "percentage": 9.699453551912567
+            },
+            "B": {
+              "count": 64,
+              "percentage": 8.743169398907105
+            },
+            "1": {
+              "count": 61,
+              "percentage": 8.333333333333332
+            },
+            "3": {
+              "count": 59,
+              "percentage": 8.060109289617486
+            },
+            "6": {
+              "count": 51,
+              "percentage": 6.967213114754098
+            },
+            "5": {
+              "count": 45,
+              "percentage": 6.147540983606557
+            },
+            "8": {
+              "count": 37,
+              "percentage": 5.05464480874317
+            },
+            "4": {
+              "count": 37,
+              "percentage": 5.05464480874317
+            },
+            "D": {
+              "count": 34,
+              "percentage": 4.644808743169399
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Nd": {
+                "count": 460,
+                "percentage": 62.841530054644814
+              },
+              "Lu": {
+                "count": 238,
+                "percentage": 32.51366120218579
+              },
+              "Zs": {
+                "count": 34,
+                "percentage": 4.644808743169399
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Lu": {
+                "char": "C",
+                "count": 71,
+                "percentage": 9.699453551912567
+              },
+              "Nd": {
+                "char": "2",
+                "count": 72,
+                "percentage": 9.836065573770492
+              },
+              "Zs": {
+                "char": " ",
+                "count": 34,
+                "percentage": 4.644808743169399
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       },
       "Embarked": {
-        "count": 889,
-        "unique": 3,
-        "top_values": {
-          "S": 644,
-          "C": 168,
-          "Q": 77
+        "category": "Categorical",
+        "alerts": [],
+        "distinct_count": 3,
+        "distinct_percentage": 0.3374578177727784,
+        "missing_count": 2,
+        "missing_percentage": 0.22446689113355783,
+        "memory_size": 51754,
+        "overview": {
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          },
+          "characters_and_unicode": {
+            "total_characters": 889,
+            "distinct_characters": 3,
+            "distinct_categories": 1,
+            "distinct_scripts": null,
+            "distinct_blocks": null
+          },
+          "sample": [
+            "S",
+            "C",
+            "S",
+            "S",
+            "S"
+          ]
         },
-        "most_frequent": "S",
-        "missing": 2
+        "categories": {
+          "common_values": {
+            "S": {
+              "count": 644,
+              "percentage": 72.44094488188976
+            },
+            "C": {
+              "count": 168,
+              "percentage": 18.89763779527559
+            },
+            "Q": {
+              "count": 77,
+              "percentage": 8.661417322834646
+            }
+          },
+          "length": {
+            "max_length": 1,
+            "median_length": 1.0,
+            "mean_length": 1.0,
+            "min_length": 1
+          }
+        },
+        "words": {
+          "scsssqssscssssssqsscssqssscsqsccqscscsscssccqsqqcssscscsscsscssccssssssscssssssssqsssssssssssssccsssssssssssqscsscsqscssscsscqscscsssscsssccssqssssssssssscqssssssssssssssqsscsscssscssssqsqsssssccqsqsssscssscqcssssqcsscssssssssssssssssssssscqsscqsssssssssccscsqsssqsssssssscqsssqsqsssscsssqsccssccsscqqsqssccccccssssssscssqsscssscqsssssscsssssssssssssscscsssqqsccsqsccqccsscscsccsccssssssqcssscsssssssssssssssssqqssssssscqssssssqssssssssssssssssssscsssccscsssqssssssssqcssscsssssssssscsscssssscsccssssqqsscssssqsscsssqsssscccqssssscccssscscsssscsscsscsqcssccssqssssssscssssqsssscsscsccsscssscsqssssccsssscssscsssqqsssssscscsssqssqsscsssssssscssccscsssssqqssqscscssssssssssssssssscqcssscssssscscsssqcscscqsssssccssssscsqssssssssqssscssssscsssscssssssqsssssssssssscssscqqsssscssqsqscssssssqscqsscsssscsssscssssssssssssscsssssssqscqcscsscssscssccssscscsscsssssccsssssscsssssssccssscsssssqssscq": {
+            "count": 1,
+            "frequency": 100.0
+          }
+        },
+        "characters": {
+          "most_occurring_characters": {
+            "S": {
+              "count": 644,
+              "percentage": 72.44094488188976
+            },
+            "C": {
+              "count": 168,
+              "percentage": 18.89763779527559
+            },
+            "Q": {
+              "count": 77,
+              "percentage": 8.661417322834646
+            }
+          },
+          "categories": {
+            "most_occurring_categories": {
+              "Lu": {
+                "count": 889,
+                "percentage": 100.0
+              }
+            },
+            "most_frequent_character_per_category": {
+              "Lu": {
+                "char": "S",
+                "count": 644,
+                "percentage": 72.44094488188976
+              }
+            }
+          },
+          "scripts": {
+            "most_occurring_scripts": null,
+            "most_frequent_character_per_script": null
+          },
+          "blocks": {
+            "most_occurring_blocks": null,
+            "most_frequent_character_per_block": null
+          }
+        },
+        "plots": {}
       }
     },
     "scatter_pairs": [
@@ -2417,6 +3342,21 @@
         61,
         829
       ]
-    }
+    },
+    "plots": {}
+  },
+  "column_types": {
+    "PassengerId": "Numeric",
+    "Survived": "Categorical",
+    "Pclass": "Categorical",
+    "Name": "Text",
+    "Sex": "Categorical",
+    "Age": "Numeric",
+    "SibSp": "Categorical",
+    "Parch": "Categorical",
+    "Ticket": "Text",
+    "Fare": "Numeric",
+    "Cabin": "Text",
+    "Embarked": "Categorical"
   }
 }
