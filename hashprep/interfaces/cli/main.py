@@ -128,7 +128,7 @@ def details(file_path, target, checks):
     click.echo(f"- Rows: {info['rows']}")
     click.echo(f"- Columns: {info['columns']}")
     click.echo(f"- Memory: ~{info['memory_mb']} MB")
-    click.echo(f"- Missing: {info['missing_cells']} ({info['missing_percentage']}%)")
+    click.echo(f"- Missing: {info['missing_cells']} ({info['missing_percentage']} %)")
     click.echo("- Variable Types:")
     for col, typ in summary["summaries"]["variable_types"].items():
         click.echo(f"  {col}: {typ}")
@@ -148,7 +148,7 @@ def details(file_path, target, checks):
 @cli.command()
 @click.argument("file_path", type=click.Path(exists=True))
 @click.option("--with-code", is_flag=True, help="Generate fixes.py script")
-@click.option("--full", is_flag=True, help="Include full summaries in report")
+@click.option("--full/--no-full", default=True, help="Include full summaries in report (default: True)")
 @click.option("--format", default="md", help="Report format: md, json, html, pdf")
 @click.option("--theme", default="minimal", help="HTML report theme: minimal, neubrutalism")
 @click.option("--target", default=None, help="Target column for relevant checks")
@@ -158,11 +158,11 @@ def details(file_path, target, checks):
     help=f"Comma-separated checks to run. Defaults to all: {','.join(DatasetAnalyzer.ALL_CHECKS)}",
 )
 @click.option(
-    "--include-plots",
-    is_flag=True,
-    help="Include plots in markdown, html, or pdf reports",
+    "--visualizations/--no-visualizations",
+    default=True,
+    help="Include plots in report (default: True)",
 )
-def report(file_path, with_code, full, format, theme, target, checks, include_plots):
+def report(file_path, with_code, full, format, theme, target, checks, visualizations):
     df = pd.read_csv(file_path)
     selected_checks = checks.split(",") if checks else None
     valid_checks = DatasetAnalyzer.ALL_CHECKS
@@ -175,7 +175,7 @@ def report(file_path, with_code, full, format, theme, target, checks, include_pl
         df,
         target_col=target,
         selected_checks=selected_checks,
-        include_plots=include_plots,
+        include_plots=visualizations,
     )
     summary = analyzer.analyze()
     base_name = os.path.splitext(os.path.basename(file_path))[0] + "_hashprep_report"

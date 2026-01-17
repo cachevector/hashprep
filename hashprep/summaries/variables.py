@@ -1,9 +1,5 @@
 import pandas as pd
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
-import io
-import base64
 import unicodedata
 import re
 from collections import defaultdict
@@ -21,7 +17,7 @@ def get_monotonicity(series: pd.Series) -> str:
         return "none"
 
 
-def summarize_variables(df, include_plots=False):
+def summarize_variables(df):
     inferred_types = infer_types(df)
     variables = {}
     for column in df.columns:
@@ -44,22 +40,22 @@ def summarize_variables(df, include_plots=False):
             "memory_size": memory_size,
         }
         if typ == "Numeric":
-            summary.update(_summarize_numeric(df, column, include_plots))
+            summary.update(_summarize_numeric(df, column))
         elif typ == "Text":
-            summary.update(_summarize_text(df, column, include_plots))
+            summary.update(_summarize_text(df, column))
         elif typ == "Categorical":
-            summary.update(_summarize_categorical(df, column, include_plots))
+            summary.update(_summarize_categorical(df, column))
         elif typ == "DateTime":
-            summary.update(_summarize_datetime(df, column, include_plots))
+            summary.update(_summarize_datetime(df, column))
         elif typ == "Boolean":
-            summary.update(_summarize_boolean(df, column, include_plots))
+            summary.update(_summarize_boolean(df, column))
         else:  # Unsupported
             pass  # Basics already included
         variables[column] = summary
     return variables
 
 
-def _summarize_numeric(df, col, include_plots):
+def _summarize_numeric(df, col):
     series = df[col].dropna()
     if series.empty:
         return {
@@ -76,7 +72,6 @@ def _summarize_numeric(df, col, include_plots):
             "histogram": {"bin_edges": None, "counts": None},
             "common_values": None,
             "extreme_values": {"minimum_10": None, "maximum_10": None},
-            "plots": {},
         }
     n = len(series)
     infinite_count = int(np.isinf(df[col]).sum())
@@ -126,19 +121,6 @@ def _summarize_numeric(df, col, include_plots):
         "minimum_10": [float(x) for x in sorted(series)[:10]],
         "maximum_10": [float(x) for x in sorted(series)[-10:]],
     }
-    plots = {}
-    if include_plots:
-        fig, ax = plt.subplots(figsize=(4, 3))
-        sns.histplot(series, bins=10, ax=ax)
-        ax.set_title(f"Histogram of {col}")
-        ax.set_xlabel(col)
-        ax.set_ylabel("Count")
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", bbox_inches="tight")
-        buf.seek(0)
-        img_str = base64.b64encode(buf.getvalue()).decode("utf-8")
-        plt.close(fig)
-        plots["histogram"] = img_str
     stats = {
         "infinite_count": infinite_count,
         "infinite_percentage": float(infinite_percentage),
@@ -153,12 +135,11 @@ def _summarize_numeric(df, col, include_plots):
         "histogram": histogram,
         "common_values": common_values,
         "extreme_values": extremes,
-        "plots": plots,
     }
     return stats
 
 
-def _summarize_text(df, col, include_plots):
+def _summarize_text(df, col):
     series = df[col].dropna().astype(str)
     if series.empty:
         return {
@@ -194,7 +175,6 @@ def _summarize_text(df, col, include_plots):
                     "most_frequent_character_per_block": None,
                 },
             },
-            "plots": {},
         }
     lengths = series.str.len()
     n = len(series)
@@ -220,7 +200,6 @@ def _summarize_text(df, col, include_plots):
                 "count": count,
                 "percentage": float(freq),
             }
-    # Scripts and blocks: approximated as None for simplicity (requires additional libraries)
     distinct_scripts = None
     most_occurring_scripts = None
     words = re.findall(r"\b\w+\b", all_text.lower())
@@ -283,39 +262,10 @@ def _summarize_text(df, col, include_plots):
             },
         },
     }
-    plots = {}
-    if include_plots:
-        # Length histogram
-        fig, ax = plt.subplots(figsize=(4, 3))
-        sns.histplot(lengths, bins=10, ax=ax)
-        ax.set_title(f"Length Distribution of {col}")
-        ax.set_xlabel("Length")
-        ax.set_ylabel("Count")
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", bbox_inches="tight")
-        buf.seek(0)
-        img_str = base64.b64encode(buf.getvalue()).decode("utf-8")
-        plt.close(fig)
-        plots["length_histogram"] = img_str
-        # Word bar plot
-        if word_len > 0:
-            fig, ax = plt.subplots(figsize=(4, 3))
-            word_vc.head(10).plot(kind="bar", ax=ax)
-            ax.set_title(f"Top Words in {col}")
-            ax.set_xlabel("Words")
-            ax.set_ylabel("Count")
-            plt.xticks(rotation=45, ha="right")
-            buf = io.BytesIO()
-            fig.savefig(buf, format="png", bbox_inches="tight")
-            buf.seek(0)
-            img_str = base64.b64encode(buf.getvalue()).decode("utf-8")
-            plt.close(fig)
-            plots["word_bar"] = img_str
-    stats["plots"] = plots
     return stats
 
 
-def _summarize_categorical(df, col, include_plots):
+def _summarize_categorical(df, col):
     series = df[col].dropna().astype(str)
     if series.empty:
         return {
@@ -352,10 +302,8 @@ def _summarize_categorical(df, col, include_plots):
                     "most_frequent_character_per_block": None,
                 },
             },
-            "plots": {},
         }
-    # Reuse text logic for overview, words, characters
-    text_summary = _summarize_text(df, col, include_plots=False)  # Get non-plot parts
+    text_summary = _summarize_text(df, col)
     n = len(series)
     vc = series.value_counts().head(10)
     common_values = {
@@ -370,28 +318,10 @@ def _summarize_categorical(df, col, include_plots):
         "words": text_summary["words"],
         "characters": text_summary["characters"],
     }
-    plots = {}
-    if include_plots:
-        # Common values bar
-        fig, ax = plt.subplots(figsize=(4, 3))
-        vc.head(10).plot(kind="bar", ax=ax)
-        ax.set_title(f"Top Values of {col}")
-        ax.set_xlabel(col)
-        ax.set_ylabel("Count")
-        plt.xticks(rotation=45, ha="right")
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", bbox_inches="tight")
-        buf.seek(0)
-        img_str = base64.b64encode(buf.getvalue()).decode("utf-8")
-        plt.close(fig)
-        plots["common_values_bar"] = img_str
-        # Inherit length and word plots if applicable
-        plots.update(text_summary["plots"])
-    stats["plots"] = plots
     return stats
 
 
-def _summarize_datetime(df, col, include_plots):
+def _summarize_datetime(df, col):
     dt_series = pd.to_datetime(df[col], errors="coerce")
     valid_series = dt_series.dropna()
     original_missing = df[col].isna().sum()
@@ -412,24 +342,10 @@ def _summarize_datetime(df, col, include_plots):
             "months": month_counts,
             "days": day_counts,
         }
-    plots = {}
-    if include_plots and not valid_series.empty:
-        fig, ax = plt.subplots(figsize=(4, 3))
-        valid_series.dt.year.value_counts().sort_index().plot(kind="bar", ax=ax)
-        ax.set_title(f"Year Distribution of {col}")
-        ax.set_xlabel("Year")
-        ax.set_ylabel("Count")
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", bbox_inches="tight")
-        buf.seek(0)
-        img_str = base64.b64encode(buf.getvalue()).decode("utf-8")
-        plt.close(fig)
-        plots["year_distribution"] = img_str
-    stats["plots"] = plots
     return stats
 
 
-def _summarize_boolean(df, col, include_plots):
+def _summarize_boolean(df, col):
     series = df[col]
     if series.dtype == "bool":
         vc = series.value_counts()
@@ -442,20 +358,6 @@ def _summarize_boolean(df, col, include_plots):
         for k, v in vc.items()
     }
     stats = {"common_values": common_values}
-    plots = {}
-    if include_plots:
-        fig, ax = plt.subplots(figsize=(4, 3))
-        vc.plot(kind="bar", ax=ax)
-        ax.set_title(f"Values of {col}")
-        ax.set_xlabel(col)
-        ax.set_ylabel("Count")
-        buf = io.BytesIO()
-        fig.savefig(buf, format="png", bbox_inches="tight")
-        buf.seek(0)
-        img_str = base64.b64encode(buf.getvalue()).decode("utf-8")
-        plt.close(fig)
-        plots["common_values_bar"] = img_str
-    stats["plots"] = plots
     return stats
 
 
