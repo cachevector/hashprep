@@ -9,7 +9,7 @@ import re
 from collections import defaultdict
 from scipy.stats import median_abs_deviation
 
-from ..checks.type_inference import infer_types
+from ..utils.type_inference import infer_types
 
 
 def get_monotonicity(series: pd.Series) -> str:

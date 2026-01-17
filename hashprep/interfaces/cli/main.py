@@ -5,12 +5,12 @@ import json
 import os
 import yaml
 import hashprep
-from hashprep.analyzer import DatasetAnalyzer
+from hashprep import DatasetAnalyzer
 import numpy as np
 from hashprep.reports import generate_report
-
-# from hashprep.fixes import generate_fixes_script
-
+from hashprep.preparers.suggestions import SuggestionProvider
+from hashprep.preparers.codegen import CodeGenerator
+from hashprep.checks.core import Issue
 
 # Custom JSON encoder to handle numpy types
 def json_numpy_handler(obj):
@@ -42,31 +42,12 @@ def version():
 @click.option(
     "--checks",
     default=None,
-    help="Comma-separated checks to run (e.g., feature_correlation,high_cardinality). Defaults to all: data_leakage,high_missing_values,empty_columns,single_value_columns,target_leakage_patterns,class_imbalance,high_cardinality,duplicates,mixed_data_types,outliers,feature_correlation,categorical_correlation,mixed_correlation,dataset_missingness,high_zero_counts,extreme_text_lengths,datetime_skew,missing_patterns",
+    help=f"Comma-separated checks to run. Defaults to all: {','.join(DatasetAnalyzer.ALL_CHECKS)}",
 )
 def scan(file_path, critical_only, quiet, json_out, target, checks):
     df = pd.read_csv(file_path)
     selected_checks = checks.split(",") if checks else None
-    valid_checks = [
-        "data_leakage",
-        "high_missing_values",
-        "empty_columns",
-        "single_value_columns",
-        "target_leakage_patterns",
-        "class_imbalance",
-        "high_cardinality",
-        "duplicates",
-        "mixed_data_types",
-        "outliers",
-        "feature_correlation",
-        "categorical_correlation",
-        "mixed_correlation",
-        "dataset_missingness",
-        "high_zero_counts",
-        "extreme_text_lengths",
-        "datetime_skew",
-        "missing_patterns",
-    ]
+    valid_checks = DatasetAnalyzer.ALL_CHECKS
     if selected_checks:
         invalid_checks = [c for c in selected_checks if c not in valid_checks]
         if invalid_checks:
@@ -113,31 +94,12 @@ def scan(file_path, critical_only, quiet, json_out, target, checks):
 @click.option(
     "--checks",
     default=None,
-    help="Comma-separated checks to run (e.g., feature_correlation,high_cardinality). Defaults to all: data_leakage,high_missing_values,empty_columns,single_value_columns,target_leakage_patterns,class_imbalance,high_cardinality,duplicates,mixed_data_types,outliers,feature_correlation,categorical_correlation,mixed_correlation,dataset_missingness,high_zero_counts,extreme_text_lengths,datetime_skew,missing_patterns",
+    help=f"Comma-separated checks to run. Defaults to all: {','.join(DatasetAnalyzer.ALL_CHECKS)}",
 )
 def details(file_path, target, checks):
     df = pd.read_csv(file_path)
     selected_checks = checks.split(",") if checks else None
-    valid_checks = [
-        "data_leakage",
-        "high_missing_values",
-        "empty_columns",
-        "single_value_columns",
-        "target_leakage_patterns",
-        "class_imbalance",
-        "high_cardinality",
-        "duplicates",
-        "mixed_data_types",
-        "outliers",
-        "feature_correlation",
-        "categorical_correlation",
-        "mixed_correlation",
-        "dataset_missingness",
-        "high_zero_counts",
-        "extreme_text_lengths",
-        "datetime_skew",
-        "missing_patterns",
-    ]
+    valid_checks = DatasetAnalyzer.ALL_CHECKS
     if selected_checks:
         invalid_checks = [c for c in selected_checks if c not in valid_checks]
         if invalid_checks:
@@ -188,40 +150,22 @@ def details(file_path, target, checks):
 @click.option("--with-code", is_flag=True, help="Generate fixes.py script")
 @click.option("--full", is_flag=True, help="Include full summaries in report")
 @click.option("--format", default="md", help="Report format: md, json, html, pdf")
+@click.option("--theme", default="minimal", help="HTML report theme: minimal, neubrutalism")
 @click.option("--target", default=None, help="Target column for relevant checks")
 @click.option(
     "--checks",
     default=None,
-    help="Comma-separated checks to run (e.g., feature_correlation,high_cardinality). Defaults to all: data_leakage,high_missing_values,empty_columns,single_value_columns,target_leakage_patterns,class_imbalance,high_cardinality,duplicates,mixed_data_types,outliers,feature_correlation,categorical_correlation,mixed_correlation,dataset_missingness,high_zero_counts,extreme_text_lengths,datetime_skew,missing_patterns",
+    help=f"Comma-separated checks to run. Defaults to all: {','.join(DatasetAnalyzer.ALL_CHECKS)}",
 )
 @click.option(
     "--include-plots",
     is_flag=True,
     help="Include plots in markdown, html, or pdf reports",
 )
-def report(file_path, with_code, full, format, target, checks, include_plots):
+def report(file_path, with_code, full, format, theme, target, checks, include_plots):
     df = pd.read_csv(file_path)
     selected_checks = checks.split(",") if checks else None
-    valid_checks = [
-        "data_leakage",
-        "high_missing_values",
-        "empty_columns",
-        "single_value_columns",
-        "target_leakage_patterns",
-        "class_imbalance",
-        "high_cardinality",
-        "duplicates",
-        "mixed_data_types",
-        "outliers",
-        "feature_correlation",
-        "categorical_correlation",
-        "mixed_correlation",
-        "dataset_missingness",
-        "high_zero_counts",
-        "extreme_text_lengths",
-        "datetime_skew",
-        "missing_patterns",
-    ]
+    valid_checks = DatasetAnalyzer.ALL_CHECKS
     if selected_checks:
         invalid_checks = [c for c in selected_checks if c not in valid_checks]
         if invalid_checks:
@@ -243,18 +187,25 @@ def report(file_path, with_code, full, format, target, checks, include_plots):
         format=format,
         full=full,
         output_file=report_file,
-        include_plots=include_plots,
+        theme=theme,
     )
     click.echo(f"Report saved to: {report_file}")
     click.echo(
         f"Summary: {summary['critical_count']} critical, {summary['warning_count']} warnings"
     )
-    # if with_code:
-    #     fixes_file = f"{base_name}_fixes.py"
-    #     fixes_code = generate_fixes_script(summary['issues'], file_path)
-    #     with open(fixes_file, "w") as f:
-    #         f.write(fixes_code)
-    #     click.echo(f"Fixes script saved to: {fixes_file}")
+    if with_code:
+        # Reconstruct Issue objects from summary for SuggestionProvider
+        issues = [Issue(**i) for i in summary['issues']]
+        provider = SuggestionProvider(issues)
+        suggestions = provider.get_suggestions()
+        codegen = CodeGenerator(suggestions)
+        
+        fixes_file = os.path.join(report_dir, f"{base_name}_fixes.py")
+        fixes_code = codegen.generate_pandas_script()
+        
+        with open(fixes_file, "w") as f:
+            f.write(fixes_code)
+        click.echo(f"Fixes script saved to: {fixes_file}")
 
 
 if __name__ == "__main__":

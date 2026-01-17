@@ -27,8 +27,11 @@ def get_generators():
         get_generators.cache = _load_generators()
         return get_generators.cache
 
-def generate_report(summary, format="md", full=False, output_file=None):
+def generate_report(summary, format="md", full=False, output_file=None, theme="minimal"):
     generators = get_generators()
     if format not in generators:
         raise ValueError(f"Unsupported format: {format}")
+    
+    if format in ["html", "pdf"]:
+        return generators[format].generate(summary, full, output_file, theme=theme)
     return generators[format].generate(summary, full, output_file)

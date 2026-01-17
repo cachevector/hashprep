@@ -1,4 +1,4 @@
-from .core import Issues
+from .core import Issue
 
 def _check_class_imbalance(analyzer, threshold: float = 0.9):
     issues = []
@@ -6,7 +6,7 @@ def _check_class_imbalance(analyzer, threshold: float = 0.9):
         counts = analyzer.df[analyzer.target_col].value_counts(normalize=True)
         if counts.max() > threshold:
             issues.append(
-                Issues(
+                Issue(
                     category="class_imbalance",
                     severity="warning",
                     column=analyzer.target_col,

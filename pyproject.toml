@@ -43,4 +43,4 @@ Issues = "https://github.com/cachevector/hashprep/issues"
 include = ["hashprep*"]
 
 [project.scripts]
-hashprep = "hashprep.cli.main:cli"
+hashprep = "hashprep.interfaces.cli.main:cli"

@@ -1,4 +1,4 @@
-from .core import Issues
+from .core import Issue
 
 def _check_single_value_columns(analyzer):
     issues = []
@@ -12,7 +12,7 @@ def _check_single_value_columns(analyzer):
                 else "Options: \n- Redefine target: Replace with a more variable target (Pros: Enables modeling; Cons: Requires new data).\n- Stop analysis: Constant target prevents meaningful prediction (Pros: Avoids invalid model; Cons: Halts analysis)."
             )
             issues.append(
-                Issues(
+                Issue(
                     category="single_value",
                     severity=severity,
                     column=col,
@@ -38,7 +38,7 @@ def _check_high_cardinality(analyzer, threshold: int = 100, critical_threshold: 
                 else "Options: \n- Group rare categories: Reduce cardinality (Pros: Simplifies feature; Cons: May lose nuance).\n- Use feature hashing: Map to lower dimensions (Pros: Scalable; Cons: Less interpretable).\n- Retain and test: Evaluate feature importance (Pros: Data-driven; Cons: Risk of overfitting)."
             )
             issues.append(
-                Issues(
+                Issue(
                     category="high_cardinality",
                     severity=severity,
                     column=col,
@@ -62,7 +62,7 @@ def _check_duplicates(analyzer):
             else "Options: \n- Drop duplicates: Simplifies dataset (Pros: Cleaner data; Cons: May lose valid repeats).\n- Keep duplicates: If meaningful (e.g., repeated events) (Pros: Retains info; Cons: May bias model).\n- Test impact: Evaluate model performance with/without duplicates (Pros: Data-driven; Cons: Requires computation)."
         )
         issues.append(
-            Issues(
+            Issue(
                 category="duplicates",
                 severity=severity,
                 column="__all__",
@@ -79,7 +79,7 @@ def _check_mixed_data_types(analyzer):
         types = analyzer.df[col].dropna().map(type).nunique()
         if types > 1:
             issues.append(
-                Issues(
+                Issue(
                     category="mixed_types",
                     severity="warning",
                     column=col,

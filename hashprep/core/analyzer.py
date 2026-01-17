@@ -1,10 +1,9 @@
-from statistics import correlation
 from typing import Dict, List, Optional
 import pandas as pd
-from .checks.type_inference import infer_types
+from ..utils.type_inference import infer_types
 
-from .checks import run_checks
-from .summaries import (
+from ..checks import run_checks
+from ..summaries import (
     get_dataset_preview,
     summarize_dataset_info,
     summarize_variable_types,
@@ -15,6 +14,14 @@ from .summaries import (
 )
 
 class DatasetAnalyzer:
+    ALL_CHECKS = [
+        "data_leakage", "high_missing_values", "empty_columns", "single_value_columns",
+        "target_leakage_patterns", "class_imbalance", "high_cardinality", "duplicates",
+        "mixed_data_types", "outliers", "feature_correlation", "categorical_correlation",
+        "mixed_correlation", "dataset_missingness", "high_zero_counts",
+        "extreme_text_lengths", "datetime_skew", "missing_patterns", "skewness",
+    ]
+
     def __init__(
         self,
         df: pd.DataFrame,
@@ -29,13 +36,6 @@ class DatasetAnalyzer:
         self.issues = []
         self.summaries = {}
         self.column_types = infer_types(df)
-        self.all_checks = [
-            "data_leakage", "high_missing_values", "empty_columns", "single_value_columns",
-            "target_leakage_patterns", "class_imbalance", "high_cardinality", "duplicates",
-            "mixed_data_types", "outliers", "feature_correlation", "categorical_correlation",
-            "mixed_correlation", "dataset_missingness", "high_zero_counts",
-            "extreme_text_lengths", "datetime_skew", "missing_patterns",
-        ]
 
 
     def analyze(self) -> Dict:
@@ -49,8 +49,8 @@ class DatasetAnalyzer:
         self.summaries.update(summarize_interactions(self.df, include_plots=self.include_plots))
         self.summaries.update(summarize_missing_values(self.df, include_plots=self.include_plots))
 
-        checks_to_run = self.all_checks if self.selected_checks is None else [
-            check for check in self.selected_checks if check in self.all_checks
+        checks_to_run = self.ALL_CHECKS if self.selected_checks is None else [
+            check for check in self.selected_checks if check in self.ALL_CHECKS
         ]
         self.issues = run_checks(self, checks_to_run)
 

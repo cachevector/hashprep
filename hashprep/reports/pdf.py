@@ -2,9 +2,9 @@ from .html import HtmlReport
 from weasyprint import HTML
 
 class PdfReport:
-    def generate(self, summary, full=False, output_file=None):
+    def generate(self, summary, full=False, output_file=None, theme="minimal"):
         html_generator = HtmlReport()
-        html_content = html_generator.generate(summary, full)
+        html_content = html_generator.generate(summary, full, theme=theme)
         pdf_content = HTML(string=html_content).write_pdf()
         if output_file:
             with open(output_file, "wb") as f:

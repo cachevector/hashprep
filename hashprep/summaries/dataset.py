@@ -34,7 +34,7 @@ def summarize_variable_types(df: pd.DataFrame, column_types: Optional[Dict[str, 
     Summarize column types using infer_types if column_types not provided.
     """
     if column_types is None:
-        from ..checks.type_inference import infer_types
+        from ..utils.type_inference import infer_types
         column_types = infer_types(df)
     return column_types
 
