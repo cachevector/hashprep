@@ -1,165 +1,185 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>HashPrep - Dataset Debugging Playground</title>
+<html lang="en" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HashPrep — Dataset Quality Engineering</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/lucide@latest"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        black: '#000000',
+                        brand: '#b16286',
+                        zinc: {
+                            950: '#09090b',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+    </script>
     <style>
-      @import url("https://fonts.googleapis.com/css2?family=Kode+Mono:wght@400..700&display=swap");
-      html,
-      body {
-        height: 100%;
-        margin: 0;
-      }
-      body {
-        background: #0d0f0f;
-        margin: 0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-      }
-      .hero {
-        text-align: center;
-        width: 100%;
-      }
-      h1 {
-        color: #b16286;
-        text-align: center;
-        text-decoration: underline;
-        font-family: "Kode Mono";
-        font-size: 10rem;
-      }
-      p {
-        color: #b16286;
-        text-align: center;
-        font-family: "Kode Mono";
-        font-size: large;
-        font-weight: bold;
-      }
-      .button-container {
-        position: relative;
-        display: inline-block;
-      }
-      .cta-button {
-        display: inline-block;
-        padding: 1rem 2rem;
-        color: #fbf1c7;
-        text-decoration: none;
-        font-family: "Kode Mono";
-        font-weight: bold;
-        transition: all 0.2s ease;
-        font-size: 1.1rem;
-        position: relative;
-        z-index: 1;
-      }
-      .cta-button .border-top {
-        position: absolute;
-        top: 0;
-        left: 0;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(90deg, transparent, #b16286, transparent);
-        background-size: 200% 100%;
-        animation: slideRight 2s linear infinite;
-      }
-      .cta-button .border-right {
-        position: absolute;
-        top: 0;
-        right: 0;
-        width: 2px;
-        height: 100%;
-        background: linear-gradient(180deg, transparent, #b16286, transparent);
-        background-size: 100% 200%;
-        animation: slideDown 2s linear infinite;
-      }
-      .cta-button .border-bottom {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        width: 100%;
-        height: 2px;
-        background: linear-gradient(270deg, transparent, #b16286, transparent);
-        background-size: 200% 100%;
-        animation: slideLeft 2s linear infinite;
-      }
-      .cta-button .border-left {
-        position: absolute;
-        bottom: 0;
-        left: 0;
-        width: 2px;
-        height: 100%;
-        background: linear-gradient(0deg, transparent, #b16286, transparent);
-        background-size: 100% 200%;
-        animation: slideUp 2s linear infinite;
-      }
-      @keyframes slideRight {
-        0% {
-          background-position: -100% 0;
+        body { -webkit-font-smoothing: antialiased; }
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1px;
+            background-color: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.1);
         }
-        100% {
-          background-position: 100% 0;
+        .feature-card {
+            background-color: #000;
+            padding: 2.5rem;
         }
-      }
-      @keyframes slideDown {
-        0% {
-          background-position: 0 -100%;
+        ::selection {
+            background: #b16286;
+            color: white;
         }
-        100% {
-          background-position: 0 100%;
-        }
-      }
-      @keyframes slideLeft {
-        0% {
-          background-position: 100% 0;
-        }
-        100% {
-          background-position: -100% 0;
-        }
-      }
-      @keyframes slideUp {
-        0% {
-          background-position: 0 100%;
-        }
-        100% {
-          background-position: 0 -100%;
-        }
-      }
-      .cta-button:hover .border-top,
-      .cta-button:hover .border-right,
-      .cta-button:hover .border-bottom,
-      .cta-button:hover .border-left {
-        animation-duration: 1s;
-      }
-      @media (max-width: 768px) {
-        h1 {
-          font-size: 5rem;
-        }
-        .cta-button {
-          padding: 0.5rem 1rem;
-          font-size: 0.9rem;
-        }
-      }
-      @media (max-width: 480px) {
-        h1 {
-          font-size: 3rem;
-        }
-        .cta-button {
-          padding: 0.3rem 0.8rem;
-          font-size: 0.7rem;
-        }
-      }
     </style>
-  </head>
-  <body>
-    <div class="hero">
-      <h1>HashPrep</h1>
-      <div class="cta-button">
-        Coming Soon
-        <div class="border-top"></div>
-        <div class="border-right"></div>
-        <div class="border-bottom"></div>
-        <div class="border-left"></div>
-      </div>
-    </div>
-  </body>
+</head>
+<body class="bg-black text-zinc-400 font-sans">
+    <!-- Nav -->
+    <nav class="border-b border-white/10">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="flex justify-between h-20 items-center">
+                <div class="flex items-center gap-3">
+                    <svg width="20" height="20" viewBox="0 0 47.581429 77.315781" class="text-brand fill-current">
+                        <g transform="translate(351.30686,-158.54937)">
+                            <g transform="matrix(2.4307449,0,0,2.4307449,-363.74873,-127.07147)">
+                                <path d="m 12.3073,127.88684 v 11.22412 4.57854 a 5.6360459,5.6360459 0 0 0 5.251876,5.62136 V 138.08674 133.5082 A 5.6360459,5.6360459 0 0 0 12.3073,127.88684 Z" />
+                                <path d="m 5.1185506,117.50342 v 15.94993 a 5.4826112,5.4826112 0 0 0 5.2518754,5.4622 v -10.92491 -10.48722 z" />
+                                <path d="m 19.441507,128.02077 v 13.09636 a 6.7146358,6.7146358 0 0 0 5.251876,-6.2513 v -0.79324 a 6.7146358,6.7146358 0 0 0 -5.251876,-6.05182 z" />
+                            </g>
+                        </g>
+                    </svg>
+                    <span class="font-mono text-lg font-medium tracking-tight text-white uppercase">HashPrep</span>
+                </div>
+                <div class="flex items-center gap-8">
+                    <a href="https://github.com/cachevector/hashprep" class="text-xs font-mono uppercase tracking-widest hover:text-white transition-colors">GitHub</a>
+                    <a href="#install" class="bg-white text-black px-4 py-1.5 text-xs font-mono uppercase tracking-widest hover:bg-zinc-200 transition-all">Get Started</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero -->
+    <header class="py-24 lg:py-40">
+        <div class="max-w-6xl mx-auto px-6">
+            <h1 class="text-5xl lg:text-8xl font-light tracking-tighter text-white mb-10 leading-[0.9]">
+                Clean data, <br/>
+                <span class="text-zinc-600 italic">reproducible pipelines.</span>
+            </h1>
+            <p class="text-xl max-w-2xl text-zinc-500 mb-16 leading-relaxed">
+                A command-line tool for dataset quality assurance. Detect drift, leakage, and inconsistencies with one command. Built for modern ML engineering.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row items-start gap-4">
+                <div class="group relative">
+                    <div class="flex items-center gap-4 bg-zinc-950 border border-white/10 px-6 py-4 font-mono text-sm">
+                        <span class="text-zinc-600">$</span>
+                        <span class="text-white">pip install hashprep</span>
+                        <button class="text-zinc-600 group-hover:text-brand transition-colors"><i data-lucide="copy" class="w-4 h-4"></i></button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Terminal -->
+    <section class="pb-24 lg:pb-40">
+        <div class="max-w-6xl mx-auto px-6">
+            <div class="border border-white/10 bg-zinc-950 p-8 lg:p-12 font-mono text-sm leading-relaxed">
+                <div class="flex gap-4 mb-8 text-zinc-600 border-b border-white/5 pb-4">
+                    <span class="text-white">bash</span>
+                    <span>stdout</span>
+                    <span>v0.1.0</span>
+                </div>
+                <div class="space-y-1">
+                    <div class="flex gap-3"><span class="text-zinc-600">01</span> <span class="text-zinc-300">hashprep scan data.csv --target Survived</span></div>
+                    <div class="flex gap-3"><span class="text-zinc-600">02</span> <span>&nbsp;</span></div>
+                    <div class="flex gap-3"><span class="text-zinc-600">03</span> <span class="text-brand">ANALYSIS SUMMARY</span></div>
+                    <div class="flex gap-3"><span class="text-zinc-600">04</span> <span class="text-zinc-500">--------------------------------</span></div>
+                    <div class="flex gap-3"><span class="text-zinc-600">05</span> <span>CRITICAL: High missing values in 'Cabin' (77.1%)</span></div>
+                    <div class="flex gap-3"><span class="text-zinc-600">06</span> <span>CRITICAL: Target leakage detected in 'Ticket_ID'</span></div>
+                    <div class="flex gap-3"><span class="text-zinc-600">07</span> <span>WARNING: Class imbalance in 'Survived' (38/62)</span></div>
+                    <div class="flex gap-3"><span class="text-zinc-600">08</span> <span>&nbsp;</span></div>
+                    <div class="flex gap-3"><span class="text-zinc-600">09</span> <span class="text-white">Generating fixes.py script... done.</span></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Features -->
+    <section id="features" class="border-t border-white/10">
+        <div class="max-w-6xl mx-auto">
+            <div class="feature-grid">
+                <div class="feature-card">
+                    <span class="font-mono text-xs text-brand uppercase tracking-widest mb-6 block">01 / Profiling</span>
+                    <h3 class="text-white text-lg font-medium mb-4 uppercase tracking-tight">Intelligent Checks</h3>
+                    <p class="text-sm leading-relaxed text-zinc-500">Detect missing patterns, outliers, and type inconsistencies using statistical inference.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="font-mono text-xs text-brand uppercase tracking-widest mb-6 block">02 / Monitoring</span>
+                    <h3 class="text-white text-lg font-medium mb-4 uppercase tracking-tight">Drift Detection</h3>
+                    <p class="text-sm leading-relaxed text-zinc-500">Compare train and production distributions with KS-tests and Chi-squared metrics.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="font-mono text-xs text-brand uppercase tracking-widest mb-6 block">03 / Engineering</span>
+                    <h3 class="text-white text-lg font-medium mb-4 uppercase tracking-tight">Auto-Codegen</h3>
+                    <p class="text-sm leading-relaxed text-zinc-500">Automatically generate Pandas scripts and Scikit-Learn pipelines to fix identified issues.</p>
+                </div>
+                <div class="feature-card">
+                    <span class="font-mono text-xs text-brand uppercase tracking-widest mb-6 block">04 / Reporting</span>
+                    <h3 class="text-white text-lg font-medium mb-4 uppercase tracking-tight">Static Reports</h3>
+                    <p class="text-sm leading-relaxed text-zinc-500">Clean, publication-quality HTML and PDF reports with essential statistical visualizations.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="py-24 border-t border-white/10">
+        <div class="max-w-6xl mx-auto px-6 flex flex-col md:flex-row justify-between items-start gap-12">
+            <div class="max-w-xs">
+                <div class="flex items-center gap-3 mb-6">
+                    <span class="font-mono text-sm font-medium text-white uppercase tracking-tighter">HashPrep</span>
+                </div>
+                <p class="text-xs leading-relaxed text-zinc-600 font-mono uppercase tracking-tighter">
+                    A project by CacheVector. <br/>
+                    MIT Licensed. 2026.
+                </p>
+            </div>
+            
+            <div class="grid grid-cols-2 gap-20">
+                <div>
+                    <h4 class="text-xs font-mono uppercase tracking-widest text-white mb-6">Social</h4>
+                    <ul class="space-y-4 text-xs font-mono uppercase tracking-widest text-zinc-600">
+                        <li><a href="https://github.com/cachevector/hashprep" class="hover:text-white transition-colors">GitHub</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h4 class="text-xs font-mono uppercase tracking-widest text-white mb-6">Product</h4>
+                    <ul class="space-y-4 text-xs font-mono uppercase tracking-widest text-zinc-600">
+                        <li><a href="#" class="hover:text-white transition-colors">Documentation</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors">Changelog</a></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        lucide.createIcons();
+    </script>
+</body>
 </html>
