@@ -45,5 +45,10 @@ Issues = "https://github.com/cachevector/hashprep/issues"
 [tool.setuptools.packages.find]
 include = ["hashprep*"]
 
+[dependency-groups]
+dev = [
+    "pytest>=9.0.2",
+]
+
 [project.scripts]
 hashprep = "hashprep.interfaces.cli.main:cli"
