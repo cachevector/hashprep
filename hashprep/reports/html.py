@@ -713,6 +713,9 @@ class HtmlReport:
             <button @click="activeTab = 'missing'"
                     :class="activeTab === 'missing' ? 'bg-black text-white' : 'bg-white'"
                     class="brutal-card py-2 px-4 font-bold uppercase">Missing</button>
+            <button @click="activeTab = 'sample'"
+                    :class="activeTab === 'sample' ? 'bg-black text-white' : 'bg-white'"
+                    class="brutal-card py-2 px-4 font-bold uppercase">Sample</button>
             {% endif %}
         </nav>
 
@@ -789,24 +792,188 @@ class HtmlReport:
             <h2 class="text-2xl font-black uppercase mb-4 bg-black text-white inline-block px-4 py-1">Variables</h2>
             <div class="space-y-8">
                 {% for col, stats in variables.items() %}
-                <div class="brutal-card">
-                    <div class="flex justify-between items-center mb-4 border-b-4 border-black pb-2">
-                        <h3 class="text-xl font-black">{{ col }}</h3>
-                        <span class="bg-black text-white px-2 py-1 font-bold">{{ stats.category }}</span>
-                    </div>
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-                        <div>
-                            <pre class="text-xs bg-gray-100 p-2 border-2 border-black overflow-x-auto">{{ yaml_dump(stats.statistics if stats.statistics else stats.overview) }}</pre>
-                        </div>
-                        <div>
-                            {% if stats.plots %}
-                                {% for plot_name, plot_data in stats.plots.items() %}
-                                <div class="mb-4">
-                                    <h5 class="text-xs font-bold mb-1 uppercase">{{ plot_name }}</h5>
-                                    <img src="data:image/png;base64,{{ plot_data }}" class="brutal-img w-full" />
-                                </div>
-                                {% endfor %}
+                <div class="brutal-card" x-data="{ expanded: false }">
+                    <!-- Header -->
+                    <div class="flex justify-between items-center mb-4 border-b-4 border-black pb-2 cursor-pointer" @click="expanded = !expanded">
+                        <div class="flex items-center gap-3 flex-wrap">
+                            <h3 class="text-xl font-black">{{ col }}</h3>
+                            <span class="bg-black text-white px-2 py-1 font-bold text-xs">{{ stats.category }}</span>
+                            {% if stats.distinct_percentage >= 95 %}
+                            <span class="bg-yellow-300 px-2 py-1 font-bold text-xs border-2 border-black">UNIQUE</span>
                             {% endif %}
+                            {% if stats.missing_percentage > 0 %}
+                            <span class="bg-red-300 px-2 py-1 font-bold text-xs border-2 border-black">{{ "%.1f"|format(stats.missing_percentage) }}% MISSING</span>
+                            {% endif %}
+                        </div>
+                        <svg :class="expanded ? 'rotate-180' : ''" class="w-6 h-6 transition-transform" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M19 9l-7 7-7-7"></path>
+                        </svg>
+                    </div>
+
+                    <!-- Quick Stats + Chart -->
+                    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+                        <!-- Stat Cards -->
+                        <div class="lg:col-span-2 grid grid-cols-2 sm:grid-cols-4 gap-3">
+                            <div class="border-2 border-black p-3 bg-gray-50">
+                                <div class="text-xs font-bold uppercase">Distinct</div>
+                                <div class="text-lg font-black">{{ stats.distinct_count }}</div>
+                                <div class="text-xs">{{ "%.1f"|format(stats.distinct_percentage) }}%</div>
+                            </div>
+                            <div class="border-2 border-black p-3 bg-gray-50">
+                                <div class="text-xs font-bold uppercase">Missing</div>
+                                <div class="text-lg font-black">{{ stats.missing_count }}</div>
+                                <div class="text-xs">{{ "%.1f"|format(stats.missing_percentage) }}%</div>
+                            </div>
+                            {% if stats.category == 'Numeric' %}
+                            <div class="border-2 border-black p-3 bg-gray-50">
+                                <div class="text-xs font-bold uppercase">Mean</div>
+                                <div class="text-lg font-black">{{ "%.4g"|format(stats.mean) if stats.mean is not none else 'N/A' }}</div>
+                            </div>
+                            <div class="border-2 border-black p-3 bg-gray-50">
+                                <div class="text-xs font-bold uppercase">Range</div>
+                                <div class="text-lg font-black">{{ "%.4g"|format(stats.minimum) if stats.minimum is not none else '?' }} - {{ "%.4g"|format(stats.maximum) if stats.maximum is not none else '?' }}</div>
+                            </div>
+                            {% else %}
+                            <div class="border-2 border-black p-3 bg-gray-50">
+                                <div class="text-xs font-bold uppercase">Memory</div>
+                                <div class="text-lg font-black">{{ "%.1f"|format(stats.memory_size / 1024) }} KiB</div>
+                            </div>
+                            <div class="border-2 border-black p-3 bg-gray-50">
+                                <div class="text-xs font-bold uppercase">Length</div>
+                                {% if stats.overview and stats.overview.length %}
+                                <div class="text-lg font-black">{{ stats.overview.length.min_length }} - {{ stats.overview.length.max_length }}</div>
+                                {% else %}
+                                <div class="text-lg font-black">-</div>
+                                {% endif %}
+                            </div>
+                            {% endif %}
+                        </div>
+
+                        <!-- Chart -->
+                        {% if stats.plots %}
+                        <div>
+                            {% if stats.plots.histogram %}
+                            <img src="data:image/png;base64,{{ stats.plots.histogram }}" class="w-full h-auto" />
+                            {% elif stats.plots.common_values_bar %}
+                            <img src="data:image/png;base64,{{ stats.plots.common_values_bar }}" class="w-full h-auto" />
+                            {% elif stats.plots.word_bar %}
+                            <img src="data:image/png;base64,{{ stats.plots.word_bar }}" class="w-full h-auto" />
+                            {% endif %}
+                        </div>
+                        {% endif %}
+                    </div>
+
+                    <!-- Expandable Details -->
+                    <div x-show="expanded || {{ 'true' if pdf_mode else 'false' }}" x-collapse {% if not pdf_mode %}x-cloak{% endif %}>
+                        <div class="mt-6 pt-4 border-t-4 border-black grid grid-cols-1 lg:grid-cols-2 gap-6">
+                            <!-- Statistics -->
+                            <div>
+                                {% if stats.category == 'Numeric' and stats.statistics %}
+                                <h4 class="font-bold uppercase text-sm mb-2 bg-yellow-300 inline-block px-2">Quantile Statistics</h4>
+                                <table class="w-full text-sm mb-4">
+                                    <tbody>
+                                        <tr class="border-b border-black"><td class="py-1">Minimum</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.minimum) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">5th pctl</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.p5) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Q1</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.q1) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Median</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.median) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Q3</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.q3) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">95th pctl</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.p95) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Maximum</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.maximum) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Range</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.range) }}</td></tr>
+                                        <tr><td class="py-1">IQR</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.quantiles.iqr) }}</td></tr>
+                                    </tbody>
+                                </table>
+                                <h4 class="font-bold uppercase text-sm mb-2 bg-yellow-300 inline-block px-2">Descriptive Statistics</h4>
+                                <table class="w-full text-sm">
+                                    <tbody>
+                                        <tr class="border-b border-black"><td class="py-1">Mean</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.descriptive.mean) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Std Dev</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.descriptive.standard_deviation) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Variance</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.descriptive.variance) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">CV</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.descriptive.coefficient_of_variation) if stats.statistics.descriptive.coefficient_of_variation else 'N/A' }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Skewness</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.descriptive.skewness) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Kurtosis</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.descriptive.kurtosis) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">MAD</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.descriptive.mad) }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Sum</td><td class="py-1 text-right font-mono font-bold">{{ "%.6g"|format(stats.statistics.descriptive.sum) }}</td></tr>
+                                        <tr><td class="py-1">Monotonicity</td><td class="py-1 text-right font-bold text-blue-600">{{ stats.statistics.descriptive.monotonicity | capitalize }}</td></tr>
+                                    </tbody>
+                                </table>
+                                {% elif stats.overview %}
+                                <h4 class="font-bold uppercase text-sm mb-2 bg-yellow-300 inline-block px-2">Length Statistics</h4>
+                                <table class="w-full text-sm mb-4">
+                                    <tbody>
+                                        <tr class="border-b border-black"><td class="py-1">Min length</td><td class="py-1 text-right font-mono font-bold">{{ stats.overview.length.min_length }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Max length</td><td class="py-1 text-right font-mono font-bold">{{ stats.overview.length.max_length }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Mean length</td><td class="py-1 text-right font-mono font-bold">{{ "%.2f"|format(stats.overview.length.mean_length) if stats.overview.length.mean_length else 'N/A' }}</td></tr>
+                                        <tr><td class="py-1">Median length</td><td class="py-1 text-right font-mono font-bold">{{ "%.2f"|format(stats.overview.length.median_length) if stats.overview.length.median_length else 'N/A' }}</td></tr>
+                                    </tbody>
+                                </table>
+                                <h4 class="font-bold uppercase text-sm mb-2 bg-yellow-300 inline-block px-2">Character Statistics</h4>
+                                <table class="w-full text-sm">
+                                    <tbody>
+                                        <tr class="border-b border-black"><td class="py-1">Total characters</td><td class="py-1 text-right font-mono font-bold">{{ stats.overview.characters_and_unicode.total_characters }}</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Distinct characters</td><td class="py-1 text-right font-mono font-bold">{{ stats.overview.characters_and_unicode.distinct_characters }}</td></tr>
+                                        <tr><td class="py-1">Distinct categories</td><td class="py-1 text-right font-mono font-bold">{{ stats.overview.characters_and_unicode.distinct_categories }}</td></tr>
+                                    </tbody>
+                                </table>
+                                {% endif %}
+                            </div>
+
+                            <!-- Common Values / Extreme Values / Value Counts -->
+                            <div>
+                                {% if stats.common_values or (stats.categories and stats.categories.common_values) %}
+                                <h4 class="font-bold uppercase text-sm mb-2 bg-yellow-300 inline-block px-2">Common Values</h4>
+                                <table class="w-full text-sm mb-4">
+                                    <thead>
+                                        <tr class="border-b-2 border-black">
+                                            <th class="py-1 text-left font-bold">Value</th>
+                                            <th class="py-1 text-right font-bold">Count</th>
+                                            <th class="py-1 text-right font-bold">%</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% set cv = stats.common_values if stats.common_values else stats.categories.common_values %}
+                                        {% for val, info in cv.items() %}
+                                        <tr class="border-b border-black">
+                                            <td class="py-1 font-mono truncate max-w-[200px]">{{ val }}</td>
+                                            <td class="py-1 text-right font-mono">{{ info.count }}</td>
+                                            <td class="py-1 text-right font-mono">{{ "%.1f"|format(info.percentage) }}%</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                                {% endif %}
+
+                                {% if stats.extreme_values %}
+                                <h4 class="font-bold uppercase text-sm mb-2 bg-yellow-300 inline-block px-2">Extreme Values</h4>
+                                <div class="mb-2">
+                                    <div class="text-xs font-bold uppercase mb-1">Minimum</div>
+                                    <div class="flex flex-wrap gap-1">
+                                        {% for val in stats.extreme_values.minimum_10 %}
+                                        <span class="px-2 py-0.5 bg-blue-100 border-2 border-black text-xs font-mono font-bold">{{ "%.4g"|format(val) }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                <div class="mb-4">
+                                    <div class="text-xs font-bold uppercase mb-1">Maximum</div>
+                                    <div class="flex flex-wrap gap-1">
+                                        {% for val in stats.extreme_values.maximum_10 %}
+                                        <span class="px-2 py-0.5 bg-red-100 border-2 border-black text-xs font-mono font-bold">{{ "%.4g"|format(val) }}</span>
+                                        {% endfor %}
+                                    </div>
+                                </div>
+                                {% endif %}
+
+                                {% if stats.category == 'Numeric' %}
+                                <h4 class="font-bold uppercase text-sm mb-2 bg-yellow-300 inline-block px-2">Value Counts</h4>
+                                <table class="w-full text-sm">
+                                    <tbody>
+                                        <tr class="border-b border-black"><td class="py-1">Zeros</td><td class="py-1 text-right font-mono font-bold">{{ stats.zeros_count if stats.zeros_count is defined else 0 }} ({{ "%.1f"|format(stats.zeros_percentage) if stats.zeros_percentage is defined else '0.0' }}%)</td></tr>
+                                        <tr class="border-b border-black"><td class="py-1">Negative</td><td class="py-1 text-right font-mono font-bold">{{ stats.negative_count if stats.negative_count is defined else 0 }} ({{ "%.1f"|format(stats.negative_percentage) if stats.negative_percentage is defined else '0.0' }}%)</td></tr>
+                                        <tr><td class="py-1">Infinite</td><td class="py-1 text-right font-mono font-bold">{{ stats.infinite_count if stats.infinite_count is defined else 0 }} ({{ "%.1f"|format(stats.infinite_percentage) if stats.infinite_percentage is defined else '0.0' }}%)</td></tr>
+                                    </tbody>
+                                </table>
+                                {% endif %}
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -823,7 +990,7 @@ class HtmlReport:
                         {% for method, plot_data in numeric_correlations.plots.items() %}
                         <div>
                             <h3 class="font-bold mb-2 uppercase">{{ method }}</h3>
-                            <img src="data:image/png;base64,{{ plot_data }}" class="brutal-img w-full" />
+                            <img src="data:image/png;base64,{{ plot_data }}" class="w-full h-auto" />
                         </div>
                         {% endfor %}
                     {% endif %}
@@ -839,15 +1006,34 @@ class HtmlReport:
                     {% if missing_plots.missing_bar %}
                     <div>
                         <h3 class="font-bold mb-2">COUNTS</h3>
-                        <img src="data:image/png;base64,{{ missing_plots.missing_bar }}" class="brutal-img w-full" />
+                        <img src="data:image/png;base64,{{ missing_plots.missing_bar }}" class="w-full h-auto" />
                     </div>
                     {% endif %}
                     {% if missing_plots.missing_heatmap %}
                     <div>
                         <h3 class="font-bold mb-2">PATTERN</h3>
-                        <img src="data:image/png;base64,{{ missing_plots.missing_heatmap }}" class="brutal-img w-full" />
+                        <img src="data:image/png;base64,{{ missing_plots.missing_heatmap }}" class="w-full h-auto" />
                     </div>
                     {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <!-- SAMPLE TAB -->
+        <div x-show="activeTab === 'sample'" {% if not pdf_mode %}x-cloak{% endif %}>
+            <h2 class="text-2xl font-black uppercase mb-4 bg-black text-white inline-block px-4 py-1">Sample</h2>
+            <div class="space-y-6">
+                <div class="brutal-card">
+                    <h3 class="font-bold uppercase mb-2 border-b-2 border-black pb-1">Head (first 5 rows)</h3>
+                    <div class="overflow-x-auto">{{ head_table | safe }}</div>
+                </div>
+                <div class="brutal-card">
+                    <h3 class="font-bold uppercase mb-2 border-b-2 border-black pb-1">Random Sample (10 rows)</h3>
+                    <div class="overflow-x-auto">{{ sample_table | safe }}</div>
+                </div>
+                <div class="brutal-card">
+                    <h3 class="font-bold uppercase mb-2 border-b-2 border-black pb-1">Tail (last 5 rows)</h3>
+                    <div class="overflow-x-auto">{{ tail_table | safe }}</div>
                 </div>
             </div>
         </div>
