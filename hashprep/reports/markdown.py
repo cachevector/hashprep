@@ -3,7 +3,6 @@ import os
 from typing import Dict, List
 
 import pandas as pd
-import yaml
 
 import hashprep
 
@@ -100,27 +99,104 @@ class MarkdownReport:
             # Variable Analysis
             content += "## Variable Analysis\n\n"
             for col, stats in summary["summaries"]["variables"].items():
-                content += f"### {col} ({stats.get('category', 'Unknown')})\n"
-                content += f"- Missing: {stats.get('missing_count', 0)} ({stats.get('missing_percentage', 0)}%)\n"
-                content += f"- Distinct: {stats.get('distinct_count', 0)}\n\n"
+                cat = stats.get("category", "Unknown")
+                badges = f"`{cat}`"
+                if stats.get("distinct_percentage", 0) >= 95:
+                    badges += " `Unique`"
+                if stats.get("missing_percentage", 0) > 0:
+                    badges += f" `{stats['missing_percentage']:.1f}% missing`"
 
-                details = stats.get("statistics") if stats.get("statistics") else stats.get("overview")
-                if details:
-                    content += "#### Statistics\n```yaml\n"
-                    content += yaml.safe_dump(details, default_flow_style=False)
-                    content += "```\n\n"
+                content += f"### {col}\n"
+                content += f"{badges}\n\n"
+
+                # Summary line
+                content += "| Metric | Value |\n|--------|-------|\n"
+                content += f"| Distinct | {stats.get('distinct_count', 0)} ({stats.get('distinct_percentage', 0):.1f}%) |\n"
+                content += f"| Missing | {stats.get('missing_count', 0)} ({stats.get('missing_percentage', 0):.1f}%) |\n"
+                if cat == "Numeric":
+                    mean_val = stats.get("mean")
+                    content += f"| Mean | {f'{mean_val:.6g}' if mean_val is not None else 'N/A'} |\n"
+                    min_val = stats.get("minimum")
+                    max_val = stats.get("maximum")
+                    content += f"| Min | {f'{min_val:.6g}' if min_val is not None else 'N/A'} |\n"
+                    content += f"| Max | {f'{max_val:.6g}' if max_val is not None else 'N/A'} |\n"
+                    content += f"| Memory | {stats.get('memory_size', 0) / 1024:.1f} KiB |\n"
+                else:
+                    content += f"| Memory | {stats.get('memory_size', 0) / 1024:.1f} KiB |\n"
+                    if stats.get("overview") and stats["overview"].get("length"):
+                        ln = stats["overview"]["length"]
+                        content += f"| Min length | {ln.get('min_length', 'N/A')} |\n"
+                        content += f"| Max length | {ln.get('max_length', 'N/A')} |\n"
+                        mean_ln = ln.get("mean_length")
+                        content += f"| Mean length | {f'{mean_ln:.2f}' if mean_ln else 'N/A'} |\n"
+                content += "\n"
+
+                # Detailed Statistics
+                if cat == "Numeric" and stats.get("statistics"):
+                    s = stats["statistics"]
+                    content += "#### Quantile Statistics\n\n"
+                    content += "| Statistic | Value |\n|-----------|-------|\n"
+                    q = s.get("quantiles", {})
+                    content += f"| Minimum | {q.get('minimum', 0):.6g} |\n"
+                    content += f"| 5th percentile | {q.get('p5', 0):.6g} |\n"
+                    content += f"| Q1 (25%) | {q.get('q1', 0):.6g} |\n"
+                    content += f"| Median (50%) | {q.get('median', 0):.6g} |\n"
+                    content += f"| Q3 (75%) | {q.get('q3', 0):.6g} |\n"
+                    content += f"| 95th percentile | {q.get('p95', 0):.6g} |\n"
+                    content += f"| Maximum | {q.get('maximum', 0):.6g} |\n"
+                    content += f"| Range | {q.get('range', 0):.6g} |\n"
+                    content += f"| IQR | {q.get('iqr', 0):.6g} |\n\n"
+
+                    content += "#### Descriptive Statistics\n\n"
+                    content += "| Statistic | Value |\n|-----------|-------|\n"
+                    d = s.get("descriptive", {})
+                    content += f"| Mean | {d.get('mean', 0):.6g} |\n"
+                    content += f"| Std deviation | {d.get('standard_deviation', 0):.6g} |\n"
+                    content += f"| Variance | {d.get('variance', 0):.6g} |\n"
+                    cv = d.get("coefficient_of_variation")
+                    content += f"| CV | {f'{cv:.6g}' if cv else 'N/A'} |\n"
+                    content += f"| Skewness | {d.get('skewness', 0):.6g} |\n"
+                    content += f"| Kurtosis | {d.get('kurtosis', 0):.6g} |\n"
+                    content += f"| MAD | {d.get('mad', 0):.6g} |\n"
+                    content += f"| Sum | {d.get('sum', 0):.6g} |\n"
+                    content += f"| Monotonicity | {d.get('monotonicity', 'N/A').capitalize()} |\n\n"
+
+                elif stats.get("overview"):
+                    ov = stats["overview"]
+                    if ov.get("characters_and_unicode"):
+                        cu = ov["characters_and_unicode"]
+                        content += "#### Character Statistics\n\n"
+                        content += "| Statistic | Value |\n|-----------|-------|\n"
+                        content += f"| Total characters | {cu.get('total_characters', 0)} |\n"
+                        content += f"| Distinct characters | {cu.get('distinct_characters', 0)} |\n"
+                        content += f"| Distinct categories | {cu.get('distinct_categories', 0)} |\n\n"
 
                 if "common_values" in stats and stats["common_values"]:
-                    content += "#### Common Values\n"
-                    content += "| Value | Count | Percentage |\n|---|---|---|\n"
+                    content += "#### Common Values\n\n"
+                    content += "| Value | Count | % |\n|-------|------:|----:|\n"
                     cv = stats["common_values"]
                     if isinstance(cv, dict):
-                        for val, metrics in list(cv.items())[:5]:
+                        for val, metrics in list(cv.items())[:10]:
                             content += f"| {val} | {metrics['count']} | {metrics['percentage']:.1f}% |\n"
                     content += "\n"
 
+                if "extreme_values" in stats and stats["extreme_values"]:
+                    content += "#### Extreme Values\n\n"
+                    ev = stats["extreme_values"]
+                    if "minimum_10" in ev:
+                        content += f"**Minimum 10:** `{', '.join(f'{v:.4g}' for v in ev['minimum_10'])}`\n\n"
+                    if "maximum_10" in ev:
+                        content += f"**Maximum 10:** `{', '.join(f'{v:.4g}' for v in ev['maximum_10'])}`\n\n"
+
+                if cat == "Numeric":
+                    content += "#### Value Counts\n\n"
+                    content += "| Type | Count | % |\n|------|------:|----:|\n"
+                    content += f"| Zeros | {stats.get('zeros_count', 0)} | {stats.get('zeros_percentage', 0):.1f}% |\n"
+                    content += f"| Negative | {stats.get('negative_count', 0)} | {stats.get('negative_percentage', 0):.1f}% |\n"
+                    content += f"| Infinite | {stats.get('infinite_count', 0)} | {stats.get('infinite_percentage', 0):.1f}% |\n\n"
+
                 if "plots" in stats and stats["plots"] and img_dir:
-                    content += "#### Visualizations\n"
+                    content += "#### Visualizations\n\n"
                     for plot_name, plot_data in stats["plots"].items():
                         img_filename = f"{col}_{plot_name}.png".replace(" ", "_").replace("/", "-")
                         img_path = os.path.join(img_dir, img_filename)
@@ -131,6 +207,8 @@ class MarkdownReport:
                             content += f"![{plot_name}]({rel_path})\n\n"
                         except Exception:
                             content += f"*(Error saving plot {plot_name})*\n\n"
+
+                content += "---\n\n"
 
             # Correlations
             content += "## Correlations\n\n"
@@ -172,11 +250,16 @@ class MarkdownReport:
             for col, count in missing_stats.get("count", {}).items():
                 pct = missing_stats.get("percentage", {}).get(col, 0)
                 if count > 0:
-                    content += f"| {col} | {count} | {pct}% |\n"
+                    content += f"| {col} | {count} | {pct:.2f}% |\n"
 
             # Dataset Preview
             content += "\n## Dataset Preview\n\n"
-            content += "### Head\n\n" + pd.DataFrame(summary["summaries"]["head"]).to_markdown(index=False) + "\n\n"
+            content += "### Head (first 5 rows)\n\n"
+            content += pd.DataFrame(summary["summaries"]["head"]).to_markdown(index=False) + "\n\n"
+            content += "### Random Sample (10 rows)\n\n"
+            content += pd.DataFrame(summary["summaries"]["sample"]).to_markdown(index=False) + "\n\n"
+            content += "### Tail (last 5 rows)\n\n"
+            content += pd.DataFrame(summary["summaries"]["tail"]).to_markdown(index=False) + "\n\n"
 
         content += "\n---\nGenerated by HashPrep\n"
 
