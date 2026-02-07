@@ -136,3 +136,89 @@ def _check_datetime_skew(analyzer, threshold: float = 0.8):
                 )
             )
     return issues
+
+
+def _check_infinite_values(analyzer, threshold: float = 0.01):
+    """Detect columns with infinite values."""
+    issues = []
+    for col in analyzer.df.select_dtypes(include="number").columns:
+        series = analyzer.df[col]
+        inf_count = int(np.isinf(series).sum())
+        if inf_count > 0:
+            inf_ratio = inf_count / len(series)
+            severity = "critical" if inf_ratio > threshold else "warning"
+            impact = "high" if severity == "critical" else "medium"
+            issues.append(
+                Issue(
+                    category="infinite_values",
+                    severity=severity,
+                    column=col,
+                    description=f"'{col}' has {inf_count} infinite values ({inf_ratio:.1%})",
+                    impact_score=impact,
+                    quick_fix=(
+                        "Options:\n"
+                        "- Replace with NaN: Treat as missing (Pros: Clean; Cons: Loses info).\n"
+                        "- Replace with max/min: Cap to finite bounds (Pros: Retains data; Cons: Alters distribution).\n"
+                        "- Investigate source: Find cause of infinities (Pros: Root cause fix; Cons: Time-consuming)."
+                    ),
+                )
+            )
+    return issues
+
+
+def _check_constant_length(analyzer, threshold: float = 0.95):
+    """Detect string columns where all values have the same length (e.g., IDs, codes)."""
+    issues = []
+    for col in analyzer.df.select_dtypes(include="object").columns:
+        series = analyzer.df[col].dropna().astype(str)
+        if len(series) < 10:
+            continue
+        lengths = series.str.len()
+        most_common_length_ratio = lengths.value_counts(normalize=True).iloc[0] if len(lengths) > 0 else 0
+
+        if most_common_length_ratio >= threshold:
+            most_common_length = int(lengths.mode().iloc[0])
+            issues.append(
+                Issue(
+                    category="constant_length",
+                    severity="warning",
+                    column=col,
+                    description=f"'{col}' has constant length ({most_common_length} chars for {most_common_length_ratio:.1%} of values)",
+                    impact_score="low",
+                    quick_fix=(
+                        "Options:\n"
+                        "- Likely an ID/code: Consider dropping if not predictive.\n"
+                        "- Extract patterns: Parse for meaningful substrings.\n"
+                        "- Verify: Constant length may indicate structured data."
+                    ),
+                )
+            )
+    return issues
+
+
+def _check_empty_dataset(analyzer):
+    """Check if the dataset is empty or has no valid data."""
+    issues = []
+    if len(analyzer.df) == 0:
+        issues.append(
+            Issue(
+                category="empty_dataset",
+                severity="critical",
+                column="__all__",
+                description="Dataset is empty (0 rows)",
+                impact_score="high",
+                quick_fix="The dataset has no data. Verify the data source and loading process.",
+            )
+        )
+    elif analyzer.df.dropna(how="all").empty:
+        issues.append(
+            Issue(
+                category="empty_dataset",
+                severity="critical",
+                column="__all__",
+                description="All rows contain only missing values",
+                impact_score="high",
+                quick_fix="All data is missing. Check data extraction and verify the source.",
+            )
+        )
+    return issues

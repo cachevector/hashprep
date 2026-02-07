@@ -324,24 +324,40 @@ def _summarize_categorical(df, col):
 def _summarize_datetime(df, col):
     dt_series = pd.to_datetime(df[col], errors="coerce")
     valid_series = dt_series.dropna()
-    original_missing = df[col].isna().sum()
     parse_fails = int((dt_series.isna() & df[col].notna()).sum())
     invalid_percentage = (parse_fails / len(df) * 100) if len(df) > 0 else 0.0
+
+    if valid_series.empty:
+        return {
+            "minimum": None,
+            "maximum": None,
+            "range_days": None,
+            "invalid_count": parse_fails,
+            "invalid_percentage": invalid_percentage,
+            "counts": None,
+        }
+
+    min_dt = valid_series.min()
+    max_dt = valid_series.max()
+    range_delta = max_dt - min_dt
+
+    year_counts = valid_series.dt.year.value_counts().to_dict()
+    month_counts = valid_series.dt.month.value_counts().to_dict()
+    day_counts = valid_series.dt.day.value_counts().to_dict()
+
     stats = {
-        "minimum": str(valid_series.min()) if not valid_series.empty else None,
-        "maximum": str(valid_series.max()) if not valid_series.empty else None,
+        "minimum": str(min_dt),
+        "maximum": str(max_dt),
+        "range_days": int(range_delta.days),
+        "range_str": str(range_delta),
         "invalid_count": parse_fails,
         "invalid_percentage": invalid_percentage,
-    }
-    if not valid_series.empty:
-        year_counts = valid_series.dt.year.value_counts().to_dict()
-        month_counts = valid_series.dt.month.value_counts().to_dict()
-        day_counts = valid_series.dt.day.value_counts().to_dict()
-        stats["counts"] = {
+        "counts": {
             "years": year_counts,
             "months": month_counts,
             "days": day_counts,
-        }
+        },
+    }
     return stats
 
 

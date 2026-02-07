@@ -1,34 +1,86 @@
 # Dataset Quality Report
 
-Generated: 2026-01-18 12:57:05
-HashPrep Version: 0.1.0a3
+## Overview
 
-## Executive Summary
-- Total Issues: 15
-- Critical Issues: 2
-- Warnings: 13
-- Rows: 891
-- Columns: 12
+### Dataset Statistics
 
-## Issues Overview
+| Metric | Value |
+|--------|-------|
+| Number of variables | 12 |
+| Number of observations | 891 |
+| Missing cells | 866 |
+| Missing cells (%) | 8.1% |
+| Duplicate rows | 0 |
+| Duplicate rows (%) | 0.0% |
+| Total size in memory | 315.0 KiB |
+| Average record size | 362.1 B |
 
-| Category | Severity | Column | Description | Impact | Quick Fix |
-|----------|----------|--------|-------------|--------|-----------|
-| missing_values | critical | Cabin | 77.1% missing values in 'Cabin' | high | Options:  • Drop column: Reduces bias from missing data (Pros: Simplifies model; Cons: Loses potential info). • Impute values: Use domain-informed methods (e.g., median, mode, or predictive model) (Pros: Retains feature; Cons: May introduce bias). • Create missingness indicator: Flag missing values as a new feature (Pros: Captures missingness pattern; Cons: Adds complexity). |
-| high_cardinality | critical | Name | Column 'Name' has 891 unique values (100.0% of rows) | high | Options:  • Drop column: Avoids overfitting from unique identifiers (Pros: Simplifies model; Cons: Loses potential info). • Engineer feature: Extract patterns (e.g., titles from names) (Pros: Retains useful info; Cons: Requires domain knowledge). • Use hashing: Reduce dimensionality (Pros: Scalable; Cons: May lose interpretability). |
-| high_cardinality | warning | Ticket | Column 'Ticket' has 681 unique values (76.4% of rows) | medium | Options:  • Group rare categories: Reduce cardinality (Pros: Simplifies feature; Cons: May lose nuance). • Use feature hashing: Map to lower dimensions (Pros: Scalable; Cons: Less interpretable). • Retain and test: Evaluate feature importance (Pros: Data-driven; Cons: Risk of overfitting). |
-| high_cardinality | warning | Cabin | Column 'Cabin' has 147 unique values (16.5% of rows) | medium | Options:  • Group rare categories: Reduce cardinality (Pros: Simplifies feature; Cons: May lose nuance). • Use feature hashing: Map to lower dimensions (Pros: Scalable; Cons: Less interpretable). • Retain and test: Evaluate feature importance (Pros: Data-driven; Cons: Risk of overfitting). |
-| outliers | warning | SibSp | Column 'SibSp' has 12 potential outliers (1.3% of non-missing values) | medium | Options:  • Investigate outliers: Verify if valid or errors (Pros: Ensures accuracy; Cons: Time-consuming). • Transform: Use log/sqrt to reduce impact (Pros: Retains data; Cons: Changes interpretation). • Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models). |
-| outliers | warning | Parch | Column 'Parch' has 10 potential outliers (1.1% of non-missing values) | medium | Options:  • Investigate outliers: Verify if valid or errors (Pros: Ensures accuracy; Cons: Time-consuming). • Transform: Use log/sqrt to reduce impact (Pros: Retains data; Cons: Changes interpretation). • Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models). |
-| outliers | warning | Fare | Column 'Fare' has 11 potential outliers (1.2% of non-missing values) | medium | Options:  • Investigate outliers: Verify if valid or errors (Pros: Ensures accuracy; Cons: Time-consuming). • Transform: Use log/sqrt to reduce impact (Pros: Retains data; Cons: Changes interpretation). • Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models). |
-| high_zero_counts | warning | Survived | Column 'Survived' has 61.6% zero values | medium | Options:  • Transform: Create binary indicator for zeros (Pros: Captures pattern; Cons: Adds complexity). • Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: May skew results). • Investigate zeros: Verify validity (Pros: Ensures accuracy; Cons: Time-consuming). |
-| high_zero_counts | warning | SibSp | Column 'SibSp' has 68.2% zero values | medium | Options:  • Transform: Create binary indicator for zeros (Pros: Captures pattern; Cons: Adds complexity). • Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: May skew results). • Investigate zeros: Verify validity (Pros: Ensures accuracy; Cons: Time-consuming). |
-| high_zero_counts | warning | Parch | Column 'Parch' has 76.1% zero values | medium | Options:  • Transform: Create binary indicator for zeros (Pros: Captures pattern; Cons: Adds complexity). • Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: May skew results). • Investigate zeros: Verify validity (Pros: Ensures accuracy; Cons: Time-consuming). |
-| missing_patterns | warning | Age | Missingness in 'Age' correlates with 6 columns (Pclass, Parch, Embarked) | medium | Options:  • Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias). • Drop column: If less critical (Pros: Simplifies model; Cons: Loses info). • Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation). |
-| missing_patterns | warning | Cabin | Missingness in 'Cabin' correlates with 6 columns (Pclass, Fare, Survived) | medium | Options:  • Impute values: Use simple or domain-informed methods (Pros: Retains feature; Cons: Risk of bias). • Drop column: If less critical (Pros: Simplifies model; Cons: Loses info). • Test impact: Evaluate model with/without feature (Pros: Data-driven; Cons: Requires computation). |
-| skewness | warning | SibSp | Column 'SibSp' is highly skewed (skewness: 3.70) | medium | Options:  • Square root transform: Reduces moderate skew. • Monitor: Evaluate model performance on skewed data. |
-| skewness | warning | Fare | Column 'Fare' is highly skewed (skewness: 4.79) | medium | Options:  • Square root transform: Reduces moderate skew. • Monitor: Evaluate model performance on skewed data. |
-| feature_correlation | warning | Survived,Sex | Categorical columns 'Survived' and 'Sex' highly associated (Cramer's V: 0.540) | medium | Options:  • Monitor redundancy.  • Re-encode. |
+### Variable Types
+
+| Type | Count |
+|------|-------|
+| Numeric | 3 |
+| Categorical | 6 |
+| Text | 3 |
+
+## Alerts
+
+**Critical Issues:** 2 | **Warnings:** 17
+
+### Missing
+
+- **77.1% missing values in 'Cabin'**
+- Missingness in 'Age' correlates with 6 columns (Pclass, Parch, Embarked)
+- Missingness in 'Cabin' correlates with 6 columns (Pclass, Fare, Survived)
+
+### High Cardinality
+
+- **Column 'Name' has 891 unique values (100.0% of rows)**
+- Column 'Ticket' has 681 unique values (76.4% of rows)
+- Column 'Cabin' has 147 unique values (16.5% of rows)
+
+### Outliers
+
+- Column 'SibSp' has 12 potential outliers (1.3% of non-missing values)
+- Column 'Parch' has 10 potential outliers (1.1% of non-missing values)
+- Column 'Fare' has 11 potential outliers (1.2% of non-missing values)
+
+### Zeros
+
+- Column 'Survived' has 61.6% zero values
+- Column 'SibSp' has 68.2% zero values
+- Column 'Parch' has 76.1% zero values
+
+### Skewness
+
+- Column 'SibSp' is highly skewed (skewness: 3.70)
+- Column 'Fare' is highly skewed (skewness: 4.79)
+
+### Uniform
+
+- 'PassengerId' is uniformly distributed and monotonic
+
+### Unique
+
+- 'PassengerId' has unique values
+- 'Name' has unique values
+
+### Constant Length
+
+- 'Embarked' has constant length (1 chars for 100.0% of values)
+
+### High Correlation
+
+- Categorical columns 'Survived' and 'Sex' highly associated (Cramer's V: 0.540)
+
+## Reproduction
+
+| Property | Value |
+|----------|-------|
+| Analysis started | 2026-02-06T16:21:28 |
+| Analysis finished | 2026-02-06T16:21:35 |
+| Duration | 6.83 seconds |
+| Software version | hashprep v0.1.0a4 |
 
 ## Variable Analysis
 
@@ -58,7 +110,6 @@ quantiles:
   q1: 223.5
   q3: 668.5
   range: 890.0
-
 ```
 
 #### Common Values
@@ -96,7 +147,6 @@ sample:
 - '1'
 - '1'
 - '0'
-
 ```
 
 #### Visualizations
@@ -125,7 +175,6 @@ sample:
 - '3'
 - '1'
 - '3'
-
 ```
 
 #### Visualizations
@@ -154,7 +203,6 @@ sample:
 - Heikkinen, Miss. Laina
 - Futrelle, Mrs. Jacques Heath (Lily May Peel)
 - Allen, Mr. William Henry
-
 ```
 
 #### Visualizations
@@ -183,7 +231,6 @@ sample:
 - female
 - female
 - male
-
 ```
 
 #### Visualizations
@@ -215,7 +262,6 @@ quantiles:
   q1: 20.125
   q3: 38.0
   range: 79.58
-
 ```
 
 #### Common Values
@@ -253,7 +299,6 @@ sample:
 - '0'
 - '1'
 - '0'
-
 ```
 
 #### Visualizations
@@ -282,7 +327,6 @@ sample:
 - '0'
 - '0'
 - '0'
-
 ```
 
 #### Visualizations
@@ -311,7 +355,6 @@ sample:
 - STON/O2. 3101282
 - '113803'
 - '373450'
-
 ```
 
 #### Visualizations
@@ -343,7 +386,6 @@ quantiles:
   q1: 7.9104
   q3: 31.0
   range: 512.3292
-
 ```
 
 #### Common Values
@@ -381,7 +423,6 @@ sample:
 - E46
 - G6
 - C103
-
 ```
 
 #### Visualizations
@@ -410,12 +451,10 @@ sample:
 - S
 - S
 - S
-
 ```
 
 #### Visualizations
 ![common_values_bar](train_hashprep_report_images/Embarked_common_values_bar.png)
-
 
 ## Correlations
 
@@ -459,9 +498,9 @@ sample:
 
 | Column | Count | Percentage |
 |--------|-------|------------|
-| Age | 177 | 19.87 |
-| Cabin | 687 | 77.1 |
-| Embarked | 2 | 0.22 |
+| Age | 177 | 19.87% |
+| Cabin | 687 | 77.1% |
+| Embarked | 2 | 0.22% |
 
 ## Dataset Preview
 
@@ -475,11 +514,6 @@ sample:
 |             4 |          1 |        1 | Futrelle, Mrs. Jacques Heath (Lily May Peel)        | female |    35 |       1 |       0 | 113803           | 53.1    | C123    | S          |
 |             5 |          0 |        3 | Allen, Mr. William Henry                            | male   |    35 |       0 |       0 | 373450           |  8.05   |         | S          |
 
-
-## Next Steps
-- Address critical issues by following fix suggestions
-- Generate Reproducible Code: Run `hashprep report <dataset> --with-code` to get a `fixes.py` script
-- Refine Dataset: Apply suggested transformations and re-analyze
 
 ---
 Generated by HashPrep

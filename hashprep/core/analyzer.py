@@ -1,3 +1,5 @@
+import time
+from datetime import datetime
 from typing import Dict, List, Optional
 
 import pandas as pd
@@ -6,9 +8,11 @@ from ..checks import run_checks
 from ..summaries import (
     add_reproduction_info,
     get_dataset_preview,
+    get_duplicate_info,
     summarize_dataset_info,
     summarize_interactions,
     summarize_missing_values,
+    summarize_variable_type_counts,
     summarize_variable_types,
     summarize_variables,
 )
@@ -26,6 +30,7 @@ from .visualizations import (
 
 class DatasetAnalyzer:
     ALL_CHECKS = [
+        "empty_dataset",
         "data_leakage",
         "high_missing_values",
         "empty_columns",
@@ -46,6 +51,10 @@ class DatasetAnalyzer:
         "missing_patterns",
         "skewness",
         "dataset_drift",
+        "uniform_distribution",
+        "unique_values",
+        "infinite_values",
+        "constant_length",
     ]
 
     def __init__(
@@ -82,9 +91,19 @@ class DatasetAnalyzer:
 
     def analyze(self) -> Dict:
         """Run all summaries and checks, return summary."""
+        analysis_start = datetime.now()
+        start_time = time.time()
+
         self.summaries.update(get_dataset_preview(self.df))
         self.summaries.update(summarize_dataset_info(self.df))
+
+        duplicate_info = get_duplicate_info(self.df)
+        self.summaries["dataset_info"].update(duplicate_info)
+
         self.summaries["variable_types"] = summarize_variable_types(
+            self.df, column_types=self.column_types
+        )
+        self.summaries["variable_type_counts"] = summarize_variable_type_counts(
             self.df, column_types=self.column_types
         )
         self.summaries["reproduction_info"] = add_reproduction_info(self.df)
@@ -104,6 +123,12 @@ class DatasetAnalyzer:
             else [check for check in self.selected_checks if check in self.ALL_CHECKS]
         )
         self.issues = run_checks(self, checks_to_run)
+
+        analysis_end = datetime.now()
+        duration_seconds = time.time() - start_time
+        self.summaries["reproduction_info"]["analysis_started"] = analysis_start.isoformat()
+        self.summaries["reproduction_info"]["analysis_finished"] = analysis_end.isoformat()
+        self.summaries["reproduction_info"]["duration_seconds"] = round(duration_seconds, 2)
 
         return self._generate_summary()
 

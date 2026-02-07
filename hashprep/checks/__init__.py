@@ -6,9 +6,19 @@ from .leakage import _check_data_leakage, _check_target_leakage_patterns
 from .missing_values import _check_high_missing_values, _check_empty_columns, _check_dataset_missingness, \
     _check_missing_patterns
 from .columns import _check_single_value_columns, _check_high_cardinality, _check_duplicates, _check_mixed_data_types
-from .outliers import _check_outliers, _check_high_zero_counts, _check_extreme_text_lengths, _check_datetime_skew, _check_skewness
+from .outliers import (
+    _check_outliers,
+    _check_high_zero_counts,
+    _check_extreme_text_lengths,
+    _check_datetime_skew,
+    _check_skewness,
+    _check_infinite_values,
+    _check_constant_length,
+    _check_empty_dataset,
+)
 from .correlations import calculate_correlations
 from .imbalance import _check_class_imbalance
+from .distribution import _check_uniform_distribution, _check_unique_values
 
 
 def _check_dataset_drift(analyzer):
@@ -36,6 +46,11 @@ CHECKS = {
     "missing_patterns": _check_missing_patterns,
     "skewness": _check_skewness,
     "dataset_drift": _check_dataset_drift,
+    "uniform_distribution": _check_uniform_distribution,
+    "unique_values": _check_unique_values,
+    "infinite_values": _check_infinite_values,
+    "constant_length": _check_constant_length,
+    "empty_dataset": _check_empty_dataset,
 }
 
 CORRELATION_CHECKS = {"feature_correlation", "categorical_correlation", "mixed_correlation"}
