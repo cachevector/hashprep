@@ -533,21 +533,74 @@ class PdfReport:
 
 <!-- Correlations -->
 <h2>Correlations</h2>
+{% if numeric_correlations.plots %}
 <div class="plot-grid">
-    {% if numeric_correlations.plots %}
-        {% for method, plot_data in numeric_correlations.plots.items() %}
-        <div class="plot-item">
-            <h4>{{ method | capitalize }}</h4>
-            <img src="data:image/png;base64,{{ plot_data }}" />
-        </div>
-        {% endfor %}
-    {% else %}
-        <p style="color: #6b7280;">No numeric correlations available.</p>
-    {% endif %}
+    {% for method, plot_data in numeric_correlations.plots.items() %}
+    <div class="plot-item">
+        <h4>{{ method | capitalize }}</h4>
+        <img src="data:image/png;base64,{{ plot_data }}" />
+    </div>
+    {% endfor %}
 </div>
+{% elif numeric_correlations.pearson %}
+<h3>Numeric Correlations (Pearson - Top Pairs)</h3>
+<table class="stats-table" style="margin-bottom: 16pt;">
+    <thead>
+        <tr>
+            <th>Feature 1</th>
+            <th>Feature 2</th>
+            <th>Correlation</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% set pairs = [] %}
+        {% for c1, corrs in numeric_correlations.pearson.items() %}
+            {% for c2, val in corrs.items() %}
+                {% if c1 < c2 %}
+                    {% set _ = pairs.append((c1, c2, val|abs, val)) %}
+                {% endif %}
+            {% endfor %}
+        {% endfor %}
+        {% for c1, c2, abs_val, val in pairs|sort(attribute='2', reverse=True) %}
+        {% if loop.index <= 20 %}
+        <tr>
+            <td>{{ c1 }}</td>
+            <td>{{ c2 }}</td>
+            <td>{{ "%.3f"|format(val) }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+
+{% if categorical_correlations %}
+<h3>Categorical Correlations (Cramer's V - Top Pairs)</h3>
+<table class="stats-table">
+    <thead>
+        <tr>
+            <th>Pair</th>
+            <th>Value</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for pair, val in categorical_correlations.items()|sort(attribute='1', reverse=True) %}
+        {% if loop.index <= 20 %}
+        <tr>
+            <td>{{ pair }}</td>
+            <td>{{ "%.3f"|format(val) }}</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
+{% else %}
+<p style="color: #6b7280;">No correlation data available.</p>
+{% endif %}
 
 <!-- Missing Values -->
 <h2>Missing Values</h2>
+{% if missing_plots.missing_bar or missing_plots.missing_heatmap %}
 <div class="plot-grid">
     {% if missing_plots.missing_bar %}
     <div class="plot-item">
@@ -562,6 +615,29 @@ class PdfReport:
     </div>
     {% endif %}
 </div>
+{% else %}
+<h3>Missing Values by Column</h3>
+<table class="stats-table">
+    <thead>
+        <tr>
+            <th>Column</th>
+            <th>Count</th>
+            <th>Percentage</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for col, count in missing_values.count.items()|sort(attribute='1', reverse=True) %}
+        {% if count > 0 %}
+        <tr>
+            <td style="font-weight: 600;">{{ col }}</td>
+            <td>{{ count }}</td>
+            <td>{{ "%.2f"|format(missing_values.percentage[col]) }}%</td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endif %}
 
 <!-- Sample Data -->
 <h2>Sample Data</h2>

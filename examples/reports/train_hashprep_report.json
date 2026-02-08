@@ -1,6 +1,6 @@
 {
   "metadata": {
-    "generated": "2026-02-07T16:29:10.330716",
+    "generated": "2026-02-08T11:45:34.556275",
     "version": "0.1.0a4"
   },
   "dataset_overview": {
@@ -184,9 +184,9 @@
     ]
   },
   "reproduction": {
-    "analysis_started": "2026-02-07T16:28:58.893013",
-    "analysis_finished": "2026-02-07T16:29:09.262854",
-    "duration_seconds": 10.37,
+    "analysis_started": "2026-02-08T11:45:25.912005",
+    "analysis_finished": "2026-02-08T11:45:33.888968",
+    "duration_seconds": 7.98,
     "software_version": "0.1.0a4",
     "dataset_hash": "9a4bcd798a058b35f2f8aeaeede9a159"
   },
