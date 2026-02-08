@@ -16,6 +16,7 @@ authors = [
 dependencies = [
     "click>=8.3.0",
     "fastapi>=0.116.1",
+    "fuzzybunny",
     "jinja2>=3.1.6",
     "matplotlib>=3.10.6",
     "numpy>=2.2.6",

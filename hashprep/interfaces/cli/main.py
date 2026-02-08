@@ -1,8 +1,8 @@
 import json
 import os
-from difflib import get_close_matches
 
 import click
+import fuzzybunny
 import numpy as np
 import pandas as pd
 
@@ -27,9 +27,18 @@ def json_numpy_handler(obj):
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
 
 
-def suggest_check_names(invalid_check, valid_checks, cutoff=0.6):
-    """Suggest similar check names for an invalid check."""
-    suggestions = get_close_matches(invalid_check, valid_checks, n=3, cutoff=cutoff)
+def suggest_check_names(invalid_check, valid_checks, cutoff=0.4):
+    """Suggest similar check names for an invalid check using fuzzybunny."""
+    # Use fuzzybunny to find the top 3 most similar check names
+    results = fuzzybunny.rank(
+        invalid_check,
+        valid_checks,
+        scorer='levenshtein',
+        threshold=cutoff,
+        top_n=3
+    )
+    # Extract just the matched strings from the results
+    suggestions = [match[0] for match in results]
     return suggestions
 
 
