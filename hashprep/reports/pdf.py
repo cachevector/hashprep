@@ -286,9 +286,9 @@ class PdfReport:
     .plot-grid .plot-item h4 { text-align: center; }
 
     /* Data tables */
-    .data-table { width: 100%; border-collapse: collapse; font-size: 7.5pt; margin-bottom: 10pt; }
-    .data-table th { background: #f9fafb; padding: 4pt 5pt; text-align: left; font-weight: 600; border-bottom: 1.5px solid #e5e7eb; font-size: 7pt; }
-    .data-table td { padding: 3pt 5pt; border-bottom: 1px solid #f3f4f6; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; max-width: 120pt; }
+    .data-table { width: 100%; border-collapse: collapse; font-size: 5.5pt; margin-bottom: 10pt; table-layout: fixed; }
+    .data-table th { background: #f9fafb; padding: 2pt 3pt; text-align: left; font-weight: 600; border-bottom: 1.5px solid #e5e7eb; font-size: 5.5pt; word-wrap: break-word; }
+    .data-table td { padding: 2pt 3pt; border-bottom: 1px solid #f3f4f6; word-wrap: break-word; overflow-wrap: break-word; font-size: 5.5pt; }
 
     /* Reproduction */
     .repro-grid {
