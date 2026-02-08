@@ -25,7 +25,7 @@ def _load_generators():
 def get_generators():
     if not hasattr(get_generators, 'cache'):
         get_generators.cache = _load_generators()
-        return get_generators.cache
+    return get_generators.cache
 
 def generate_report(summary, format="md", full=False, output_file=None, theme="minimal"):
     generators = get_generators()
