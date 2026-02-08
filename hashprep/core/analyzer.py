@@ -1,8 +1,10 @@
 import time
+import warnings
 from datetime import datetime
 from typing import Dict, List, Optional
 
 import pandas as pd
+from scipy.stats import ConstantInputWarning
 
 from ..checks import run_checks
 from ..summaries import (
@@ -91,6 +93,9 @@ class DatasetAnalyzer:
 
     def analyze(self) -> Dict:
         """Run all summaries and checks, return summary."""
+        # Suppress scipy warnings about constant input arrays
+        warnings.filterwarnings('ignore', category=ConstantInputWarning)
+
         analysis_start = datetime.now()
         start_time = time.time()
 
