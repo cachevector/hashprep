@@ -332,9 +332,8 @@ def report(
     summary = analyzer.analyze()
 
     base_name = os.path.splitext(os.path.basename(file_path))[0] + "_hashprep_report"
-    report_dir = "examples/reports/"
-    os.makedirs(report_dir, exist_ok=True)
-    report_file = os.path.join(report_dir, f"{base_name}.{format}")
+    # Save to current working directory by default
+    report_file = f"{base_name}.{format}"
 
     generate_report(
         summary,
@@ -366,14 +365,14 @@ def report(
         suggestions = provider.get_suggestions()
 
         codegen = CodeGenerator(suggestions)
-        fixes_file = os.path.join(report_dir, f"{base_name}_fixes.py")
+        fixes_file = f"{base_name}_fixes.py"
         fixes_code = codegen.generate_pandas_script()
         with open(fixes_file, "w") as f:
             f.write(fixes_code)
         click.echo(f"Pandas fixes script saved to: {fixes_file}")
 
         builder = PipelineBuilder(suggestions)
-        pipeline_file = os.path.join(report_dir, f"{base_name}_pipeline.py")
+        pipeline_file = f"{base_name}_pipeline.py"
         pipeline_code = builder.generate_pipeline_code()
         with open(pipeline_file, "w") as f:
             f.write(pipeline_code)
