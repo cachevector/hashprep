@@ -757,6 +757,12 @@ class HtmlReport:
         .brutal-table th { border: 4px solid black; background-color: #fde047; padding: 0.75rem; text-align: left; font-weight: bold; }
         .brutal-table td { border: 4px solid black; padding: 0.75rem; }
         .brutal-img { border: 4px solid black; }
+
+        /* Pandas dataframe table styling for sample data */
+        table.dataframe { border-collapse: collapse; width: 100%; border: 4px solid black; }
+        table.dataframe th { border: 2px solid black; background-color: #fde047; padding: 0.5rem; text-align: left; font-weight: bold; white-space: nowrap; }
+        table.dataframe td { border: 2px solid black; padding: 0.5rem; white-space: nowrap; }
+
         [x-cloak] { display: none !important; }
     </style>
 </head>
