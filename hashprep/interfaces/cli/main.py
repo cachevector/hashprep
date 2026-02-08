@@ -2,6 +2,7 @@ import json
 import os
 
 import click
+import fuzzybunny
 import numpy as np
 import pandas as pd
 
@@ -24,6 +25,21 @@ def json_numpy_handler(obj):
     elif isinstance(obj, np.ndarray):
         return obj.tolist()
     raise TypeError(f"Object of type {type(obj)} is not JSON serializable")
+
+
+def suggest_check_names(invalid_check, valid_checks, cutoff=0.4):
+    """Suggest similar check names for an invalid check using fuzzybunny."""
+    # Use fuzzybunny to find the top 3 most similar check names
+    results = fuzzybunny.rank(
+        invalid_check,
+        valid_checks,
+        scorer='levenshtein',
+        threshold=cutoff,
+        top_n=3
+    )
+    # Extract just the matched strings from the results
+    suggestions = [match[0] for match in results]
+    return suggestions
 
 
 @click.group()
@@ -72,6 +88,10 @@ def scan(
         invalid_checks = [c for c in selected_checks if c not in valid_checks]
         if invalid_checks:
             click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
+            for invalid in invalid_checks:
+                suggestions = suggest_check_names(invalid, valid_checks)
+                if suggestions:
+                    click.echo(f"  Did you mean: {', '.join(suggestions)}?")
             selected_checks = [c for c in selected_checks if c in valid_checks]
 
     sampling_config = None
@@ -165,6 +185,10 @@ def details(file_path, target, checks, comparison, sample_size, no_sample):
         invalid_checks = [c for c in selected_checks if c not in valid_checks]
         if invalid_checks:
             click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
+            for invalid in invalid_checks:
+                suggestions = suggest_check_names(invalid, valid_checks)
+                if suggestions:
+                    click.echo(f"  Did you mean: {', '.join(suggestions)}?")
             selected_checks = [c for c in selected_checks if c in valid_checks]
 
     sampling_config = None
@@ -286,6 +310,10 @@ def report(
         invalid_checks = [c for c in selected_checks if c not in valid_checks]
         if invalid_checks:
             click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
+            for invalid in invalid_checks:
+                suggestions = suggest_check_names(invalid, valid_checks)
+                if suggestions:
+                    click.echo(f"  Did you mean: {', '.join(suggestions)}?")
             selected_checks = [c for c in selected_checks if c in valid_checks]
 
     sampling_config = None
