@@ -493,6 +493,32 @@ woff = [
 ]
 
 [[package]]
+name = "fuzzybunny"
+version = "0.2.2"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/7a/1a/506ff55676450fa94b59b900b75fcec9951458a3304597ac3c9d1c4e84ff/fuzzybunny-0.2.2.tar.gz", hash = "sha256:614fe18de8a6a95f0195cf44ef3d4f57bef27787c5f7bfe392143faa3c561cb5", size = 9683, upload-time = "2026-02-06T06:05:17.114Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/bf/6c/b3f9c19bfc781b5843aa2e2dffd366119d28d8931bd3644befd41208b68f/fuzzybunny-0.2.2-cp310-cp310-macosx_10_9_x86_64.whl", hash = "sha256:efe0b655329420d59503bdfb29ccd5bfa77614d557d45bf663508a99e127de2c", size = 101344, upload-time = "2026-02-06T06:04:23.522Z" },
+    { url = "https://files.pythonhosted.org/packages/4b/e8/1aca78d4930ca8dc1d9fba9fc413c0442232a7e06d68b9f18a285798948a/fuzzybunny-0.2.2-cp310-cp310-macosx_11_0_arm64.whl", hash = "sha256:8c70db51f6f59f6fa1296f5396dd8074160a2b2209552cad9ad1e0a6207f4545", size = 96057, upload-time = "2026-02-06T06:04:24.926Z" },
+    { url = "https://files.pythonhosted.org/packages/e1/1c/69201c12f0e2d665b0f79bbf3251d30d6babc4068577001eca1feeac4f33/fuzzybunny-0.2.2-cp310-cp310-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:bbd000966358306d651002bf23325ce4f7657872ecdb72ee3f19ad6d8e5a59fb", size = 1428545, upload-time = "2026-02-06T06:04:26.792Z" },
+    { url = "https://files.pythonhosted.org/packages/31/b0/2d246b3b86d6988c948fc26fb260cf85349ef0dc7a4990d22567b16f0237/fuzzybunny-0.2.2-cp310-cp310-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:e7acb84af4f3f28223fe8b2321e40806e8ebc28773f0455bd41c35fadbc3f04d", size = 1441907, upload-time = "2026-02-06T06:04:28.999Z" },
+    { url = "https://files.pythonhosted.org/packages/f6/d5/68fbc4f92b1e6d67da4ab21b9dbb1466379f23d3174e76da37bf3b259fe9/fuzzybunny-0.2.2-cp310-cp310-win32.whl", hash = "sha256:22a66377321ffe6cbf07d53d1af8d5ad938449ca072271ab707b43a22adc572b", size = 78257, upload-time = "2026-02-06T06:04:30.458Z" },
+    { url = "https://files.pythonhosted.org/packages/a4/71/81bd3bef3b270e012491ae5e4343c9f36877a8e662c7a29e27cf90c0c8f6/fuzzybunny-0.2.2-cp310-cp310-win_amd64.whl", hash = "sha256:423427d03c33f2c540f52cdee3f8eb2761caef258d4c544940b5bdfa807bfce5", size = 89803, upload-time = "2026-02-06T06:04:32.045Z" },
+    { url = "https://files.pythonhosted.org/packages/0f/1f/a4296478d04fc46ef101f403750a7cd1bd805f4908c0d86744fb66e81127/fuzzybunny-0.2.2-cp311-cp311-macosx_10_9_x86_64.whl", hash = "sha256:f8bc5691cd27ca9b36a5d8778c1d631b9697d1e3b685264f5a12e8d9f184ec86", size = 102587, upload-time = "2026-02-06T06:04:33.705Z" },
+    { url = "https://files.pythonhosted.org/packages/8a/7a/62927dafa75d3c8f8094179eeccb68a3702897f3d117411af9cca32c5c8a/fuzzybunny-0.2.2-cp311-cp311-macosx_11_0_arm64.whl", hash = "sha256:303e0d02874188f8374963acae079d244b40f51f9eb25cf7ca70d5eec14dac5e", size = 97302, upload-time = "2026-02-06T06:04:34.934Z" },
+    { url = "https://files.pythonhosted.org/packages/c4/b2/327deb69cd3c8a66873191158aa8f392575dfa9f2a72a131867b4805779c/fuzzybunny-0.2.2-cp311-cp311-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:dec68a9f0ccd200678379cd5766bee2540cd78d585ba3d3b2a9133b65a4597d5", size = 1449594, upload-time = "2026-02-06T06:04:36.285Z" },
+    { url = "https://files.pythonhosted.org/packages/7c/a8/6f6d08bc928c0e5429df910a3dc846bb938a5184692af6ebade7d8886a28/fuzzybunny-0.2.2-cp311-cp311-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:f5aef5fa2c8062672e8ad0f572b61e827f91b29085847590c2a52516d2731dee", size = 1462181, upload-time = "2026-02-06T06:04:38.362Z" },
+    { url = "https://files.pythonhosted.org/packages/d4/9f/4b279901784eed8249c2a8b86dd54fcfc88b61e2cd67ef3d39da5829b02c/fuzzybunny-0.2.2-cp311-cp311-win32.whl", hash = "sha256:d32313d043617f1130c723d21bc26456c1c91c3c786e654521f925e729bdb3e4", size = 79381, upload-time = "2026-02-06T06:04:40.209Z" },
+    { url = "https://files.pythonhosted.org/packages/1b/0d/2b58211a8766e72684738d1bd87d02e8f049e5b8e649d9cc94df90f0886e/fuzzybunny-0.2.2-cp311-cp311-win_amd64.whl", hash = "sha256:7359f74a40172b4d33103d72ff87fe66627efa688db691f77275cef7466a0a13", size = 90663, upload-time = "2026-02-06T06:04:41.549Z" },
+    { url = "https://files.pythonhosted.org/packages/35/4a/e93f639e6c00454378da83ea5691697c08986518b7cd65338039e991364d/fuzzybunny-0.2.2-cp312-cp312-macosx_10_9_x86_64.whl", hash = "sha256:2ba9315481b45db3be92d6c0fc4fa49ddae63955d131cd57088ff9e491511623", size = 103697, upload-time = "2026-02-06T06:04:43.213Z" },
+    { url = "https://files.pythonhosted.org/packages/7d/0b/cf436676a078bcb4f231e24b154345184d4a349ca2a90b6970677f48266c/fuzzybunny-0.2.2-cp312-cp312-macosx_11_0_arm64.whl", hash = "sha256:eefa05b692db7adbfe3c1d459705ebc010f4cac925bb1f243c38be732c81a53b", size = 98058, upload-time = "2026-02-06T06:04:51.31Z" },
+    { url = "https://files.pythonhosted.org/packages/68/f6/a6ce2398b4aecfbbbf5310310351a935e51ac57f5e01300923f3b096c46f/fuzzybunny-0.2.2-cp312-cp312-manylinux_2_17_i686.manylinux2014_i686.whl", hash = "sha256:bf9fa97bb92dc95d93a7c42d09608c8596d659fdf8ca79be450e1ea9b6cda779", size = 1454098, upload-time = "2026-02-06T06:04:52.741Z" },
+    { url = "https://files.pythonhosted.org/packages/e9/ed/168e21901ed063f532ddcd10f522120812132869ba3ea0b0188bdddb2e9d/fuzzybunny-0.2.2-cp312-cp312-manylinux_2_17_x86_64.manylinux2014_x86_64.whl", hash = "sha256:cb1cbbf5ceebf14a7c069ead4d57f83066b31c369fbca2d159c2ec8df6944bb4", size = 1474427, upload-time = "2026-02-06T06:04:54.393Z" },
+    { url = "https://files.pythonhosted.org/packages/fe/a8/a6e93406ade34e2badabd5a2082ec303f5419a9cb9287eead538be3e923d/fuzzybunny-0.2.2-cp312-cp312-win32.whl", hash = "sha256:24fa750527658c530bed8ea278a467f44df93693fb4ef6a9698475ad1f961ef4", size = 80348, upload-time = "2026-02-06T06:04:55.831Z" },
+    { url = "https://files.pythonhosted.org/packages/ef/5e/b9637ff002797d1640f85ccb0186934b180cbe6e93e461e9cedd711154a1/fuzzybunny-0.2.2-cp312-cp312-win_amd64.whl", hash = "sha256:c059f15851dba26b59df77fdac057cfd7b2d3404536f9814ff62fc2807c40c7b", size = 91935, upload-time = "2026-02-06T06:04:56.946Z" },
+]
+
+[[package]]
 name = "hashprep"
 source = { editable = "." }
 dependencies = [
@@ -500,6 +526,7 @@ dependencies = [
     { name = "click" },
     { name = "fastapi" },
     { name = "fonttools" },
+    { name = "fuzzybunny" },
     { name = "jinja2" },
     { name = "matplotlib" },
     { name = "numpy", version = "2.2.6", source = { registry = "https://pypi.org/simple" }, marker = "python_full_version < '3.11'" },
@@ -526,6 +553,7 @@ requires-dist = [
     { name = "click", specifier = ">=8.3.0" },
     { name = "fastapi", specifier = ">=0.116.1" },
     { name = "fonttools", specifier = ">=4.60.2" },
+    { name = "fuzzybunny" },
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "matplotlib", specifier = ">=3.10.6" },
     { name = "numpy", specifier = ">=2.2.6" },
