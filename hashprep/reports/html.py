@@ -557,18 +557,74 @@ class HtmlReport:
             <section>
                 <h2 class="text-xl font-semibold mb-6">Correlations</h2>
                 <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    {% if numeric_correlations.plots %}
                     <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
-                        {% if numeric_correlations.plots %}
-                            {% for method, plot_data in numeric_correlations.plots.items() %}
-                            <div>
-                                <h3 class="text-sm font-medium text-gray-700 mb-4 capitalize">{{ method }} Correlation</h3>
-                                <img src="data:image/png;base64,{{ plot_data }}" class="w-full h-auto" alt="{{ method }} correlation heatmap" />
-                            </div>
-                            {% endfor %}
-                        {% else %}
-                            <p class="text-gray-500 italic col-span-3">No numeric correlations available.</p>
-                        {% endif %}
+                        {% for method, plot_data in numeric_correlations.plots.items() %}
+                        <div>
+                            <h3 class="text-sm font-medium text-gray-700 mb-4 capitalize">{{ method }} Correlation</h3>
+                            <img src="data:image/png;base64,{{ plot_data }}" class="w-full h-auto" alt="{{ method }} correlation heatmap" />
+                        </div>
+                        {% endfor %}
                     </div>
+                    {% elif numeric_correlations.pearson %}
+                    <h3 class="text-sm font-medium text-gray-700 mb-4">Numeric Correlations (Pearson - Top Pairs)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Feature 1</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Feature 2</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Correlation</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% set pairs = [] %}
+                                {% for c1, corrs in numeric_correlations.pearson.items() %}
+                                    {% for c2, val in corrs.items() %}
+                                        {% if c1 < c2 %}
+                                            {% set _ = pairs.append((c1, c2, val|abs, val)) %}
+                                        {% endif %}
+                                    {% endfor %}
+                                {% endfor %}
+                                {% for c1, c2, abs_val, val in pairs|sort(attribute='2', reverse=True) %}
+                                {% if loop.index <= 20 %}
+                                <tr>
+                                    <td class="px-4 py-2 text-sm text-gray-900">{{ c1 }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-900">{{ c2 }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-900">{{ "%.3f"|format(val) }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+
+                    {% if categorical_correlations %}
+                    <h3 class="text-sm font-medium text-gray-700 mt-6 mb-4">Categorical Correlations (Cramer's V - Top Pairs)</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Pair</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Value</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for pair, val in categorical_correlations.items()|sort(attribute='1', reverse=True) %}
+                                {% if loop.index <= 20 %}
+                                <tr>
+                                    <td class="px-4 py-2 text-sm text-gray-900">{{ pair }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-900">{{ "%.3f"|format(val) }}</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
+                    {% else %}
+                    <p class="text-gray-500 italic">No numeric correlations available.</p>
+                    {% endif %}
                 </div>
             </section>
         </div>
@@ -578,6 +634,7 @@ class HtmlReport:
             <section>
                 <h2 class="text-xl font-semibold mb-6">Missing Values</h2>
                 <div class="bg-white rounded-lg border border-gray-200 p-6">
+                    {% if missing_plots.missing_bar or missing_plots.missing_heatmap %}
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
                         {% if missing_plots.missing_bar %}
                         <div>
@@ -592,6 +649,31 @@ class HtmlReport:
                         </div>
                         {% endif %}
                     </div>
+                    {% else %}
+                    <h3 class="text-sm font-medium text-gray-700 mb-4">Missing Values by Column</h3>
+                    <div class="overflow-x-auto">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Column</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Count</th>
+                                    <th class="px-4 py-2 text-left text-xs font-medium text-gray-500 uppercase">Percentage</th>
+                                </tr>
+                            </thead>
+                            <tbody class="bg-white divide-y divide-gray-200">
+                                {% for col, count in missing_values.count.items()|sort(attribute='1', reverse=True) %}
+                                {% if count > 0 %}
+                                <tr>
+                                    <td class="px-4 py-2 text-sm text-gray-900 font-medium">{{ col }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-900">{{ count }}</td>
+                                    <td class="px-4 py-2 text-sm text-gray-900">{{ "%.2f"|format(missing_values.percentage[col]) }}%</td>
+                                </tr>
+                                {% endif %}
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% endif %}
                 </div>
             </section>
         </div>
@@ -985,16 +1067,74 @@ class HtmlReport:
         <div x-show="activeTab === 'correlations'" {% if not pdf_mode %}x-cloak{% endif %}>
             <h2 class="text-2xl font-black uppercase mb-4 bg-black text-white inline-block px-4 py-1">Correlations</h2>
             <div class="brutal-card">
+                {% if numeric_correlations.plots %}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
-                    {% if numeric_correlations.plots %}
-                        {% for method, plot_data in numeric_correlations.plots.items() %}
-                        <div>
-                            <h3 class="font-bold mb-2 uppercase">{{ method }}</h3>
-                            <img src="data:image/png;base64,{{ plot_data }}" class="w-full h-auto" />
-                        </div>
-                        {% endfor %}
-                    {% endif %}
+                    {% for method, plot_data in numeric_correlations.plots.items() %}
+                    <div>
+                        <h3 class="font-bold mb-2 uppercase">{{ method }}</h3>
+                        <img src="data:image/png;base64,{{ plot_data }}" class="w-full h-auto" />
+                    </div>
+                    {% endfor %}
                 </div>
+                {% elif numeric_correlations.pearson %}
+                <h3 class="font-bold mb-4 uppercase">Numeric (Pearson - Top Pairs)</h3>
+                <div class="overflow-x-auto mb-6">
+                    <table class="w-full border-4 border-black">
+                        <thead class="bg-black text-white">
+                            <tr>
+                                <th class="border-2 border-black px-3 py-2 text-left font-bold uppercase">Feature 1</th>
+                                <th class="border-2 border-black px-3 py-2 text-left font-bold uppercase">Feature 2</th>
+                                <th class="border-2 border-black px-3 py-2 text-left font-bold uppercase">Correlation</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            {% set pairs = [] %}
+                            {% for c1, corrs in numeric_correlations.pearson.items() %}
+                                {% for c2, val in corrs.items() %}
+                                    {% if c1 < c2 %}
+                                        {% set _ = pairs.append((c1, c2, val|abs, val)) %}
+                                    {% endif %}
+                                {% endfor %}
+                            {% endfor %}
+                            {% for c1, c2, abs_val, val in pairs|sort(attribute='2', reverse=True) %}
+                            {% if loop.index <= 20 %}
+                            <tr>
+                                <td class="border-2 border-black px-3 py-2">{{ c1 }}</td>
+                                <td class="border-2 border-black px-3 py-2">{{ c2 }}</td>
+                                <td class="border-2 border-black px-3 py-2 font-mono">{{ "%.3f"|format(val) }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if categorical_correlations %}
+                <h3 class="font-bold mb-4 uppercase">Categorical (Cramer's V - Top Pairs)</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-4 border-black">
+                        <thead class="bg-black text-white">
+                            <tr>
+                                <th class="border-2 border-black px-3 py-2 text-left font-bold uppercase">Pair</th>
+                                <th class="border-2 border-black px-3 py-2 text-left font-bold uppercase">Value</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            {% for pair, val in categorical_correlations.items()|sort(attribute='1', reverse=True) %}
+                            {% if loop.index <= 20 %}
+                            <tr>
+                                <td class="border-2 border-black px-3 py-2">{{ pair }}</td>
+                                <td class="border-2 border-black px-3 py-2 font-mono">{{ "%.3f"|format(val) }}</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
+                {% else %}
+                <p class="text-gray-600 italic">No correlation data available.</p>
+                {% endif %}
             </div>
         </div>
 
@@ -1002,6 +1142,7 @@ class HtmlReport:
         <div x-show="activeTab === 'missing'" {% if not pdf_mode %}x-cloak{% endif %}>
             <h2 class="text-2xl font-black uppercase mb-4 bg-black text-white inline-block px-4 py-1">Missing</h2>
             <div class="brutal-card">
+                {% if missing_plots.missing_bar or missing_plots.missing_heatmap %}
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
                     {% if missing_plots.missing_bar %}
                     <div>
@@ -1016,6 +1157,31 @@ class HtmlReport:
                     </div>
                     {% endif %}
                 </div>
+                {% else %}
+                <h3 class="font-bold mb-4 uppercase">Missing Values by Column</h3>
+                <div class="overflow-x-auto">
+                    <table class="w-full border-4 border-black">
+                        <thead class="bg-black text-white">
+                            <tr>
+                                <th class="border-2 border-black px-3 py-2 text-left font-bold uppercase">Column</th>
+                                <th class="border-2 border-black px-3 py-2 text-left font-bold uppercase">Count</th>
+                                <th class="border-2 border-black px-3 py-2 text-left font-bold uppercase">Percentage</th>
+                            </tr>
+                        </thead>
+                        <tbody class="bg-white">
+                            {% for col, count in missing_values.count.items()|sort(attribute='1', reverse=True) %}
+                            {% if count > 0 %}
+                            <tr>
+                                <td class="border-2 border-black px-3 py-2 font-bold">{{ col }}</td>
+                                <td class="border-2 border-black px-3 py-2">{{ count }}</td>
+                                <td class="border-2 border-black px-3 py-2 font-mono">{{ "%.2f"|format(missing_values.percentage[col]) }}%</td>
+                            </tr>
+                            {% endif %}
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+                {% endif %}
             </div>
         </div>
 

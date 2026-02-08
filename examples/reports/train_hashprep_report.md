@@ -77,9 +77,9 @@
 
 | Property | Value |
 |----------|-------|
-| Analysis started | 2026-02-07T16:28:24 |
-| Analysis finished | 2026-02-07T16:28:38 |
-| Duration | 14.75 seconds |
+| Analysis started | 2026-02-08T11:43:39 |
+| Analysis finished | 2026-02-08T11:43:48 |
+| Duration | 8.64 seconds |
 | Software version | hashprep v0.1.0a4 |
 
 ## Variable Analysis
