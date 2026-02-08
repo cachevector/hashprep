@@ -226,7 +226,10 @@ def details(file_path, target, checks, comparison, sample_size, no_sample):
             click.echo(f"  {col}: {pct}%")
     repro = summary["summaries"]["reproduction_info"]
     click.echo(f"- Dataset Hash: {repro['dataset_hash']}")
-    click.echo(f"- Analysis Time: {repro['analysis_timestamp']}")
+    if "analysis_started" in repro and repro["analysis_started"]:
+        click.echo(f"- Analysis Started: {repro['analysis_started'][:19]}")
+    if "duration_seconds" in repro:
+        click.echo(f"- Duration: {repro['duration_seconds']} seconds")
 
 
 @cli.command()
