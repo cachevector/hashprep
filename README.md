@@ -25,8 +25,8 @@
   </p>
 </div>
 
-> [!WARNING]  
-> This repository is under active development and may not be stable.
+> [!NOTE]
+> HashPrep is now in **beta** (v0.1.0b1). Core features are stable and tested, but the API may still evolve based on community feedback. Ready for testing in real-world ML workflows.
 
 ## Overview
 
