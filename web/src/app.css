@@ -1,0 +1,247 @@
+/* ============================================
+   HashPrep Design System
+   Primary accent: #b16286 (rose/mauve from logo)
+   Typography: Epilogue (300-600) + DM Mono (300-500)
+   ============================================ */
+
+:root {
+  /* Brand colors derived from #b16286 */
+  --brand-50: #fdf2f8;
+  --brand-100: #fce7f3;
+  --brand-200: #f5d0e6;
+  --brand-300: #e8a9cd;
+  --brand-400: #d47eaf;
+  --brand-500: #b16286;
+  --brand-600: #9d4f72;
+  --brand-700: #843f5e;
+  --brand-800: #6e354e;
+  --brand-900: #5c2f44;
+
+  /* Base sizing */
+  --max-width: 1200px;
+  --nav-height: 64px;
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-full: 9999px;
+
+  /* Typography */
+  --font-sans: 'Epilogue', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-mono: 'DM Mono', 'Fira Code', ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, 'Liberation Mono',
+    'Courier New', monospace;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-base: 250ms ease;
+}
+
+/* ---- Light Theme (default) ---- */
+:root, [data-theme="light"] {
+  --bg-primary: #fdfbff;
+  --bg-secondary: #f9f4fb;
+  --bg-tertiary: #f2e9f4;
+  --bg-elevated: #ffffff;
+  --bg-code: #fafafa;
+
+  --text-primary: #111827;
+  --text-secondary: #4b5563;
+  --text-tertiary: #9ca3af;
+  --text-inverse: #ffffff;
+
+  --border-primary: rgba(15, 23, 42, 0.12);
+  --border-secondary: rgba(148, 163, 184, 0.4);
+  --border-accent: var(--brand-200);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.04);
+  --shadow-md: 0 2px 8px rgba(0, 0, 0, 0.06);
+  --shadow-lg: 0 4px 16px rgba(0, 0, 0, 0.08);
+  --shadow-xl: 0 8px 32px rgba(0, 0, 0, 0.10);
+
+  --accent: var(--brand-500);
+  --accent-hover: var(--brand-600);
+  --accent-light: var(--brand-50);
+  --accent-muted: var(--brand-100);
+
+  --nav-bg: rgba(253, 251, 255, 0.9);
+  --nav-border: var(--border-secondary);
+
+  --code-bg: #fafafa;
+  --code-text: var(--text-primary);
+  --code-border: var(--border-primary);
+
+  --hero-gradient: radial-gradient(circle at top, rgba(177, 98, 134, 0.16), transparent 55%),
+    radial-gradient(circle at bottom, rgba(148, 163, 184, 0.12), transparent 65%);
+  --section-alt-bg: var(--bg-secondary);
+
+  --grid-color: rgba(148, 163, 184, 0.15);
+}
+
+/* ---- Dark Theme ---- */
+[data-theme="dark"] {
+  --bg-primary: #0f1117;
+  --bg-secondary: #151821;
+  --bg-tertiary: #1a1d28;
+  --bg-elevated: #1f2330;
+  --bg-code: #151821;
+
+  --text-primary: #f9fafb;
+  --text-secondary: #d1d5db;
+  --text-tertiary: #9ca3af;
+  --text-inverse: #0f1117;
+
+  --border-primary: rgba(148, 163, 184, 0.2);
+  --border-secondary: rgba(148, 163, 184, 0.12);
+  --border-accent: var(--brand-800);
+
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.5);
+  --shadow-xl: 0 16px 48px rgba(0, 0, 0, 0.6);
+
+  --accent: var(--brand-300);
+  --accent-hover: var(--brand-200);
+  --accent-light: rgba(177, 98, 134, 0.2);
+  --accent-muted: rgba(177, 98, 134, 0.12);
+
+  --nav-bg: rgba(15, 17, 23, 0.94);
+  --nav-border: var(--border-secondary);
+
+  --code-bg: #151821;
+  --code-text: var(--text-secondary);
+  --code-border: var(--border-primary);
+
+  --hero-gradient: radial-gradient(circle at top, rgba(177, 98, 134, 0.25), transparent 55%),
+    radial-gradient(circle at bottom, rgba(15, 23, 42, 0.4), transparent 70%);
+  --section-alt-bg: var(--bg-secondary);
+
+  --grid-color: rgba(31, 41, 55, 0.25);
+}
+
+/* ---- Reset & Base ---- */
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: 16px;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  background-color: var(--bg-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  transition: background-color var(--transition-base), color var(--transition-base);
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(to right, var(--grid-color) 1px, transparent 1px),
+    linear-gradient(to bottom, var(--grid-color) 1px, transparent 1px);
+  background-size: 80px 80px;
+  opacity: 0.3;
+  z-index: -1;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+img, svg {
+  display: block;
+  max-width: 100%;
+}
+
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  background: none;
+}
+
+code, pre {
+  font-family: var(--font-mono);
+}
+
+/* ---- Utility ---- */
+.container {
+  width: 100%;
+  max-width: var(--max-width);
+  margin: 0 auto;
+  padding: 0 24px;
+}
+
+@media (max-width: 640px) {
+  .container {
+    padding: 0 16px;
+  }
+}
+
+/* ---- Typography Scale ---- */
+h1, h2, h3, h4, h5, h6 {
+  line-height: 1.1;
+  color: var(--text-primary);
+}
+
+h1 {
+  font-size: clamp(2.5rem, 8vw, 5rem);
+  font-weight: 300;
+  letter-spacing: -0.05em;
+  line-height: 0.95;
+}
+
+h2 {
+  font-size: clamp(1.5rem, 4vw, 2.5rem);
+  font-weight: 300;
+  letter-spacing: -0.04em;
+  line-height: 1.05;
+}
+
+h3 {
+  font-size: clamp(1rem, 1.5vw, 1.125rem);
+  font-weight: 500;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
+p {
+  color: var(--text-secondary);
+  line-height: 1.7;
+  font-size: 0.875rem;
+}
+
+/* Selection */
+::selection {
+  background: var(--brand-500);
+  color: white;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-primary);
+  border-radius: 3px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-tertiary);
+}
