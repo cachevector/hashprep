@@ -387,6 +387,8 @@ summary = analyzer.analyze()</code></pre>
 <style>
   .docs {
     padding-top: var(--nav-height);
+    overflow-x: hidden;
+    max-width: 100vw;
   }
 
   .docs-hero {
@@ -395,7 +397,6 @@ summary = analyzer.analyze()</code></pre>
   }
 
   .docs-hero-inner {
-    max-width: 720px;
     text-align: center;
   }
 
@@ -434,6 +435,8 @@ summary = analyzer.analyze()</code></pre>
     grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
     gap: 64px;
     align-items: flex-start;
+    width: 100%;
+    box-sizing: border-box;
   }
 
   .docs-nav {
@@ -479,6 +482,8 @@ summary = analyzer.analyze()</code></pre>
     flex-direction: column;
     gap: 64px;
     font-size: 0.9rem;
+    max-width: 100%;
+    min-width: 0;
   }
 
   .docs-content section + section {
@@ -731,12 +736,25 @@ summary = analyzer.analyze()</code></pre>
       padding-bottom: 32px;
     }
 
+    .docs-hero-inner {
+      padding: 0 16px;
+    }
+
     .docs-grid-2 {
       grid-template-columns: minmax(0, 1fr);
     }
 
     .docs-checks {
       grid-template-columns: minmax(0, 1fr);
+    }
+
+    .docs-card {
+      padding: 20px 16px;
+    }
+
+    pre {
+      padding: 12px 16px;
+      font-size: 0.7rem;
     }
   }
 </style>
