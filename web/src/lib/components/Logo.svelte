@@ -21,6 +21,8 @@
     align-items: center;
     gap: 8px;
     text-decoration: none;
+    flex-shrink: 0;
+    min-width: 0;
   }
 
   .logo-text {

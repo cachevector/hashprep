@@ -78,6 +78,9 @@
     align-items: center;
     gap: 40px;
     padding: 0 24px;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
   }
 
   .badge {
@@ -257,6 +260,10 @@
       padding-bottom: 56px;
     }
 
+    .hero-inner {
+      padding: 0 16px;
+    }
+
     .hero-br {
       display: none;
     }
@@ -273,6 +280,11 @@
 
     .terminal-body {
       padding: 12px;
+    }
+
+    .hero-terminal {
+      max-width: 100%;
+      margin: 0 8px;
     }
   }
 </style>

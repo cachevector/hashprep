@@ -63,6 +63,8 @@
     max-width: 440px;
     margin: 16px auto 0;
     font-size: 1.05rem;
+    padding: 0 16px;
+    box-sizing: border-box;
   }
 
   .steps-grid {
@@ -80,6 +82,10 @@
     border: 1px solid var(--border-secondary);
     border-radius: var(--radius-md);
     transition: border-color var(--transition-fast);
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    overflow: hidden;
   }
 
   .step-card:hover {
@@ -111,18 +117,28 @@
     border: 1px solid var(--code-border);
     border-radius: var(--radius-sm);
     overflow-x: auto;
+    overflow-y: hidden;
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+    -webkit-overflow-scrolling: touch;
   }
 
   .step-command code {
     font-size: 0.78rem;
     color: var(--code-text);
-    white-space: nowrap;
+    white-space: pre;
+    display: block;
+    word-break: break-word;
+    overflow-wrap: break-word;
   }
 
   .step-description {
     font-size: 0.875rem;
     line-height: 1.65;
     color: var(--text-secondary);
+    word-wrap: break-word;
+    overflow-wrap: break-word;
   }
 
   @media (max-width: 1024px) {
@@ -131,20 +147,42 @@
       gap: 16px;
       max-width: 520px;
       margin: 0 auto;
+      width: 100%;
     }
   }
 
   @media (max-width: 640px) {
     .how-it-works {
       padding: 64px 0;
+      overflow-x: hidden;
     }
 
     .section-header {
       margin-bottom: 40px;
+      padding: 0 16px;
     }
 
     .step-card {
-      padding: 22px;
+      padding: 20px 16px;
+      min-width: 0;
+    }
+
+    .step-command {
+      padding: 8px 10px;
+    }
+
+    .step-command code {
+      font-size: 0.7rem;
+      white-space: pre-wrap;
+      word-break: break-all;
+    }
+
+    .step-title {
+      font-size: 1.1rem;
+    }
+
+    .step-description {
+      font-size: 0.8rem;
     }
   }
 </style>
