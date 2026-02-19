@@ -1,6 +1,5 @@
 import json
 from datetime import datetime
-from typing import Dict
 
 import numpy as np
 
@@ -22,7 +21,7 @@ class JsonReport:
         dataset_info = summary["summaries"]["dataset_info"]
         reproduction_info = summary["summaries"].get("reproduction_info", {})
 
-        report: Dict = {
+        report: dict = {
             "metadata": {
                 "generated": datetime.now().isoformat(),
                 "version": hashprep.__version__,

@@ -1,7 +1,6 @@
 import time
 import warnings
 from datetime import datetime
-from typing import Dict, List, Optional
 
 import pandas as pd
 from scipy.stats import ConstantInputWarning
@@ -62,11 +61,11 @@ class DatasetAnalyzer:
     def __init__(
         self,
         df: pd.DataFrame,
-        target_col: Optional[str] = None,
-        selected_checks: Optional[List[str]] = None,
+        target_col: str | None = None,
+        selected_checks: list[str] | None = None,
         include_plots: bool = False,
-        comparison_df: Optional[pd.DataFrame] = None,
-        sampling_config: Optional[SamplingConfig] = None,
+        comparison_df: pd.DataFrame | None = None,
+        sampling_config: SamplingConfig | None = None,
         auto_sample: bool = True,
     ):
         if not isinstance(df, pd.DataFrame):
@@ -82,10 +81,10 @@ class DatasetAnalyzer:
         self.target_col = target_col
         self.selected_checks = selected_checks
         self.include_plots = include_plots
-        self.issues: List = []
-        self.summaries: Dict = {}
+        self.issues: list = []
+        self.summaries: dict = {}
 
-        self.sampler: Optional[DatasetSampler] = None
+        self.sampler: DatasetSampler | None = None
         if auto_sample:
             self.sampler = DatasetSampler(sampling_config)
             if self.sampler.should_sample(df):
@@ -100,10 +99,10 @@ class DatasetAnalyzer:
 
         self.column_types = infer_types(self.df)
 
-    def analyze(self) -> Dict:
+    def analyze(self) -> dict:
         """Run all summaries and checks, return summary."""
         # Suppress scipy warnings about constant input arrays
-        warnings.filterwarnings('ignore', category=ConstantInputWarning)
+        warnings.filterwarnings("ignore", category=ConstantInputWarning)
 
         analysis_start = datetime.now()
         start_time = time.time()
@@ -114,12 +113,8 @@ class DatasetAnalyzer:
         duplicate_info = get_duplicate_info(self.df)
         self.summaries["dataset_info"].update(duplicate_info)
 
-        self.summaries["variable_types"] = summarize_variable_types(
-            self.df, column_types=self.column_types
-        )
-        self.summaries["variable_type_counts"] = summarize_variable_type_counts(
-            self.df, column_types=self.column_types
-        )
+        self.summaries["variable_types"] = summarize_variable_types(self.df, column_types=self.column_types)
+        self.summaries["variable_type_counts"] = summarize_variable_type_counts(self.df, column_types=self.column_types)
         self.summaries["reproduction_info"] = add_reproduction_info(self.df)
         self.summaries["variables"] = summarize_variables(self.df, column_types=self.column_types)
         self.summaries.update(summarize_interactions(self.df))
@@ -151,22 +146,16 @@ class DatasetAnalyzer:
             plots = {}
             if stats["category"] == "Numeric":
                 if stats["histogram"]["counts"]:
-                    plots["histogram"] = plot_histogram(
-                        self.df[col].dropna(), f"Histogram of {col}"
-                    )
+                    plots["histogram"] = plot_histogram(self.df[col].dropna(), f"Histogram of {col}")
             elif stats["category"] in ["Categorical", "Boolean"]:
                 if stats["categories"].get("common_values"):
                     series = self.df[col].dropna().astype(str).value_counts().head(10)
-                    plots["common_values_bar"] = plot_bar(
-                        series, f"Top Values of {col}", col, "Count"
-                    )
+                    plots["common_values_bar"] = plot_bar(series, f"Top Values of {col}", col, "Count")
             elif stats["category"] == "Text":
                 if stats["words"]:
                     word_counts = {w: d["count"] for w, d in stats["words"].items()}
                     series = pd.Series(word_counts).head(10)
-                    plots["word_bar"] = plot_bar(
-                        series, f"Top Words in {col}", "Words", "Count"
-                    )
+                    plots["word_bar"] = plot_bar(series, f"Top Words in {col}", "Words", "Count")
 
             stats["plots"] = plots
 
@@ -178,8 +167,8 @@ class DatasetAnalyzer:
 
                 for method in ["pearson", "spearman", "kendall"]:
                     corr = numeric_df.corr(method=method)
-                    self.summaries["numeric_correlations"]["plots"][method] = (
-                        plot_heatmap(corr, f"{method.capitalize()} Correlation")
+                    self.summaries["numeric_correlations"]["plots"][method] = plot_heatmap(
+                        corr, f"{method.capitalize()} Correlation"
                     )
 
         pairs = self.summaries.get("scatter_pairs", [])

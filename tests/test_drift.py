@@ -2,7 +2,6 @@
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from hashprep.checks.drift import check_drift
 
@@ -62,9 +61,7 @@ class TestCategoricalDrift:
 
         issues = check_drift(train, test)
 
-        drift_issues = [
-            i for i in issues if "Drift" in i.description and "cat" in i.column
-        ]
+        drift_issues = [i for i in issues if "Drift" in i.description and "cat" in i.column]
         assert len(drift_issues) == 0
 
     def test_drift_different_category_distribution(self):
@@ -73,9 +70,7 @@ class TestCategoricalDrift:
 
         issues = check_drift(train, test)
 
-        drift_issues = [
-            i for i in issues if "Drift" in i.description and "cat" in i.column
-        ]
+        drift_issues = [i for i in issues if "Drift" in i.description and "cat" in i.column]
         assert len(drift_issues) >= 1
 
     def test_new_categories_detected(self):
@@ -94,9 +89,5 @@ class TestCategoricalDrift:
 
         issues = check_drift(train, test)
 
-        chi2_issues = [
-            i
-            for i in issues
-            if "Chi-square" in i.description and i.column == "cat"
-        ]
+        chi2_issues = [i for i in issues if "Chi-square" in i.description and i.column == "cat"]
         assert len(chi2_issues) == 0

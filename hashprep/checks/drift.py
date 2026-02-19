@@ -2,9 +2,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import chisquare, ks_2samp
 
-from .core import Issue
 from ..config import DEFAULT_CONFIG
 from ..utils.logging import get_logger
+from .core import Issue
 
 _log = get_logger("checks.drift")
 
@@ -88,7 +88,7 @@ def _check_categorical_drift(
 
         new_categories = set(test_counts.index) - set(train_counts.index)
         if new_categories:
-            sample_new = list(new_categories)[:_DRIFT.max_new_category_samples]
+            sample_new = list(new_categories)[: _DRIFT.max_new_category_samples]
             issues.append(
                 Issue(
                     category="dataset_drift",

@@ -1,9 +1,8 @@
 from dataclasses import dataclass
 
+
 @dataclass
-
 class Issue:
-
     category: str
 
     severity: str  # critical or warning

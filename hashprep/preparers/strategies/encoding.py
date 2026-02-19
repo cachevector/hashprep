@@ -1,5 +1,3 @@
-from typing import List, Optional, Tuple
-
 from ..models import EncodeMethod, FixSuggestion
 from .base import FixStrategy
 
@@ -40,9 +38,7 @@ class EncodingStrategy(FixStrategy):
 
         return f"df = pd.get_dummies(df, columns={self._format_column_list(cols)})"
 
-    def get_sklearn_transformer(
-        self, suggestion: FixSuggestion
-    ) -> Tuple[Optional[str], List[str]]:
+    def get_sklearn_transformer(self, suggestion: FixSuggestion) -> tuple[str | None, list[str]]:
         method = suggestion.method
         cols = suggestion.columns
 

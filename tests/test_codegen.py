@@ -1,7 +1,5 @@
 """Tests for code generation module."""
 
-import pytest
-
 from hashprep.preparers.codegen import CodeGenerator
 from hashprep.preparers.models import (
     EncodeMethod,

@@ -30,13 +30,7 @@ def json_numpy_handler(obj):
 def suggest_check_names(invalid_check, valid_checks, cutoff=0.4):
     """Suggest similar check names for an invalid check using fuzzybunny."""
     # Use fuzzybunny to find the top 3 most similar check names
-    results = fuzzybunny.rank(
-        invalid_check,
-        valid_checks,
-        scorer='levenshtein',
-        threshold=cutoff,
-        top_n=3
-    )
+    results = fuzzybunny.rank(invalid_check, valid_checks, scorer="levenshtein", threshold=cutoff, top_n=3)
     # Extract just the matched strings from the results
     suggestions = [match[0] for match in results]
     return suggestions
@@ -76,9 +70,7 @@ def version():
     help="Max rows for sampling (default: 100000)",
 )
 @click.option("--no-sample", is_flag=True, help="Disable automatic sampling")
-def scan(
-    file_path, critical_only, quiet, json_out, target, checks, comparison, sample_size, no_sample
-):
+def scan(file_path, critical_only, quiet, json_out, target, checks, comparison, sample_size, no_sample):
     df = pd.read_csv(file_path)
     comparison_df = pd.read_csv(comparison) if comparison else None
 
@@ -135,9 +127,7 @@ def scan(
 
     if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
         info = summary["sampling_info"]
-        click.echo(
-            f"Sampled: {info['sample_fraction']*100:.1f}% of {info['original_rows']} rows"
-        )
+        click.echo(f"Sampled: {info['sample_fraction'] * 100:.1f}% of {info['original_rows']} rows")
 
     if critical_only:
         click.echo("Critical Issues:")
@@ -214,7 +204,7 @@ def details(file_path, target, checks, comparison, sample_size, no_sample):
     if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
         info = summary["sampling_info"]
         click.echo(
-            f"Note: Analysis performed on {info['sample_fraction']*100:.1f}% sample ({int(info['original_rows'] * info['sample_fraction'])} of {info['original_rows']} rows)"
+            f"Note: Analysis performed on {info['sample_fraction'] * 100:.1f}% sample ({int(info['original_rows'] * info['sample_fraction'])} of {info['original_rows']} rows)"
         )
 
     click.echo("\nCritical Issues:")
@@ -259,9 +249,7 @@ def details(file_path, target, checks, comparison, sample_size, no_sample):
 @cli.command()
 @click.argument("file_path", type=click.Path(exists=True))
 @click.option("--with-code", is_flag=True, help="Generate fixes.py and pipeline.py scripts")
-@click.option(
-    "--full/--no-full", default=True, help="Include full summaries in report (default: True)"
-)
+@click.option("--full/--no-full", default=True, help="Include full summaries in report (default: True)")
 @click.option("--format", default="md", help="Report format: md, json, html, pdf")
 @click.option("--theme", default="minimal", help="HTML report theme: minimal, neubrutalism")
 @click.option("--target", default=None, help="Target column for relevant checks")
@@ -343,15 +331,11 @@ def report(
         theme=theme,
     )
     click.echo(f"Report saved to: {report_file}")
-    click.echo(
-        f"Summary: {summary['critical_count']} critical, {summary['warning_count']} warnings"
-    )
+    click.echo(f"Summary: {summary['critical_count']} critical, {summary['warning_count']} warnings")
 
     if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
         info = summary["sampling_info"]
-        click.echo(
-            f"Note: Analysis performed on {info['sample_fraction']*100:.1f}% sample"
-        )
+        click.echo(f"Note: Analysis performed on {info['sample_fraction'] * 100:.1f}% sample")
 
     if with_code:
         issues = [Issue(**i) for i in summary["issues"]]

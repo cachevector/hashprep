@@ -1,10 +1,13 @@
-import pandas as pd
-import numpy as np
 from enum import Enum
+
+import numpy as np
+import pandas as pd
+
 
 class DiscretizationType(Enum):
     UNIFORM = "uniform"
     QUANTILE = "quantile"
+
 
 class Discretizer:
     def __init__(self, method=DiscretizationType.UNIFORM, n_bins=10):

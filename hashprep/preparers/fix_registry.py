@@ -1,4 +1,4 @@
-from typing import Callable, Dict, List, Optional
+from collections.abc import Callable
 
 from ..checks.core import Issue
 from .models import (
@@ -6,7 +6,6 @@ from .models import (
     FixSuggestion,
     FixType,
     ImputeMethod,
-    ScaleMethod,
     TransformMethod,
 )
 
@@ -16,15 +15,15 @@ class FixRegistry:
 
     def __init__(
         self,
-        column_types: Dict[str, str],
-        target_col: Optional[str] = None,
-        column_stats: Optional[Dict[str, Dict]] = None,
+        column_types: dict[str, str],
+        target_col: str | None = None,
+        column_stats: dict[str, dict] | None = None,
     ):
         self.column_types = column_types
         self.target_col = target_col
         self.column_stats = column_stats or {}
 
-        self._handlers: Dict[str, Callable[[Issue], List[FixSuggestion]]] = {
+        self._handlers: dict[str, Callable[[Issue], list[FixSuggestion]]] = {
             "missing_values": self._suggest_missing_fix,
             "high_missing_values": self._suggest_missing_fix,
             "empty_column": self._suggest_drop,
@@ -42,7 +41,7 @@ class FixRegistry:
             "feature_correlation": self._suggest_drop_correlated,
         }
 
-    def get_suggestions(self, issue: Issue) -> List[FixSuggestion]:
+    def get_suggestions(self, issue: Issue) -> list[FixSuggestion]:
         """Get fix suggestions for an issue."""
         handler = self._handlers.get(issue.category)
         if handler:
@@ -64,7 +63,7 @@ class FixRegistry:
                 pass
         return 50.0
 
-    def _suggest_missing_fix(self, issue: Issue) -> List[FixSuggestion]:
+    def _suggest_missing_fix(self, issue: Issue) -> list[FixSuggestion]:
         col = issue.column
         col_type = self._get_column_type(col)
         missing_pct = self._get_missing_pct(issue)
@@ -115,7 +114,7 @@ class FixRegistry:
             )
         ]
 
-    def _suggest_drop(self, issue: Issue) -> List[FixSuggestion]:
+    def _suggest_drop(self, issue: Issue) -> list[FixSuggestion]:
         return [
             FixSuggestion(
                 fix_type=FixType.DROP_COLUMN,
@@ -126,7 +125,7 @@ class FixRegistry:
             )
         ]
 
-    def _suggest_drop_with_warning(self, issue: Issue) -> List[FixSuggestion]:
+    def _suggest_drop_with_warning(self, issue: Issue) -> list[FixSuggestion]:
         return [
             FixSuggestion(
                 fix_type=FixType.DROP_COLUMN,
@@ -137,7 +136,7 @@ class FixRegistry:
             )
         ]
 
-    def _suggest_encoding(self, issue: Issue) -> List[FixSuggestion]:
+    def _suggest_encoding(self, issue: Issue) -> list[FixSuggestion]:
         col = issue.column
         desc = issue.description.lower()
 
@@ -185,7 +184,7 @@ class FixRegistry:
             )
         ]
 
-    def _suggest_dedupe(self, issue: Issue) -> List[FixSuggestion]:
+    def _suggest_dedupe(self, issue: Issue) -> list[FixSuggestion]:
         return [
             FixSuggestion(
                 fix_type=FixType.DROP_DUPLICATES,
@@ -197,7 +196,7 @@ class FixRegistry:
             )
         ]
 
-    def _suggest_outlier_fix(self, issue: Issue) -> List[FixSuggestion]:
+    def _suggest_outlier_fix(self, issue: Issue) -> list[FixSuggestion]:
         return [
             FixSuggestion(
                 fix_type=FixType.CLIP_OUTLIERS,
@@ -209,7 +208,7 @@ class FixRegistry:
             )
         ]
 
-    def _suggest_transform(self, issue: Issue) -> List[FixSuggestion]:
+    def _suggest_transform(self, issue: Issue) -> list[FixSuggestion]:
         col = issue.column
         desc = issue.description.lower()
 
@@ -250,7 +249,7 @@ class FixRegistry:
             )
         ]
 
-    def _suggest_drop_correlated(self, issue: Issue) -> List[FixSuggestion]:
+    def _suggest_drop_correlated(self, issue: Issue) -> list[FixSuggestion]:
         col = issue.column
         return [
             FixSuggestion(

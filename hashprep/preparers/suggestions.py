@@ -1,5 +1,3 @@
-from typing import Dict, List, Optional
-
 from ..checks.core import Issue
 from .fix_registry import FixRegistry
 from .models import FixSuggestion
@@ -13,10 +11,10 @@ class SuggestionProvider:
 
     def __init__(
         self,
-        issues: List[Issue],
-        column_types: Optional[Dict[str, str]] = None,
-        target_col: Optional[str] = None,
-        column_stats: Optional[Dict[str, Dict]] = None,
+        issues: list[Issue],
+        column_types: dict[str, str] | None = None,
+        target_col: str | None = None,
+        column_stats: dict[str, dict] | None = None,
     ):
         self.issues = issues
         self.column_types = column_types or {}
@@ -24,9 +22,9 @@ class SuggestionProvider:
         self.column_stats = column_stats or {}
         self.registry = FixRegistry(self.column_types, target_col, column_stats)
 
-    def get_suggestions(self) -> List[FixSuggestion]:
+    def get_suggestions(self) -> list[FixSuggestion]:
         """Generate all fix suggestions, deduplicated and prioritized."""
-        suggestions: List[FixSuggestion] = []
+        suggestions: list[FixSuggestion] = []
         seen_columns: set = set()
 
         sorted_issues = sorted(
@@ -44,9 +42,9 @@ class SuggestionProvider:
 
         return sorted(suggestions, key=lambda s: s.priority)
 
-    def get_suggestions_by_type(self) -> Dict[str, List[FixSuggestion]]:
+    def get_suggestions_by_type(self) -> dict[str, list[FixSuggestion]]:
         """Group suggestions by fix type for organized output."""
-        grouped: Dict[str, List[FixSuggestion]] = {}
+        grouped: dict[str, list[FixSuggestion]] = {}
         for suggestion in self.get_suggestions():
             key = suggestion.fix_type.value
             if key not in grouped:
@@ -54,7 +52,7 @@ class SuggestionProvider:
             grouped[key].append(suggestion)
         return grouped
 
-    def get_legacy_suggestions(self) -> List[Dict]:
+    def get_legacy_suggestions(self) -> list[dict]:
         """
         Return suggestions in legacy format for backward compatibility.
         Maps to the old {issue, code} dict format.

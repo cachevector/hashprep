@@ -1,13 +1,12 @@
-from typing import List
-
 from scipy.stats import kstest
 
-from .core import Issue
 from ..config import DEFAULT_CONFIG
+from .core import Issue
 
 _DIST = DEFAULT_CONFIG.distribution
 
-def _check_uniform_distribution(analyzer, p_threshold: float = _DIST.uniform_p_value) -> List[Issue]:
+
+def _check_uniform_distribution(analyzer, p_threshold: float = _DIST.uniform_p_value) -> list[Issue]:
     """
     Detect uniformly distributed numeric columns using Kolmogorov-Smirnov test.
     Uniform distributions often indicate synthetic IDs or sequential data.
@@ -48,7 +47,7 @@ def _check_uniform_distribution(analyzer, p_threshold: float = _DIST.uniform_p_v
     return issues
 
 
-def _check_unique_values(analyzer, threshold: float = _DIST.unique_value_ratio) -> List[Issue]:
+def _check_unique_values(analyzer, threshold: float = _DIST.unique_value_ratio) -> list[Issue]:
     """
     Detect columns where nearly all values are unique.
     High uniqueness often indicates identifiers, names, or free-text fields.

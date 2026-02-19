@@ -1,5 +1,3 @@
-from typing import List, Optional, Tuple
-
 from ..models import FixSuggestion, ImputeMethod
 from .base import FixStrategy
 
@@ -24,9 +22,7 @@ class ImputationStrategy(FixStrategy):
         if method == ImputeMethod.MODE.value:
             lines = []
             for col in suggestion.columns:
-                lines.append(
-                    f"df['{col}'] = df['{col}'].fillna(df['{col}'].mode().iloc[0])"
-                )
+                lines.append(f"df['{col}'] = df['{col}'].fillna(df['{col}'].mode().iloc[0])")
             return "\n".join(lines)
 
         if method == ImputeMethod.CONSTANT.value:
@@ -44,9 +40,7 @@ class ImputationStrategy(FixStrategy):
 
         return f"df[{cols}] = df[{cols}].fillna(df[{cols}].median())"
 
-    def get_sklearn_transformer(
-        self, suggestion: FixSuggestion
-    ) -> Tuple[Optional[str], List[str]]:
+    def get_sklearn_transformer(self, suggestion: FixSuggestion) -> tuple[str | None, list[str]]:
         method = suggestion.method
         cols = suggestion.columns
 

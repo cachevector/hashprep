@@ -1,17 +1,22 @@
-from scipy.stats import chi2_contingency, mannwhitneyu
-from .core import Issue
-import pandas as pd
 from collections import defaultdict
+
 import numpy as np
+import pandas as pd
 from numpy.linalg import LinAlgError
+from scipy.stats import chi2_contingency, mannwhitneyu
+
 from ..config import DEFAULT_CONFIG
 from ..utils.logging import get_logger
+from .core import Issue
 
 _log = get_logger("checks.missing_values")
 
 _THRESHOLDS = DEFAULT_CONFIG.missing_values
 
-def _check_high_missing_values(analyzer, threshold: float = _THRESHOLDS.warning, critical_threshold: float = _THRESHOLDS.critical):
+
+def _check_high_missing_values(
+    analyzer, threshold: float = _THRESHOLDS.warning, critical_threshold: float = _THRESHOLDS.critical
+):
     issues = []
     for col in analyzer.df.columns:
         missing_pct = float(analyzer.df[col].isna().mean())
@@ -35,6 +40,7 @@ def _check_high_missing_values(analyzer, threshold: float = _THRESHOLDS.warning,
             )
     return issues
 
+
 def _check_empty_columns(analyzer):
     issues = []
     for col in analyzer.df.columns:
@@ -51,11 +57,14 @@ def _check_empty_columns(analyzer):
             )
     return issues
 
-def _check_dataset_missingness(analyzer, threshold: float = _THRESHOLDS.dataset_warning_pct, critical_threshold: float = _THRESHOLDS.dataset_critical_pct):
+
+def _check_dataset_missingness(
+    analyzer,
+    threshold: float = _THRESHOLDS.dataset_warning_pct,
+    critical_threshold: float = _THRESHOLDS.dataset_critical_pct,
+):
     issues = []
-    missing_pct = float(
-        (analyzer.df.isnull().sum().sum() / (analyzer.df.shape[0] * analyzer.df.shape[1])) * 100
-    )
+    missing_pct = float((analyzer.df.isnull().sum().sum() / (analyzer.df.shape[0] * analyzer.df.shape[1])) * 100)
     if missing_pct > threshold:
         severity = "critical" if missing_pct > critical_threshold else "warning"
         impact = "high" if severity == "critical" else "medium"
@@ -77,11 +86,16 @@ def _check_dataset_missingness(analyzer, threshold: float = _THRESHOLDS.dataset_
     return issues
 
 
-def _check_missing_patterns(analyzer, threshold: float = _THRESHOLDS.pattern_p_value,
-                            critical_p_threshold: float = _THRESHOLDS.pattern_critical_p_value):
+def _check_missing_patterns(
+    analyzer,
+    threshold: float = _THRESHOLDS.pattern_p_value,
+    critical_p_threshold: float = _THRESHOLDS.pattern_critical_p_value,
+):
     issues = []
     missing_cols = [
-        col for col in analyzer.df.columns if int(analyzer.df[col].isna().sum()) >= _THRESHOLDS.pattern_min_missing_count
+        col
+        for col in analyzer.df.columns
+        if int(analyzer.df[col].isna().sum()) >= _THRESHOLDS.pattern_min_missing_count
     ]
 
     # grouping logic
@@ -89,9 +103,7 @@ def _check_missing_patterns(analyzer, threshold: float = _THRESHOLDS.pattern_p_v
     num_patterns = defaultdict(list)  # (missing_col, correlated_col, p_val, cohens_d)
 
     for col in missing_cols:
-        for other_col in analyzer.df.select_dtypes(
-                include=["object", "category"]
-        ).columns:
+        for other_col in analyzer.df.select_dtypes(include=["object", "category"]).columns:
             if col == other_col:
                 continue
             try:
@@ -125,19 +137,20 @@ def _check_missing_patterns(analyzer, threshold: float = _THRESHOLDS.pattern_p_v
                 _log.debug("Chi-square test failed for '%s' vs '%s': %s", col, other_col, e)
                 continue
 
-        for other_col in analyzer.df.select_dtypes(
-                include=["int64", "float64"]
-        ).columns:
+        for other_col in analyzer.df.select_dtypes(include=["int64", "float64"]).columns:
             if col == other_col:
                 continue
             try:
                 missing = analyzer.df[analyzer.df[col].isna()][other_col].dropna()
                 non_missing = analyzer.df[analyzer.df[col].notna()][other_col].dropna()
-                if len(missing) < _THRESHOLDS.pattern_min_group_size or len(non_missing) < _THRESHOLDS.pattern_min_group_size:
+                if (
+                    len(missing) < _THRESHOLDS.pattern_min_group_size
+                    or len(non_missing) < _THRESHOLDS.pattern_min_group_size
+                ):
                     continue
 
                 # Replaced f_oneway with mannwhitneyu
-                u_stat, p_val = mannwhitneyu(missing, non_missing, alternative='two-sided')
+                u_stat, p_val = mannwhitneyu(missing, non_missing, alternative="two-sided")
 
                 # Cohen's d proxy as effect size
                 pooled_std = np.sqrt((np.std(missing) ** 2 + np.std(non_missing) ** 2) / 2)
@@ -160,7 +173,7 @@ def _check_missing_patterns(analyzer, threshold: float = _THRESHOLDS.pattern_p_v
         if all_patterns:
             # Sort by effect size (descending) and take top 3
             all_patterns.sort(key=lambda x: x[2], reverse=True)  # x[2] is effect size
-            top_corrs = [pat[0] for pat in all_patterns[:_THRESHOLDS.pattern_top_correlations]]
+            top_corrs = [pat[0] for pat in all_patterns[: _THRESHOLDS.pattern_top_correlations]]
             total_count = len(all_patterns)
 
             desc = f"Missingness in '{col}' correlates with {total_count} columns ({', '.join(top_corrs)})"
@@ -170,7 +183,9 @@ def _check_missing_patterns(analyzer, threshold: float = _THRESHOLDS.pattern_p_v
             is_target_correlated = any(pat[0] == analyzer.target_col for pat in all_patterns)
             severity = (
                 "critical"
-                if p_val < critical_p_threshold and is_target_correlated and max_effect > _THRESHOLDS.pattern_effect_critical
+                if p_val < critical_p_threshold
+                and is_target_correlated
+                and max_effect > _THRESHOLDS.pattern_effect_critical
                 else "warning"
             )
             impact = "high" if severity == "critical" else "medium"
