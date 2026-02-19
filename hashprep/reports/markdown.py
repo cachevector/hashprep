@@ -2,6 +2,9 @@ import base64
 import os
 
 import pandas as pd
+from ..utils.logging import get_logger
+
+_log = get_logger("reports.markdown")
 
 import hashprep
 
@@ -208,7 +211,8 @@ class MarkdownReport:
                                 img_f.write(base64.b64decode(plot_data))
                             rel_path = os.path.join(f"{report_name}_images", img_filename)
                             content += f"![{plot_name}]({rel_path})\n\n"
-                        except Exception:
+                        except (OSError, ValueError) as e:
+                            _log.warning("Failed to save plot '%s': %s", plot_name, e)
                             content += f"*(Error saving plot {plot_name})*\n\n"
 
                 content += "---\n\n"
@@ -227,8 +231,8 @@ class MarkdownReport:
                                 img_f.write(base64.b64decode(plot_data))
                             rel_path = os.path.join(f"{report_name}_images", img_filename)
                             content += f"![{method} Correlation]({rel_path})\n\n"
-                        except Exception:
-                            pass
+                        except (OSError, ValueError) as e:
+                            _log.warning("Failed to save correlation plot '%s': %s", method, e)
 
                 pairs = []
                 for c1, corrs in num_corr["pearson"].items():

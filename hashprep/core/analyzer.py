@@ -68,6 +68,15 @@ class DatasetAnalyzer:
         sampling_config: SamplingConfig | None = None,
         auto_sample: bool = True,
     ):
+        if not isinstance(df, pd.DataFrame):
+            raise TypeError(f"Expected pandas DataFrame, got {type(df).__name__}")
+        if df.columns.duplicated().any():
+            raise ValueError(f"DataFrame has duplicate column names: {list(df.columns[df.columns.duplicated()])}")
+        if target_col is not None and target_col not in df.columns:
+            raise ValueError(f"Target column '{target_col}' not found in DataFrame")
+        if comparison_df is not None and not isinstance(comparison_df, pd.DataFrame):
+            raise TypeError(f"comparison_df must be a pandas DataFrame, got {type(comparison_df).__name__}")
+
         self.comparison_df = comparison_df
         self.target_col = target_col
         self.selected_checks = selected_checks
