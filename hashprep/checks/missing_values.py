@@ -3,7 +3,11 @@ from .core import Issue
 import pandas as pd
 from collections import defaultdict
 import numpy as np
+from numpy.linalg import LinAlgError
 from ..config import DEFAULT_CONFIG
+from ..utils.logging import get_logger
+
+_log = get_logger("checks.missing_values")
 
 _THRESHOLDS = DEFAULT_CONFIG.missing_values
 
@@ -117,7 +121,8 @@ def _check_missing_patterns(analyzer, threshold: float = _THRESHOLDS.pattern_p_v
                 cramers = cramers_v(table)
                 if p_val < threshold and cramers > _THRESHOLDS.pattern_cramers_v_min:
                     cat_patterns[col].append((other_col, p_val, cramers))
-            except Exception:
+            except (ValueError, LinAlgError) as e:
+                _log.debug("Chi-square test failed for '%s' vs '%s': %s", col, other_col, e)
                 continue
 
         for other_col in analyzer.df.select_dtypes(
@@ -140,7 +145,8 @@ def _check_missing_patterns(analyzer, threshold: float = _THRESHOLDS.pattern_p_v
 
                 if p_val < threshold and cohens_d > _THRESHOLDS.pattern_cohens_d_min:
                     num_patterns[col].append((other_col, p_val, cohens_d))
-            except Exception:
+            except (ValueError, RuntimeWarning) as e:
+                _log.debug("Mann-Whitney U test failed for '%s' vs '%s': %s", col, other_col, e)
                 continue
 
     # Generate grouped issues

@@ -1,6 +1,9 @@
 import pandas as pd
 from scipy.stats import chi2_contingency, f_oneway
 import numpy as np
+from ..utils.logging import get_logger
+
+_log = get_logger("summaries.interactions")
 
 
 def summarize_interactions(df):
@@ -45,7 +48,8 @@ def _compute_categorical_correlations(df):
                 r, k = table.shape
                 cramers_v = (phi2 / min(k - 1, r - 1)) ** 0.5
                 results[f"{c1}__{c2}"] = float(cramers_v)
-            except Exception:
+            except (ValueError, np.linalg.LinAlgError) as e:
+                _log.debug("Categorical correlation failed for '%s' vs '%s': %s", c1, c2, e)
                 continue
     return results
 
@@ -69,6 +73,7 @@ def _compute_mixed_correlations(df):
                     "f_stat": float(f_stat),
                     "p_value": float(p_val),
                 }
-            except Exception as e:
+            except (ValueError, RuntimeWarning) as e:
+                _log.debug("Mixed correlation failed for '%s' vs '%s': %s", cat, num, e)
                 mixed_corr[f"{cat}__{num}"] = {"error": str(e)}
     return mixed_corr

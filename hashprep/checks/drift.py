@@ -4,6 +4,9 @@ from scipy.stats import chisquare, ks_2samp
 
 from .core import Issue
 from ..config import DEFAULT_CONFIG
+from ..utils.logging import get_logger
+
+_log = get_logger("checks.drift")
 
 _DRIFT = DEFAULT_CONFIG.drift
 CRITICAL_P_VALUE = _DRIFT.critical_p_value
@@ -19,6 +22,9 @@ def check_drift(
     Check for distribution shift between two datasets.
     Uses Kolmogorov-Smirnov test for numeric columns and Chi-square for categorical.
     """
+    if not isinstance(df_train, pd.DataFrame) or not isinstance(df_test, pd.DataFrame):
+        raise TypeError("Both df_train and df_test must be pandas DataFrames")
+
     issues = []
 
     issues.extend(_check_numeric_drift(df_train, df_test, threshold))
@@ -132,7 +138,7 @@ def _check_categorical_drift(
                         quick_fix="Options:\n- Re-train model with recent data.\n- Investigate category distribution changes.\n- Consider rebalancing categories.",
                     )
                 )
-        except (ValueError, RuntimeWarning):
-            pass
+        except (ValueError, RuntimeWarning) as e:
+            _log.debug("Chi-square drift test failed for '%s': %s", col, e)
 
     return issues
