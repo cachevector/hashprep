@@ -7,37 +7,10 @@ from jinja2 import Template
 
 import hashprep
 
+from .base import BaseReport
 
-class HtmlReport:
-    ALERT_TYPE_MAPPING = {
-        "feature_correlation": "High Correlation",
-        "categorical_correlation": "High Correlation",
-        "mixed_correlation": "High Correlation",
-        "missing_values": "Missing",
-        "high_missing_values": "Missing",
-        "dataset_missingness": "Missing",
-        "missing_patterns": "Missing",
-        "uniform_distribution": "Uniform",
-        "unique_values": "Unique",
-        "high_zero_counts": "Zeros",
-        "outliers": "Outliers",
-        "skewness": "Skewness",
-        "high_cardinality": "High Cardinality",
-        "duplicates": "Duplicates",
-        "data_leakage": "Leakage",
-        "target_leakage_patterns": "Leakage",
-        "class_imbalance": "Imbalance",
-        "empty_columns": "Empty",
-        "single_value_columns": "Constant",
-        "mixed_data_types": "Mixed Types",
-        "extreme_text_lengths": "Text Length",
-        "datetime_skew": "DateTime Skew",
-        "dataset_drift": "Drift",
-        "infinite_values": "Infinite",
-        "constant_length": "Constant Length",
-        "empty_dataset": "Empty Dataset",
-    }
 
+class HtmlReport(BaseReport):
     def generate(self, summary, full=False, output_file=None, theme="minimal", pdf_mode=False):
         template_str = self._get_template(theme)
         template = Template(template_str)
@@ -100,18 +73,6 @@ class HtmlReport:
             with open(output_file, "w") as f:
                 f.write(html_content)
         return html_content
-
-    def _group_alerts_by_type(self, issues: list[dict]) -> dict[str, list[dict]]:
-        """Group issues into display categories for the alerts section."""
-        groups: dict[str, list[dict]] = {}
-
-        for issue in issues:
-            alert_type = self.ALERT_TYPE_MAPPING.get(issue["category"], "Other")
-            if alert_type not in groups:
-                groups[alert_type] = []
-            groups[alert_type].append(issue)
-
-        return groups
 
     def _generate_config(self, summary) -> dict:
         """Generate configuration dict for download."""

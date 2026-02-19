@@ -1,6 +1,6 @@
 import re
 import unicodedata
-from collections import defaultdict
+from collections import Counter, defaultdict
 
 import numpy as np
 import pandas as pd
@@ -181,52 +181,55 @@ def _summarize_text(df, col):
     lengths = series.str.len()
     all_text = "".join(series)
     total_chars = len(all_text)
-    distinct_chars = len(set(all_text))
-    all_categories = [unicodedata.category(c) for c in all_text]
-    cat_series = pd.Series(all_categories)
-    distinct_categories = int(cat_series.nunique())
-    most_occurring_categories = cat_series.value_counts().head(10).to_dict()
-    cat_to_char_count = defaultdict(lambda: defaultdict(int))
+
+    # Single pass: collect char counts, category counts, and per-category char counts
+    char_counts = Counter()
+    cat_counts = Counter()
+    cat_to_char_count = defaultdict(Counter)
     for c in all_text:
+        char_counts[c] += 1
         cat = unicodedata.category(c)
+        cat_counts[cat] += 1
         cat_to_char_count[cat][c] += 1
+
+    distinct_chars = len(char_counts)
+    distinct_categories = len(cat_counts)
+
     most_freq_per_cat = {}
-    for cat, char_count in cat_to_char_count.items():
-        if char_count:
-            top_char = max(char_count, key=char_count.get)
-            count = char_count[top_char]
-            freq = (count / total_chars * 100) if total_chars > 0 else 0
-            most_freq_per_cat[cat] = {
-                "char": top_char,
-                "count": count,
-                "percentage": float(freq),
-            }
-    distinct_scripts = None
-    most_occurring_scripts = None
+    for cat, char_counter in cat_to_char_count.items():
+        top_char, count = char_counter.most_common(1)[0]
+        freq = (count / total_chars * 100) if total_chars > 0 else 0
+        most_freq_per_cat[cat] = {
+            "char": top_char,
+            "count": count,
+            "percentage": float(freq),
+        }
+
+    # Word analysis
     words = re.findall(r"\b\w+\b", all_text.lower())
     word_len = len(words)
-    word_vc = pd.Series(words).value_counts().head(10)
     words_dict = {
         w: {
-            "count": int(c),
+            "count": c,
             "frequency": float(c / word_len * 100) if word_len > 0 else 0.0,
         }
-        for w, c in word_vc.items()
+        for w, c in Counter(words).most_common(10)
     }
-    char_vc = pd.Series(list(all_text)).value_counts().head(10)
+
+    # Top characters and categories
     char_dict = {
         str(c): {
-            "count": int(v),
+            "count": v,
             "percentage": float(v / total_chars * 100) if total_chars > 0 else 0.0,
         }
-        for c, v in char_vc.items()
+        for c, v in char_counts.most_common(10)
     }
     cat_dict = {
         k: {
             "count": v,
             "percentage": float(v / total_chars * 100) if total_chars > 0 else 0.0,
         }
-        for k, v in most_occurring_categories.items()
+        for k, v in cat_counts.most_common(10)
     }
     sample = [str(s) for s in series.head(5).tolist()]
     stats = {
@@ -241,7 +244,7 @@ def _summarize_text(df, col):
                 "total_characters": total_chars,
                 "distinct_characters": distinct_chars,
                 "distinct_categories": distinct_categories,
-                "distinct_scripts": distinct_scripts,
+                "distinct_scripts": None,
                 "distinct_blocks": None,
             },
             "sample": sample,
@@ -254,7 +257,7 @@ def _summarize_text(df, col):
                 "most_frequent_character_per_category": most_freq_per_cat,
             },
             "scripts": {
-                "most_occurring_scripts": most_occurring_scripts,
+                "most_occurring_scripts": None,
                 "most_frequent_character_per_script": None,
             },
             "blocks": {

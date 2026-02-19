@@ -11,10 +11,11 @@
   <p align="center">
     <!-- Distribution -->
     <img src="https://img.shields.io/pypi/v/hashprep?color=blue&label=PyPI" />
-    <!-- <img src="https://img.shields.io/badge/PyPI-Coming%20Soon-blue" /> -->
     <!-- License -->
     <img src="https://img.shields.io/badge/License-MIT-green" />
     <img src="https://img.shields.io/badge/CLI-Supported-orange" />
+    <!-- CI -->
+    <a href="https://github.com/cachevector/hashprep/actions/workflows/ci.yml"><img src="https://github.com/cachevector/hashprep/actions/workflows/ci.yml/badge.svg" /></a>
   </p>
   <p>
     <!-- Features -->
@@ -26,7 +27,7 @@
 </div>
 
 > [!NOTE]
-> HashPrep is now in **beta** (v0.1.0b1). Core features are stable and tested, but the API may still evolve based on community feedback. Ready for testing in real-world ML workflows.
+> HashPrep v0.1.0 is now stable. Core features are fully tested with CI. The API may still evolve based on community feedback.
 
 ## Overview
 
@@ -165,19 +166,31 @@ hashprep version
 ```
 
 #### Available Checks
-- `outliers` - Detect outliers using IQR method
+- `outliers` - Detect outliers using z-score
 - `duplicates` - Find duplicate rows
-- `high_missing_values` - Columns with >50% missing data
+- `high_missing_values` - Columns with high missing data
+- `empty_columns` - Completely empty columns
 - `dataset_missingness` - Overall missing data patterns
+- `missing_patterns` - Correlated missing value patterns
 - `high_cardinality` - Categorical columns with too many unique values
 - `single_value_columns` - Constant columns with no variance
+- `mixed_data_types` - Columns with mixed data types
 - `class_imbalance` - Imbalanced target variable (requires --target)
-- `feature_correlation` - Highly correlated features
-- `target_leakage` - Features that may leak target information
+- `feature_correlation` - Highly correlated numeric features
+- `categorical_correlation` - Highly associated categorical features
+- `mixed_correlation` - Numeric-categorical associations
+- `data_leakage` - Columns identical to target
+- `target_leakage_patterns` - Features that may leak target information
 - `dataset_drift` - Distribution drift between datasets (requires --comparison)
 - `uniform_distribution` - Uniformly distributed numeric columns
 - `unique_values` - Columns where >95% values are unique
-- `many_zeros` - Columns with excessive zero values
+- `high_zero_counts` - Columns with excessive zero values
+- `skewness` - Highly skewed numeric distributions
+- `infinite_values` - Columns containing infinite values
+- `constant_length` - String columns with constant character length
+- `extreme_text_lengths` - Text columns with extreme value lengths
+- `datetime_skew` - Datetime columns concentrated in one period
+- `empty_dataset` - Empty or all-missing datasets
 
 ---
 
