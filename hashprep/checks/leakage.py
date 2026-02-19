@@ -9,6 +9,16 @@ from .core import Issue
 _LEAK = DEFAULT_CONFIG.leakage
 _log = get_logger("checks.leakage")
 
+_LEAKAGE_CRITICAL_FIX = (
+    "Options: \n- Drop column: Prevents target leakage (Pros: Ensures model integrity; Cons: Loses feature info)."
+    "\n- Verify feature: Check if correlation is valid or data-derived (Pros: Validates data; Cons: Time-consuming)."
+)
+_LEAKAGE_WARNING_FIX = (
+    "Options: \n- Drop column: Reduces leakage risk (Pros: Safer model; Cons: May lose predictive info)."
+    "\n- Retain and test: Use robust models (e.g., trees) and evaluate (Pros: Keeps potential signal; Cons: Risk of overfitting)."
+    "\n- Engineer feature: Transform to reduce correlation (Pros: Retains info; Cons: Adds complexity)."
+)
+
 
 def _check_data_leakage(analyzer):
     issues = []
@@ -52,11 +62,7 @@ def _check_target_leakage_patterns(analyzer):
                     )
                     if severity:
                         impact = "high" if severity == "critical" else "medium"
-                        quick_fix = (
-                            "Options: \n- Drop column: Prevents target leakage (Pros: Ensures model integrity; Cons: Loses feature info).\n- Verify feature: Check if correlation is valid or data-derived (Pros: Validates data; Cons: Time-consuming)."
-                            if severity == "critical"
-                            else "Options: \n- Drop column: Reduces leakage risk (Pros: Safer model; Cons: May lose predictive info).\n- Retain and test: Use robust models (e.g., trees) and evaluate (Pros: Keeps potential signal; Cons: Risk of overfitting).\n- Engineer feature: Transform to reduce correlation (Pros: Retains info; Cons: Adds complexity)."
-                        )
+                        quick_fix = _LEAKAGE_CRITICAL_FIX if severity == "critical" else _LEAKAGE_WARNING_FIX
                         issues.append(
                             Issue(
                                 category="target_leakage",
@@ -87,11 +93,7 @@ def _check_target_leakage_patterns(analyzer):
                     )
                     if severity:
                         impact = "high" if severity == "critical" else "medium"
-                        quick_fix = (
-                            "Options: \n- Drop column: Prevents target leakage (Pros: Ensures model integrity; Cons: Loses feature info).\n- Verify feature: Check if correlation is valid or data-derived (Pros: Validates data; Cons: Time-consuming)."
-                            if severity == "critical"
-                            else "Options: \n- Drop column: Reduces leakage risk (Pros: Safer model; Cons: May lose predictive info).\n- Retain and test: Use robust models (e.g., trees) and evaluate (Pros: Keeps potential signal; Cons: Risk of overfitting).\n- Engineer feature: Transform to reduce correlation (Pros: Retains info; Cons: Adds complexity)."
-                        )
+                        quick_fix = _LEAKAGE_CRITICAL_FIX if severity == "critical" else _LEAKAGE_WARNING_FIX
                         issues.append(
                             Issue(
                                 category="target_leakage",
@@ -127,11 +129,7 @@ def _check_target_leakage_patterns(analyzer):
                     )
                     if severity:
                         impact = "high" if severity == "critical" else "medium"
-                        quick_fix = (
-                            "Options: \n- Drop column: Prevents target leakage (Pros: Ensures model integrity; Cons: Loses feature info).\n- Verify feature: Check if correlation is valid or data-derived (Pros: Validates data; Cons: Time-consuming)."
-                            if severity == "critical"
-                            else "Options: \n- Drop column: Reduces leakage risk (Pros: Safer model; Cons: May lose predictive info).\n- Retain and test: Use robust models (e.g., trees) and evaluate (Pros: Keeps potential signal; Cons: Risk of overfitting).\n- Engineer feature: Transform to reduce correlation (Pros: Retains info; Cons: Adds complexity)."
-                        )
+                        quick_fix = _LEAKAGE_CRITICAL_FIX if severity == "critical" else _LEAKAGE_WARNING_FIX
                         issues.append(
                             Issue(
                                 category="target_leakage",
