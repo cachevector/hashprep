@@ -3,8 +3,11 @@ from .core import Issue
 import pandas as pd
 from collections import defaultdict
 import numpy as np
+from ..config import DEFAULT_CONFIG
 
-def _check_high_missing_values(analyzer, threshold: float = 0.4, critical_threshold: float = 0.7):
+_THRESHOLDS = DEFAULT_CONFIG.missing_values
+
+def _check_high_missing_values(analyzer, threshold: float = _THRESHOLDS.warning, critical_threshold: float = _THRESHOLDS.critical):
     issues = []
     for col in analyzer.df.columns:
         missing_pct = float(analyzer.df[col].isna().mean())
@@ -44,7 +47,7 @@ def _check_empty_columns(analyzer):
             )
     return issues
 
-def _check_dataset_missingness(analyzer, threshold: float = 20.0, critical_threshold: float = 50.0):
+def _check_dataset_missingness(analyzer, threshold: float = _THRESHOLDS.dataset_warning_pct, critical_threshold: float = _THRESHOLDS.dataset_critical_pct):
     issues = []
     missing_pct = float(
         (analyzer.df.isnull().sum().sum() / (analyzer.df.shape[0] * analyzer.df.shape[1])) * 100
@@ -70,11 +73,11 @@ def _check_dataset_missingness(analyzer, threshold: float = 20.0, critical_thres
     return issues
 
 
-def _check_missing_patterns(analyzer, threshold: float = 0.01,
-                            critical_p_threshold: float = 0.001):
+def _check_missing_patterns(analyzer, threshold: float = _THRESHOLDS.pattern_p_value,
+                            critical_p_threshold: float = _THRESHOLDS.pattern_critical_p_value):
     issues = []
     missing_cols = [
-        col for col in analyzer.df.columns if int(analyzer.df[col].isna().sum()) >= 10
+        col for col in analyzer.df.columns if int(analyzer.df[col].isna().sum()) >= _THRESHOLDS.pattern_min_missing_count
     ]
 
     # grouping logic
@@ -89,7 +92,7 @@ def _check_missing_patterns(analyzer, threshold: float = 0.01,
                 continue
             try:
                 value_counts = analyzer.df[other_col].value_counts()
-                rare_cats = value_counts[value_counts < 5].index
+                rare_cats = value_counts[value_counts < _THRESHOLDS.pattern_rare_category_count].index
                 temp_col = analyzer.df[other_col].copy()
                 if not rare_cats.empty:
                     temp_col = temp_col.where(~temp_col.isin(rare_cats), "Other")
@@ -112,7 +115,7 @@ def _check_missing_patterns(analyzer, threshold: float = 0.01,
                     return np.sqrt(phi2corr / rkcorr)
 
                 cramers = cramers_v(table)
-                if p_val < threshold and cramers > 0.1:
+                if p_val < threshold and cramers > _THRESHOLDS.pattern_cramers_v_min:
                     cat_patterns[col].append((other_col, p_val, cramers))
             except Exception:
                 continue
@@ -125,7 +128,7 @@ def _check_missing_patterns(analyzer, threshold: float = 0.01,
             try:
                 missing = analyzer.df[analyzer.df[col].isna()][other_col].dropna()
                 non_missing = analyzer.df[analyzer.df[col].notna()][other_col].dropna()
-                if len(missing) < 10 or len(non_missing) < 10:
+                if len(missing) < _THRESHOLDS.pattern_min_group_size or len(non_missing) < _THRESHOLDS.pattern_min_group_size:
                     continue
 
                 # Replaced f_oneway with mannwhitneyu
@@ -135,7 +138,7 @@ def _check_missing_patterns(analyzer, threshold: float = 0.01,
                 pooled_std = np.sqrt((np.std(missing) ** 2 + np.std(non_missing) ** 2) / 2)
                 cohens_d = abs(np.mean(missing) - np.mean(non_missing)) / pooled_std if pooled_std > 0 else 0
 
-                if p_val < threshold and cohens_d > 0.2:
+                if p_val < threshold and cohens_d > _THRESHOLDS.pattern_cohens_d_min:
                     num_patterns[col].append((other_col, p_val, cohens_d))
             except Exception:
                 continue
@@ -151,7 +154,7 @@ def _check_missing_patterns(analyzer, threshold: float = 0.01,
         if all_patterns:
             # Sort by effect size (descending) and take top 3
             all_patterns.sort(key=lambda x: x[2], reverse=True)  # x[2] is effect size
-            top_corrs = [pat[0] for pat in all_patterns[:3]]
+            top_corrs = [pat[0] for pat in all_patterns[:_THRESHOLDS.pattern_top_correlations]]
             total_count = len(all_patterns)
 
             desc = f"Missingness in '{col}' correlates with {total_count} columns ({', '.join(top_corrs)})"
@@ -161,7 +164,7 @@ def _check_missing_patterns(analyzer, threshold: float = 0.01,
             is_target_correlated = any(pat[0] == analyzer.target_col for pat in all_patterns)
             severity = (
                 "critical"
-                if p_val < critical_p_threshold and is_target_correlated and max_effect > 0.3  # medium effect threshold
+                if p_val < critical_p_threshold and is_target_correlated and max_effect > _THRESHOLDS.pattern_effect_critical
                 else "warning"
             )
             impact = "high" if severity == "critical" else "medium"

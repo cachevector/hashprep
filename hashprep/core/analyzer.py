@@ -112,7 +112,7 @@ class DatasetAnalyzer:
             self.df, column_types=self.column_types
         )
         self.summaries["reproduction_info"] = add_reproduction_info(self.df)
-        self.summaries["variables"] = summarize_variables(self.df)
+        self.summaries["variables"] = summarize_variables(self.df, column_types=self.column_types)
         self.summaries.update(summarize_interactions(self.df))
         self.summaries.update(summarize_missing_values(self.df))
 

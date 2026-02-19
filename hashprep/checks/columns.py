@@ -1,4 +1,7 @@
 from .core import Issue
+from ..config import DEFAULT_CONFIG
+
+_COL_THRESHOLDS = DEFAULT_CONFIG.columns
 
 def _check_single_value_columns(analyzer):
     issues = []
@@ -23,7 +26,7 @@ def _check_single_value_columns(analyzer):
             )
     return issues
 
-def _check_high_cardinality(analyzer, threshold: int = 100, critical_threshold: float = 0.9):
+def _check_high_cardinality(analyzer, threshold: int = _COL_THRESHOLDS.high_cardinality_count, critical_threshold: float = _COL_THRESHOLDS.high_cardinality_ratio_critical):
     issues = []
     categorical_cols = analyzer.df.select_dtypes(include="object").columns.tolist()
     for col in categorical_cols:
@@ -54,7 +57,7 @@ def _check_duplicates(analyzer):
     duplicate_rows = int(analyzer.df.duplicated().sum())
     if duplicate_rows > 0:
         duplicate_ratio = float(duplicate_rows / len(analyzer.df))
-        severity = "critical" if duplicate_ratio > 0.1 else "warning"
+        severity = "critical" if duplicate_ratio > _COL_THRESHOLDS.duplicate_ratio_critical else "warning"
         impact = "high" if severity == "critical" else "medium"
         quick_fix = (
             "Options: \n- Drop duplicates: Ensures data integrity (Pros: Cleaner data; Cons: May lose valid repeats).\n- Verify duplicates: Check if intentional (e.g., time-series) (Pros: Validates data; Cons: Time-consuming)."
