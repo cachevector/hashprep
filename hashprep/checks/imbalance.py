@@ -1,6 +1,7 @@
 from .core import Issue
+from ..config import DEFAULT_CONFIG
 
-def _check_class_imbalance(analyzer, threshold: float = 0.9):
+def _check_class_imbalance(analyzer, threshold: float = DEFAULT_CONFIG.imbalance.majority_class_ratio):
     issues = []
     if analyzer.target_col and analyzer.target_col in analyzer.df.columns:
         counts = analyzer.df[analyzer.target_col].value_counts(normalize=True)

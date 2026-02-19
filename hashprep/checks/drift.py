@@ -3,15 +3,17 @@ import pandas as pd
 from scipy.stats import chisquare, ks_2samp
 
 from .core import Issue
+from ..config import DEFAULT_CONFIG
 
-CRITICAL_P_VALUE = 0.001
-MAX_CATEGORIES_FOR_CHI2 = 50
+_DRIFT = DEFAULT_CONFIG.drift
+CRITICAL_P_VALUE = _DRIFT.critical_p_value
+MAX_CATEGORIES_FOR_CHI2 = _DRIFT.max_categories_for_chi2
 
 
 def check_drift(
     df_train: pd.DataFrame,
     df_test: pd.DataFrame,
-    threshold: float = 0.05,
+    threshold: float = _DRIFT.p_value,
 ) -> list[Issue]:
     """
     Check for distribution shift between two datasets.
@@ -80,13 +82,13 @@ def _check_categorical_drift(
 
         new_categories = set(test_counts.index) - set(train_counts.index)
         if new_categories:
-            sample_new = list(new_categories)[:5]
+            sample_new = list(new_categories)[:_DRIFT.max_new_category_samples]
             issues.append(
                 Issue(
                     category="dataset_drift",
                     severity="warning",
                     column=col,
-                    description=f"New categories in test set for '{col}': {sample_new}{'...' if len(new_categories) > 5 else ''}",
+                    description=f"New categories in test set for '{col}': {sample_new}{'...' if len(new_categories) > _DRIFT.max_new_category_samples else ''}",
                     impact_score="medium",
                     quick_fix="Handle unseen categories in preprocessing pipeline (e.g., OrdinalEncoder with unknown_value).",
                 )

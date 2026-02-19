@@ -1,8 +1,11 @@
 from .core import Issue
 import pandas as pd
 import numpy as np
+from ..config import DEFAULT_CONFIG
 
-def _check_outliers(analyzer, z_threshold: float = 4.0):
+_THRESHOLDS = DEFAULT_CONFIG.outliers
+
+def _check_outliers(analyzer, z_threshold: float = _THRESHOLDS.z_score):
     issues = []
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
@@ -12,7 +15,7 @@ def _check_outliers(analyzer, z_threshold: float = 4.0):
         outlier_count = int((abs(z_scores) > z_threshold).sum())
         if outlier_count > 0:
             outlier_ratio = float(outlier_count / len(series))
-            severity = "critical" if outlier_ratio > 0.1 else "warning"
+            severity = "critical" if outlier_ratio > _THRESHOLDS.outlier_ratio_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
             quick_fix = (
                 "Options: \n- Remove outliers: Improves model stability (Pros: Reduces noise; Cons: Loses data).\n- Winsorize: Cap extreme values (Pros: Retains data; Cons: Alters distribution).\n- Transform: Apply log/sqrt to reduce impact (Pros: Preserves info; Cons: Changes interpretation)."
@@ -31,7 +34,7 @@ def _check_outliers(analyzer, z_threshold: float = 4.0):
             )
     return issues
 
-def _check_high_zero_counts(analyzer, threshold: float = 0.5, critical_threshold: float = 0.8):
+def _check_high_zero_counts(analyzer, threshold: float = _THRESHOLDS.zero_count_warning, critical_threshold: float = _THRESHOLDS.zero_count_critical):
     issues = []
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
@@ -58,7 +61,7 @@ def _check_high_zero_counts(analyzer, threshold: float = 0.5, critical_threshold
             )
     return issues
 
-def _check_extreme_text_lengths(analyzer, max_threshold: int = 1000, min_threshold: int = 1):
+def _check_extreme_text_lengths(analyzer, max_threshold: int = _THRESHOLDS.text_length_max, min_threshold: int = _THRESHOLDS.text_length_min):
     issues = []
     for col in analyzer.df.select_dtypes(include="object").columns:
         series = analyzer.df[col].dropna().astype(str)
@@ -69,7 +72,7 @@ def _check_extreme_text_lengths(analyzer, max_threshold: int = 1000, min_thresho
             extreme_ratio = float(
                 ((lengths > max_threshold) | (lengths < min_threshold)).mean()
             )
-            severity = "critical" if extreme_ratio > 0.1 else "warning"
+            severity = "critical" if extreme_ratio > _THRESHOLDS.extreme_ratio_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
             quick_fix = (
                 "Options: \n- Truncate values: Cap extreme lengths (Pros: Stabilizes model; Cons: Loses info).\n- Filter outliers: Remove extreme entries (Pros: Reduces noise; Cons: Loses data).\n- Transform: Normalize lengths (e.g., log) (Pros: Retains info; Cons: Changes interpretation)."
@@ -88,11 +91,11 @@ def _check_extreme_text_lengths(analyzer, max_threshold: int = 1000, min_thresho
             )
     return issues
 
-def _check_skewness(analyzer, skew_threshold: float = 3.0, critical_skew_threshold: float = 10.0):
+def _check_skewness(analyzer, skew_threshold: float = _THRESHOLDS.skewness_warning, critical_skew_threshold: float = _THRESHOLDS.skewness_critical):
     issues = []
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
-        if len(series) < 10:
+        if len(series) < _THRESHOLDS.min_sample_size:
             continue
         skewness = float(series.skew())
         abs_skew = abs(skewness)
@@ -117,7 +120,7 @@ def _check_skewness(analyzer, skew_threshold: float = 3.0, critical_skew_thresho
             )
     return issues
 
-def _check_datetime_skew(analyzer, threshold: float = 0.8):
+def _check_datetime_skew(analyzer, threshold: float = _THRESHOLDS.datetime_skew):
     issues = []
     for col in analyzer.df.select_dtypes(include="datetime64").columns:
         series = pd.to_datetime(analyzer.df[col], errors="coerce").dropna()
@@ -138,7 +141,7 @@ def _check_datetime_skew(analyzer, threshold: float = 0.8):
     return issues
 
 
-def _check_infinite_values(analyzer, threshold: float = 0.01):
+def _check_infinite_values(analyzer, threshold: float = _THRESHOLDS.infinite_ratio_critical):
     """Detect columns with infinite values."""
     issues = []
     for col in analyzer.df.select_dtypes(include="number").columns:
@@ -166,12 +169,12 @@ def _check_infinite_values(analyzer, threshold: float = 0.01):
     return issues
 
 
-def _check_constant_length(analyzer, threshold: float = 0.95):
+def _check_constant_length(analyzer, threshold: float = _THRESHOLDS.constant_length_ratio):
     """Detect string columns where all values have the same length (e.g., IDs, codes)."""
     issues = []
     for col in analyzer.df.select_dtypes(include="object").columns:
         series = analyzer.df[col].dropna().astype(str)
-        if len(series) < 10:
+        if len(series) < _THRESHOLDS.min_sample_size:
             continue
         lengths = series.str.len()
         most_common_length_ratio = lengths.value_counts(normalize=True).iloc[0] if len(lengths) > 0 else 0

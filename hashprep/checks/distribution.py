@@ -3,9 +3,11 @@ from typing import List
 from scipy.stats import kstest
 
 from .core import Issue
+from ..config import DEFAULT_CONFIG
 
+_DIST = DEFAULT_CONFIG.distribution
 
-def _check_uniform_distribution(analyzer, p_threshold: float = 0.1) -> List[Issue]:
+def _check_uniform_distribution(analyzer, p_threshold: float = _DIST.uniform_p_value) -> List[Issue]:
     """
     Detect uniformly distributed numeric columns using Kolmogorov-Smirnov test.
     Uniform distributions often indicate synthetic IDs or sequential data.
@@ -14,7 +16,7 @@ def _check_uniform_distribution(analyzer, p_threshold: float = 0.1) -> List[Issu
 
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
-        if len(series) < 20:
+        if len(series) < _DIST.uniform_min_samples:
             continue
 
         min_val, max_val = series.min(), series.max()
@@ -46,7 +48,7 @@ def _check_uniform_distribution(analyzer, p_threshold: float = 0.1) -> List[Issu
     return issues
 
 
-def _check_unique_values(analyzer, threshold: float = 0.95) -> List[Issue]:
+def _check_unique_values(analyzer, threshold: float = _DIST.unique_value_ratio) -> List[Issue]:
     """
     Detect columns where nearly all values are unique.
     High uniqueness often indicates identifiers, names, or free-text fields.
@@ -55,7 +57,7 @@ def _check_unique_values(analyzer, threshold: float = 0.95) -> List[Issue]:
 
     for col in analyzer.df.columns:
         series = analyzer.df[col].dropna()
-        if len(series) < 10:
+        if len(series) < _DIST.unique_min_samples:
             continue
 
         unique_count = series.nunique()

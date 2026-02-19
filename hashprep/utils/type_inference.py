@@ -1,14 +1,14 @@
 import pandas as pd
-import numpy as np
-from typing import Dict, List
-from scipy.stats import chi2_contingency  # For potential future use
+from typing import Dict
 
-# Config-like thresholds (mimic ydata's Settings; tune as needed)
+from ..config import DEFAULT_CONFIG
+
+_TYPE_CFG = DEFAULT_CONFIG.type_inference
 CONFIG = {
-    'cat_cardinality_threshold': 50,  # Max unique for Categorical (ydata default ~50)
-    'cat_percentage_threshold': 0.05,  # % unique for Categorical
-    'num_low_cat_threshold': 10,       # Low unique numerics → Categorical
-    'bool_mappings': {'true': True, 'false': False, 'yes': True, 'no': False, 't': True, 'f': False},  # For bool inference
+    'cat_cardinality_threshold': _TYPE_CFG.cat_cardinality_threshold,
+    'cat_percentage_threshold': _TYPE_CFG.cat_percentage_threshold,
+    'num_low_cat_threshold': _TYPE_CFG.num_low_cat_threshold,
+    'bool_mappings': _TYPE_CFG.bool_mappings,
 }
 
 def infer_types(df: pd.DataFrame) -> Dict[str, str]:

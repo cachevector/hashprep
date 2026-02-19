@@ -3,8 +3,11 @@ from typing import Dict, Literal, Optional, Tuple
 
 import pandas as pd
 
-DEFAULT_MAX_ROWS = 100_000
-DEFAULT_MEMORY_THRESHOLD_MB = 500.0
+from ..config import DEFAULT_CONFIG
+
+_SAMPLING = DEFAULT_CONFIG.sampling
+DEFAULT_MAX_ROWS = _SAMPLING.max_rows
+DEFAULT_MEMORY_THRESHOLD_MB = _SAMPLING.memory_threshold_mb
 
 
 @dataclass

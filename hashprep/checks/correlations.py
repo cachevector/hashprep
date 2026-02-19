@@ -1,24 +1,16 @@
 from .core import Issue
 import pandas as pd
 import numpy as np
-from scipy.stats import f_oneway, spearmanr, pearsonr, kendalltau, chi2_contingency
+from scipy.stats import spearmanr, pearsonr, kendalltau, chi2_contingency
 from itertools import combinations
 from .discretizer import Discretizer, DiscretizationType
-from ..utils.type_inference import infer_types, is_usable_for_corr
+from ..utils.type_inference import is_usable_for_corr
+from ..config import DEFAULT_CONFIG
 
-
-# Thresholds
-CORR_THRESHOLDS = {
-    'numeric': {
-        'spearman': {'warning': 0.7, 'critical': 0.95},
-        'pearson': {'warning': 0.7, 'critical': 0.95},
-        'kendall': {'warning': 0.6, 'critical': 0.85},  # Lower for Kendall (typically smaller values)
-    },
-    'categorical': {'warning': 0.5, 'critical': 0.8},
-    'mixed': {'warning': 0.5, 'critical': 0.8},  # Updated to coefficient thresholds (matching categorical) for Cramer's V
-}
-CAT_MAX_DISTINCT = 50
-LOW_CARD_NUM_THRESHOLD = 10  # From type_inference.py
+_CORR = DEFAULT_CONFIG.correlations
+CORR_THRESHOLDS = _CORR.as_nested_dict()
+CAT_MAX_DISTINCT = _CORR.max_distinct_categories
+LOW_CARD_NUM_THRESHOLD = _CORR.low_cardinality_numeric
 
 def _cramers_v_corrected(table: pd.DataFrame) -> float:
     if table.empty or (table.shape[0] == 1 or table.shape[1] == 1):
@@ -52,28 +44,20 @@ def calculate_correlations(analyzer, thresholds=None):
                     typ == 'Numeric' and is_usable_for_corr(analyzer.df[col])]
     cat_cols = [col for col, typ in inferred_types.items() if typ == 'Categorical' and
                 1 < analyzer.df[col].nunique() <= CAT_MAX_DISTINCT and is_usable_for_corr(analyzer.df[col])]
-    text_cols = [col for col, typ in inferred_types.items() if typ == 'Text']
 
-    # Internal default methods
-    default_methods = ['spearman', 'pearson']
-    issues.extend(_check_numeric_correlation(analyzer, numeric_cols, thresholds['numeric'], default_methods))
+    issues.extend(_check_numeric_correlation(analyzer, numeric_cols, thresholds['numeric']))
     issues.extend(_check_categorical_correlation(analyzer, cat_cols, thresholds['categorical']))
     issues.extend(_check_mixed_correlation(analyzer, numeric_cols, cat_cols, thresholds['mixed']))
 
     return issues
 
 
-def _check_numeric_correlation(analyzer, numeric_cols: list, thresholds: dict, methods: list):
+def _check_numeric_correlation(analyzer, numeric_cols: list, thresholds: dict):
     issues = []
     if len(numeric_cols) < 2:
         return issues
 
     num_df = analyzer.df[numeric_cols].dropna(how='all')
-    corr_methods = {
-        'spearman': lambda x, y: spearmanr(x, y),
-        'pearson': lambda x, y: pearsonr(x, y),
-        'kendall': lambda x, y: kendalltau(x, y)
-    }
 
     for col1, col2 in combinations(numeric_cols, 2):
         series1, series2 = num_df[col1].dropna(), num_df[col2].dropna()
@@ -122,42 +106,6 @@ def _check_numeric_correlation(analyzer, numeric_cols: list, thresholds: dict, m
                     quick_fix=quick_fix,
                 ))
 
-    return issues
-
-
-def _check_feature_correlation(
-    analyzer, threshold: float = 0.95, critical_threshold: float = 0.98
-):
-    issues = []
-    numeric_df = analyzer.df.select_dtypes(include="number")
-    if numeric_df.empty:
-        return issues
-    corr_matrix = numeric_df.corr().abs()
-    upper = corr_matrix.where(np.tril(np.ones(corr_matrix.shape)).astype(bool))
-    correlated_pairs = [
-        (col, row, float(val))
-        for row in upper.index
-        for col, val in upper[row].dropna().items()
-        if val > threshold and col != row
-    ]
-    for col1, col2, corr in correlated_pairs:
-        severity = "critical" if corr > critical_threshold else "warning"
-        impact = "high" if severity == "critical" else "medium"
-        quick_fix = (
-            "Options: \n- Drop one feature: Reduces multicollinearity (Pros: Simplifies model; Cons: Loses info).\n- Combine features: Create composite feature (e.g., PCA) (Pros: Retains info; Cons: Less interpretable).\n- Retain and test: Use robust models (e.g., trees) (Pros: Keeps info; Cons: May affect sensitive models)."
-            if severity == "critical"
-            else "Options: \n- Drop one feature: If less predictive (Pros: Simplifies model; Cons: Loses info).\n- Retain and test: Evaluate with robust models (Pros: Keeps info; Cons: Risk of multicollinearity).\n- Engineer feature: Combine or transform features (Pros: Reduces redundancy; Cons: Adds complexity)."
-        )
-        issues.append(
-            Issue(
-                category="feature_correlation",
-                severity=severity,
-                column=f"{col1},{col2}",
-                description=f"Columns '{col1}' and '{col2}' are highly correlated ({corr:.2f})",
-                impact_score=impact,
-                quick_fix=quick_fix,
-            )
-        )
     return issues
 
 
