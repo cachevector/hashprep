@@ -3,8 +3,10 @@ import pandas as pd
 from scipy.stats import chi2_contingency, f_oneway
 import numpy as np
 from ..config import DEFAULT_CONFIG
+from ..utils.logging import get_logger
 
 _LEAK = DEFAULT_CONFIG.leakage
+_log = get_logger("checks.leakage")
 
 def _check_data_leakage(analyzer):
     issues = []
@@ -91,7 +93,8 @@ def _check_target_leakage_patterns(analyzer):
                                 quick_fix=quick_fix,
                             )
                         )
-                except Exception:
+                except (ValueError, np.linalg.LinAlgError) as e:
+                    _log.debug("Chi-square leakage test failed for '%s': %s", col, e)
                     continue
             numeric_cols = analyzer.df.select_dtypes(include="number").drop(
                 columns=[analyzer.target_col], errors="ignore"
@@ -127,6 +130,7 @@ def _check_target_leakage_patterns(analyzer):
                                 quick_fix=quick_fix,
                             )
                         )
-                except Exception:
+                except (ValueError, RuntimeWarning) as e:
+                    _log.debug("F-test leakage check failed for '%s': %s", col, e)
                     continue
     return issues
