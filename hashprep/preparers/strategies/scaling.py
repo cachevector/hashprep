@@ -1,5 +1,3 @@
-from typing import List, Optional, Tuple
-
 from ..models import FixSuggestion, ScaleMethod
 from .base import FixStrategy
 
@@ -27,9 +25,7 @@ class ScalingStrategy(FixStrategy):
                 lines.append(f"q1_{col} = df['{col}'].quantile(0.25)")
                 lines.append(f"q3_{col} = df['{col}'].quantile(0.75)")
                 lines.append(f"iqr_{col} = q3_{col} - q1_{col}")
-                lines.append(
-                    f"df['{col}'] = (df['{col}'] - df['{col}'].median()) / iqr_{col}"
-                )
+                lines.append(f"df['{col}'] = (df['{col}'] - df['{col}'].median()) / iqr_{col}")
             return "\n".join(lines)
 
         if method == ScaleMethod.MAXABS.value:
@@ -37,9 +33,7 @@ class ScalingStrategy(FixStrategy):
 
         return f"df[{cols}] = (df[{cols}] - df[{cols}].mean()) / df[{cols}].std()"
 
-    def get_sklearn_transformer(
-        self, suggestion: FixSuggestion
-    ) -> Tuple[Optional[str], List[str]]:
+    def get_sklearn_transformer(self, suggestion: FixSuggestion) -> tuple[str | None, list[str]]:
         method = suggestion.method
         cols = suggestion.columns
 

@@ -46,7 +46,33 @@ include = ["hashprep*"]
 [dependency-groups]
 dev = [
     "pytest>=9.0.2",
+    "ruff>=0.8.0",
 ]
 
 [project.scripts]
 hashprep = "hashprep.interfaces.cli.main:cli"
+
+[tool.ruff]
+target-version = "py310"
+line-length = 120
+
+[tool.ruff.lint]
+select = [
+    "E",    # pycodestyle errors
+    "W",    # pycodestyle warnings
+    "F",    # pyflakes
+    "I",    # isort
+    "UP",   # pyupgrade
+    "B",    # flake8-bugbear
+    "SIM",  # flake8-simplify
+]
+ignore = [
+    "E501",   # line too long (handled by formatter)
+    "B905",   # zip without strict (requires 3.10+)
+    "SIM102", # collapsible-if (elif + nested if is often more readable)
+    "SIM108", # ternary operator (readability preference)
+    "UP007",  # Optional[X] -> X | None (keep for 3.10 compat)
+]
+
+[tool.ruff.lint.isort]
+known-first-party = ["hashprep"]

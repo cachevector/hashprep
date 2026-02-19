@@ -1,5 +1,4 @@
 from datetime import datetime
-from typing import Dict, List
 
 import pandas as pd
 from jinja2 import Template
@@ -88,8 +87,8 @@ class PdfReport:
                 f.write(pdf_content)
         return pdf_content
 
-    def _group_alerts_by_type(self, issues: List[Dict]) -> Dict[str, List[Dict]]:
-        groups: Dict[str, List[Dict]] = {}
+    def _group_alerts_by_type(self, issues: list[dict]) -> dict[str, list[dict]]:
+        groups: dict[str, list[dict]] = {}
         for issue in issues:
             alert_type = self.ALERT_TYPE_MAPPING.get(issue["category"], "Other")
             if alert_type not in groups:

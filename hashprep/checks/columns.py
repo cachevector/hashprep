@@ -1,7 +1,8 @@
-from .core import Issue
 from ..config import DEFAULT_CONFIG
+from .core import Issue
 
 _COL_THRESHOLDS = DEFAULT_CONFIG.columns
+
 
 def _check_single_value_columns(analyzer):
     issues = []
@@ -26,7 +27,12 @@ def _check_single_value_columns(analyzer):
             )
     return issues
 
-def _check_high_cardinality(analyzer, threshold: int = _COL_THRESHOLDS.high_cardinality_count, critical_threshold: float = _COL_THRESHOLDS.high_cardinality_ratio_critical):
+
+def _check_high_cardinality(
+    analyzer,
+    threshold: int = _COL_THRESHOLDS.high_cardinality_count,
+    critical_threshold: float = _COL_THRESHOLDS.high_cardinality_ratio_critical,
+):
     issues = []
     categorical_cols = analyzer.df.select_dtypes(include="object").columns.tolist()
     for col in categorical_cols:
@@ -52,6 +58,7 @@ def _check_high_cardinality(analyzer, threshold: int = _COL_THRESHOLDS.high_card
             )
     return issues
 
+
 def _check_duplicates(analyzer):
     issues = []
     duplicate_rows = int(analyzer.df.duplicated().sum())
@@ -75,6 +82,7 @@ def _check_duplicates(analyzer):
             )
         )
     return issues
+
 
 def _check_mixed_data_types(analyzer):
     issues = []

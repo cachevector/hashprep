@@ -1,10 +1,10 @@
 from .base import FixStrategy
-from .imputation import ImputationStrategy
+from .column_ops import ColumnDropStrategy, DuplicateRemovalStrategy
 from .encoding import EncodingStrategy
+from .imputation import ImputationStrategy
+from .outlier import OutlierStrategy
 from .scaling import ScalingStrategy
 from .transformation import TransformationStrategy
-from .outlier import OutlierStrategy
-from .column_ops import ColumnDropStrategy, DuplicateRemovalStrategy
 
 __all__ = [
     "FixStrategy",

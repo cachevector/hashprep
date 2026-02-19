@@ -1,8 +1,7 @@
-from typing import Optional, Dict
-
-import pandas as pd
-import numpy as np
 import hashlib
+
+import numpy as np
+import pandas as pd
 
 import hashprep
 
@@ -16,7 +15,7 @@ def get_dataset_preview(df):
     return {"head": head, "tail": tail, "sample": sample}
 
 
-def summarize_dataset_info(df: pd.DataFrame) -> Dict:
+def summarize_dataset_info(df: pd.DataFrame) -> dict:
     rows = df.shape[0]
     cols = df.shape[1]
     total_cells = rows * cols
@@ -33,14 +32,12 @@ def summarize_dataset_info(df: pd.DataFrame) -> Dict:
             "average_record_size_bytes": float(round(total_memory_bytes / rows, 1)) if rows > 0 else 0.0,
             "missing_cells": missing_cells,
             "total_cells": int(total_cells),
-            "missing_percentage": float(
-                round(missing_cells / total_cells * 100, 1)
-            ) if total_cells > 0 else 0.0,
+            "missing_percentage": float(round(missing_cells / total_cells * 100, 1)) if total_cells > 0 else 0.0,
         }
     }
 
 
-def get_duplicate_info(df: pd.DataFrame) -> Dict:
+def get_duplicate_info(df: pd.DataFrame) -> dict:
     """Return duplicate row count and percentage."""
     rows = len(df)
     duplicate_count = int(df.duplicated().sum())
@@ -51,7 +48,7 @@ def get_duplicate_info(df: pd.DataFrame) -> Dict:
     }
 
 
-def summarize_variable_type_counts(df: pd.DataFrame, column_types: Dict[str, str]) -> Dict[str, int]:
+def summarize_variable_type_counts(df: pd.DataFrame, column_types: dict[str, str]) -> dict[str, int]:
     """Count variables by inferred type."""
     type_counts = {
         "Numeric": 0,
@@ -61,7 +58,7 @@ def summarize_variable_type_counts(df: pd.DataFrame, column_types: Dict[str, str
         "Boolean": 0,
         "Unsupported": 0,
     }
-    for col, typ in column_types.items():
+    for _col, typ in column_types.items():
         if typ in type_counts:
             type_counts[typ] += 1
         else:
@@ -69,25 +66,21 @@ def summarize_variable_type_counts(df: pd.DataFrame, column_types: Dict[str, str
     return type_counts
 
 
-def summarize_variable_types(df: pd.DataFrame, column_types: Optional[Dict[str, str]] = None) -> Dict[str, str]:
+def summarize_variable_types(df: pd.DataFrame, column_types: dict[str, str] | None = None) -> dict[str, str]:
     """
     Summarize column types using infer_types if column_types not provided.
     """
     if column_types is None:
         from ..utils.type_inference import infer_types
+
         column_types = infer_types(df)
     return column_types
 
 
-def add_reproduction_info(df: pd.DataFrame) -> Dict:
+def add_reproduction_info(df: pd.DataFrame) -> dict:
     """Generate reproduction metadata for the analysis."""
-    dataset_hash = hashlib.md5(
-        pd.util.hash_pandas_object(df, index=True).values
-    ).hexdigest()
+    dataset_hash = hashlib.md5(pd.util.hash_pandas_object(df, index=True).values).hexdigest()
     return {
         "dataset_hash": dataset_hash,
         "software_version": hashprep.__version__,
     }
-
-
-

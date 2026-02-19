@@ -1,6 +1,5 @@
 import base64
 import os
-from typing import Dict, List
 
 import pandas as pd
 
@@ -111,8 +110,12 @@ class MarkdownReport:
 
                 # Summary line
                 content += "| Metric | Value |\n|--------|-------|\n"
-                content += f"| Distinct | {stats.get('distinct_count', 0)} ({stats.get('distinct_percentage', 0):.1f}%) |\n"
-                content += f"| Missing | {stats.get('missing_count', 0)} ({stats.get('missing_percentage', 0):.1f}%) |\n"
+                content += (
+                    f"| Distinct | {stats.get('distinct_count', 0)} ({stats.get('distinct_percentage', 0):.1f}%) |\n"
+                )
+                content += (
+                    f"| Missing | {stats.get('missing_count', 0)} ({stats.get('missing_percentage', 0):.1f}%) |\n"
+                )
                 if cat == "Numeric":
                     mean_val = stats.get("mean")
                     content += f"| Mean | {f'{mean_val:.6g}' if mean_val is not None else 'N/A'} |\n"
@@ -268,9 +271,9 @@ class MarkdownReport:
                 f.write(content)
         return content
 
-    def _group_alerts_by_type(self, issues: List[Dict]) -> Dict[str, List[Dict]]:
+    def _group_alerts_by_type(self, issues: list[dict]) -> dict[str, list[dict]]:
         """Group issues into display categories."""
-        groups: Dict[str, List[Dict]] = {}
+        groups: dict[str, list[dict]] = {}
         for issue in issues:
             alert_type = self.ALERT_TYPE_MAPPING.get(issue["category"], "Other")
             if alert_type not in groups:

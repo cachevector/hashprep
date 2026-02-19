@@ -1,5 +1,3 @@
-from typing import List, Optional, Tuple
-
 from ..models import FixSuggestion, TransformMethod
 from .base import FixStrategy
 
@@ -30,9 +28,7 @@ class TransformationStrategy(FixStrategy):
                 "from scipy.stats import boxcox",
             ]
             for col in suggestion.columns:
-                lines.append(
-                    f"df['{col}'], _ = boxcox(df['{col}'].clip(lower=1e-10).values)"
-                )
+                lines.append(f"df['{col}'], _ = boxcox(df['{col}'].clip(lower=1e-10).values)")
             return "\n".join(lines)
 
         if method == TransformMethod.YEOJOHNSON.value:
@@ -41,16 +37,12 @@ class TransformationStrategy(FixStrategy):
                 "pt = PowerTransformer(method='yeo-johnson')",
             ]
             for col in suggestion.columns:
-                lines.append(
-                    f"df[['{col}']] = pt.fit_transform(df[['{col}']])"
-                )
+                lines.append(f"df[['{col}']] = pt.fit_transform(df[['{col}']])")
             return "\n".join(lines)
 
         return f"df[{cols}] = np.log1p(df[{cols}].clip(lower=0))"
 
-    def get_sklearn_transformer(
-        self, suggestion: FixSuggestion
-    ) -> Tuple[Optional[str], List[str]]:
+    def get_sklearn_transformer(self, suggestion: FixSuggestion) -> tuple[str | None, list[str]]:
         method = suggestion.method
         cols = suggestion.columns
 

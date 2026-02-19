@@ -1,10 +1,12 @@
-from .core import Issue
+import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency, f_oneway
-import numpy as np
+
 from ..config import DEFAULT_CONFIG
+from .core import Issue
 
 _LEAK = DEFAULT_CONFIG.leakage
+
 
 def _check_data_leakage(analyzer):
     issues = []
@@ -26,6 +28,7 @@ def _check_data_leakage(analyzer):
                 )
     return issues
 
+
 def _check_target_leakage_patterns(analyzer):
     issues = []
     if analyzer.target_col and analyzer.target_col in analyzer.df.columns:
@@ -39,7 +42,11 @@ def _check_target_leakage_patterns(analyzer):
                 corrs = numeric_cols.corrwith(target).abs()
                 for col, corr in corrs.items():
                     severity = (
-                        "critical" if corr > _LEAK.numeric_critical else "warning" if corr > _LEAK.numeric_warning else None
+                        "critical"
+                        if corr > _LEAK.numeric_critical
+                        else "warning"
+                        if corr > _LEAK.numeric_warning
+                        else None
                     )
                     if severity:
                         impact = "high" if severity == "critical" else "medium"
@@ -60,9 +67,7 @@ def _check_target_leakage_patterns(analyzer):
                         )
         # Categorical target
         else:
-            cat_cols = analyzer.df.select_dtypes(include="object").drop(
-                columns=[analyzer.target_col], errors="ignore"
-            )
+            cat_cols = analyzer.df.select_dtypes(include="object").drop(columns=[analyzer.target_col], errors="ignore")
             for col in cat_cols.columns:
                 try:
                     table = pd.crosstab(target, analyzer.df[col])
@@ -72,7 +77,11 @@ def _check_target_leakage_patterns(analyzer):
                     r, k = table.shape
                     cramers_v = np.sqrt(phi2 / min(k - 1, r - 1))
                     severity = (
-                        "critical" if cramers_v > _LEAK.categorical_critical else "warning" if cramers_v > _LEAK.categorical_warning else None
+                        "critical"
+                        if cramers_v > _LEAK.categorical_critical
+                        else "warning"
+                        if cramers_v > _LEAK.categorical_warning
+                        else None
                     )
                     if severity:
                         impact = "high" if severity == "critical" else "medium"
@@ -107,8 +116,11 @@ def _check_target_leakage_patterns(analyzer):
                 try:
                     f_stat, p_val = f_oneway(*groups)
                     severity = (
-                        "critical" if f_stat > _LEAK.f_stat_critical and p_val < _LEAK.f_stat_p_value
-                        else "warning" if f_stat > _LEAK.f_stat_warning and p_val < _LEAK.f_stat_p_value else None
+                        "critical"
+                        if f_stat > _LEAK.f_stat_critical and p_val < _LEAK.f_stat_p_value
+                        else "warning"
+                        if f_stat > _LEAK.f_stat_warning and p_val < _LEAK.f_stat_p_value
+                        else None
                     )
                     if severity:
                         impact = "high" if severity == "critical" else "medium"

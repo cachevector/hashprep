@@ -1,4 +1,4 @@
-from typing import Any, Dict, List, Optional, Set, Tuple
+from typing import Any
 
 from .models import FixSuggestion, FixType
 from .strategies import (
@@ -16,7 +16,7 @@ class PipelineBuilder:
     Generates both code and actual pipeline objects.
     """
 
-    STRATEGY_MAP: Dict[FixType, Any] = {
+    STRATEGY_MAP: dict[FixType, Any] = {
         FixType.DROP_COLUMN: ColumnDropStrategy(),
         FixType.IMPUTE: ImputationStrategy(),
         FixType.ENCODE: EncodingStrategy(),
@@ -24,7 +24,7 @@ class PipelineBuilder:
         FixType.TRANSFORM: TransformationStrategy(),
     }
 
-    def __init__(self, suggestions: List[FixSuggestion]):
+    def __init__(self, suggestions: list[FixSuggestion]):
         self.suggestions = suggestions
         self._validate_suggestions()
 
@@ -38,7 +38,7 @@ class PipelineBuilder:
 
     def generate_pipeline_code(self) -> str:
         """Generate sklearn pipeline code as a string."""
-        code: List[str] = []
+        code: list[str] = []
 
         code.append('"""')
         code.append("Auto-generated sklearn preprocessing pipeline by HashPrep.")
@@ -111,9 +111,9 @@ class PipelineBuilder:
 
         return "\n".join(code)
 
-    def _collect_all_imports(self) -> List[str]:
+    def _collect_all_imports(self) -> list[str]:
         """Collect all required imports for the pipeline."""
-        imports: Set[str] = {
+        imports: set[str] = {
             "from sklearn.pipeline import Pipeline",
             "from sklearn.compose import ColumnTransformer",
             "import numpy as np",
@@ -128,10 +128,10 @@ class PipelineBuilder:
 
         return sorted(imports)
 
-    def _build_transformer_list(self) -> List[Tuple[str, str, List[str]]]:
+    def _build_transformer_list(self) -> list[tuple[str, str, list[str]]]:
         """Build list of (name, transformer_code, columns) tuples."""
-        transformers: List[Tuple[str, str, List[str]]] = []
-        seen_names: Set[str] = set()
+        transformers: list[tuple[str, str, list[str]]] = []
+        seen_names: set[str] = set()
 
         for suggestion in self.suggestions:
             if suggestion.parameters.get("pre_pipeline"):
@@ -160,7 +160,7 @@ class PipelineBuilder:
 
         return transformers
 
-    def build_pipeline_object(self) -> Optional[Any]:
+    def build_pipeline_object(self) -> Any | None:
         """
         Return an actual sklearn Pipeline object.
         Can be serialized with joblib.
@@ -172,7 +172,7 @@ class PipelineBuilder:
             return None
 
         transformers = []
-        seen_names: Set[str] = set()
+        seen_names: set[str] = set()
 
         for suggestion in self.suggestions:
             if suggestion.parameters.get("pre_pipeline"):
@@ -207,7 +207,7 @@ class PipelineBuilder:
 
         return Pipeline([("preprocessor", preprocessor)])
 
-    def _get_transformer_instance(self, suggestion: FixSuggestion) -> Optional[Any]:
+    def _get_transformer_instance(self, suggestion: FixSuggestion) -> Any | None:
         """Return actual transformer instance for a suggestion."""
         try:
             from sklearn.impute import KNNImputer, SimpleImputer
@@ -261,9 +261,7 @@ class PipelineBuilder:
             if method == "onehot":
                 return OneHotEncoder(handle_unknown="ignore", sparse_output=False)
             if method in ("ordinal", "label"):
-                return OrdinalEncoder(
-                    handle_unknown="use_encoded_value", unknown_value=-1
-                )
+                return OrdinalEncoder(handle_unknown="use_encoded_value", unknown_value=-1)
             return None
 
         if fix_type == FixType.TRANSFORM:
@@ -274,8 +272,6 @@ class PipelineBuilder:
             if method == "log1p":
                 return FunctionTransformer(np.log1p, validate=True)
             if method == "sqrt":
-                return FunctionTransformer(
-                    lambda x: np.sqrt(np.clip(x, 0, None)), validate=True
-                )
+                return FunctionTransformer(lambda x: np.sqrt(np.clip(x, 0, None)), validate=True)
 
         return None

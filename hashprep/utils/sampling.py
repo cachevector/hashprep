@@ -1,5 +1,5 @@
-from dataclasses import dataclass, field
-from typing import Dict, Literal, Optional, Tuple
+from dataclasses import dataclass
+from typing import Literal
 
 import pandas as pd
 
@@ -16,8 +16,8 @@ class SamplingConfig:
 
     max_rows: int = DEFAULT_MAX_ROWS
     sample_method: Literal["random", "stratified", "systematic", "head"] = "random"
-    random_state: Optional[int] = 42
-    stratify_column: Optional[str] = None
+    random_state: int | None = 42
+    stratify_column: str | None = None
     memory_threshold_mb: float = DEFAULT_MEMORY_THRESHOLD_MB
     enabled: bool = True
 
@@ -25,10 +25,10 @@ class SamplingConfig:
 class DatasetSampler:
     """Handles sampling of large datasets for efficient analysis."""
 
-    def __init__(self, config: Optional[SamplingConfig] = None):
+    def __init__(self, config: SamplingConfig | None = None):
         self.config = config or SamplingConfig()
-        self.original_shape: Optional[Tuple[int, int]] = None
-        self.sample_fraction: Optional[float] = None
+        self.original_shape: tuple[int, int] | None = None
+        self.sample_fraction: float | None = None
         self.was_sampled: bool = False
 
     def should_sample(self, df: pd.DataFrame) -> bool:
@@ -91,9 +91,7 @@ class DatasetSampler:
             n_samples = max(1, int(proportions[name] * target_rows))
             n_samples = min(n_samples, len(group), remaining)
             if n_samples > 0:
-                samples.append(
-                    group.sample(n=n_samples, random_state=self.config.random_state)
-                )
+                samples.append(group.sample(n=n_samples, random_state=self.config.random_state))
                 remaining -= n_samples
             if remaining <= 0:
                 break
@@ -106,14 +104,12 @@ class DatasetSampler:
         if len(result) < target_rows and len(result) < len(df):
             additional_needed = min(target_rows - len(result), len(df) - len(result))
             remaining_indices = df.index.difference(result.index)
-            additional = df.loc[remaining_indices].sample(
-                n=additional_needed, random_state=self.config.random_state
-            )
+            additional = df.loc[remaining_indices].sample(n=additional_needed, random_state=self.config.random_state)
             result = pd.concat([result, additional])
 
         return result.sample(frac=1, random_state=self.config.random_state)
 
-    def get_sampling_info(self) -> Dict:
+    def get_sampling_info(self) -> dict:
         """Return metadata about sampling performed."""
         return {
             "was_sampled": self.was_sampled,

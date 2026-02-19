@@ -1,6 +1,6 @@
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Any, Dict, List, Optional
+from typing import Any
 
 
 class FixType(Enum):
@@ -59,9 +59,9 @@ class FixSuggestion:
     """Structured representation of a data fix action."""
 
     fix_type: FixType
-    columns: List[str]
-    method: Optional[str] = None
-    parameters: Dict[str, Any] = field(default_factory=dict)
+    columns: list[str]
+    method: str | None = None
+    parameters: dict[str, Any] = field(default_factory=dict)
     priority: int = 0
     reason: str = ""
     source_issue_category: str = ""

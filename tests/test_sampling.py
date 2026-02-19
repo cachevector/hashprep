@@ -1,8 +1,6 @@
 """Tests for dataset sampling module."""
 
-import numpy as np
 import pandas as pd
-import pytest
 
 from hashprep.utils.sampling import DatasetSampler, SamplingConfig
 
@@ -62,12 +60,8 @@ class TestSampler:
         assert list(result["col"]) == list(range(100))
 
     def test_stratified_sampling_preserves_proportions(self):
-        df = pd.DataFrame(
-            {"feature": range(1000), "label": ["A"] * 900 + ["B"] * 100}
-        )
-        config = SamplingConfig(
-            max_rows=100, sample_method="stratified", stratify_column="label"
-        )
+        df = pd.DataFrame({"feature": range(1000), "label": ["A"] * 900 + ["B"] * 100})
+        config = SamplingConfig(max_rows=100, sample_method="stratified", stratify_column="label")
         sampler = DatasetSampler(config)
 
         result = sampler.sample(df)
@@ -112,4 +106,4 @@ class TestSampler:
         config = SamplingConfig(max_rows=1000)
         sampler = DatasetSampler(config)
 
-        assert sampler.should_sample(df) == False
+        assert not sampler.should_sample(df)

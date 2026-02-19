@@ -1,5 +1,6 @@
-from .core import Issue
 from ..config import DEFAULT_CONFIG
+from .core import Issue
+
 
 def _check_class_imbalance(analyzer, threshold: float = DEFAULT_CONFIG.imbalance.majority_class_ratio):
     issues = []

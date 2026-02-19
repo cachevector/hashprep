@@ -1,12 +1,15 @@
-import pandas as pd
-import numpy as np
-import unicodedata
 import re
+import unicodedata
 from collections import defaultdict
+
+import numpy as np
+import pandas as pd
 from scipy.stats import median_abs_deviation
+
 from ..config import DEFAULT_CONFIG
 
 _SUMMARY = DEFAULT_CONFIG.summaries
+
 
 def get_monotonicity(series: pd.Series) -> str:
     if series.is_monotonic_increasing:
@@ -20,6 +23,7 @@ def get_monotonicity(series: pd.Series) -> str:
 def summarize_variables(df, column_types=None):
     if column_types is None:
         from ..utils.type_inference import infer_types
+
         column_types = infer_types(df)
     inferred_types = column_types
     variables = {}
@@ -27,9 +31,7 @@ def summarize_variables(df, column_types=None):
         typ = inferred_types.get(column, "Unsupported")
         non_missing_count = df[column].notna().sum()
         distinct_count = df[column].nunique()
-        distinct_percentage = (
-            (distinct_count / non_missing_count * 100) if non_missing_count > 0 else 0
-        )
+        distinct_percentage = (distinct_count / non_missing_count * 100) if non_missing_count > 0 else 0
         missing_count = int(df[column].isna().sum())
         missing_percentage = (missing_count / len(df) * 100) if len(df) > 0 else 0
         memory_size = df[column].memory_usage(deep=True)
@@ -116,13 +118,10 @@ def _summarize_numeric(df, col):
         "counts": [int(x) for x in hist],
     }
     vc = series.value_counts().head(_SUMMARY.top_n_values)
-    common_values = {
-        str(v): {"count": int(c), "percentage": float(c / n * 100)}
-        for v, c in vc.items()
-    }
+    common_values = {str(v): {"count": int(c), "percentage": float(c / n * 100)} for v, c in vc.items()}
     extremes = {
-        "minimum_10": [float(x) for x in sorted(series)[:_SUMMARY.extreme_values_count]],
-        "maximum_10": [float(x) for x in sorted(series)[-_SUMMARY.extreme_values_count:]],
+        "minimum_10": [float(x) for x in sorted(series)[: _SUMMARY.extreme_values_count]],
+        "maximum_10": [float(x) for x in sorted(series)[-_SUMMARY.extreme_values_count :]],
     }
     stats = {
         "infinite_count": infinite_count,
@@ -180,7 +179,6 @@ def _summarize_text(df, col):
             },
         }
     lengths = series.str.len()
-    n = len(series)
     all_text = "".join(series)
     total_chars = len(all_text)
     distinct_chars = len(set(all_text))
@@ -309,9 +307,7 @@ def _summarize_categorical(df, col):
     text_summary = _summarize_text(df, col)
     n = len(series)
     vc = series.value_counts().head(10)
-    common_values = {
-        v: {"count": int(c), "percentage": float(c / n * 100)} for v, c in vc.items()
-    }
+    common_values = {v: {"count": int(c), "percentage": float(c / n * 100)} for v, c in vc.items()}
     stats = {
         "overview": text_summary["overview"],
         "categories": {
@@ -372,9 +368,6 @@ def _summarize_boolean(df, col):
         bool_series = pd.to_numeric(series, errors="coerce").notna().astype(bool)
         vc = bool_series.value_counts()
     n = len(series)
-    common_values = {
-        str(k): {"count": int(v), "percentage": float(v / n * 100)}
-        for k, v in vc.items()
-    }
+    common_values = {str(k): {"count": int(v), "percentage": float(v / n * 100)} for k, v in vc.items()}
     stats = {"common_values": common_values}
     return stats

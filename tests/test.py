@@ -1,7 +1,8 @@
 #!/usr/bin/env python3
 
-import hashprep
 import pandas as pd
+
+import hashprep
 from hashprep import DatasetAnalyzer
 
 TARGET_COLUMN = "Survived"

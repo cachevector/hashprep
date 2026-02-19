@@ -1,5 +1,3 @@
-from typing import Dict, List, Set
-
 from .models import FixSuggestion, FixType
 from .strategies import (
     ColumnDropStrategy,
@@ -16,7 +14,7 @@ from .strategies import (
 class CodeGenerator:
     """Generates executable Python code from fix suggestions."""
 
-    STRATEGY_MAP: Dict[FixType, FixStrategy] = {
+    STRATEGY_MAP: dict[FixType, FixStrategy] = {
         FixType.DROP_COLUMN: ColumnDropStrategy(),
         FixType.DROP_DUPLICATES: DuplicateRemovalStrategy(),
         FixType.IMPUTE: ImputationStrategy(),
@@ -26,13 +24,13 @@ class CodeGenerator:
         FixType.CLIP_OUTLIERS: OutlierStrategy(),
     }
 
-    def __init__(self, suggestions: List[FixSuggestion]):
+    def __init__(self, suggestions: list[FixSuggestion]):
         self.suggestions = suggestions
 
     def generate_pandas_script(self) -> str:
         """Generate a complete, runnable pandas script."""
         imports = self._collect_imports()
-        code_blocks: List[str] = []
+        code_blocks: list[str] = []
 
         code_blocks.append('"""')
         code_blocks.append("Auto-generated data cleaning script by HashPrep.")
@@ -82,9 +80,9 @@ class CodeGenerator:
             return strategy.generate_pandas_code(suggestion)
         return ""
 
-    def _collect_imports(self) -> List[str]:
+    def _collect_imports(self) -> list[str]:
         """Collect all required imports."""
-        imports: Set[str] = {"import pandas as pd", "import numpy as np"}
+        imports: set[str] = {"import pandas as pd", "import numpy as np"}
 
         for suggestion in self.suggestions:
             strategy = self.STRATEGY_MAP.get(suggestion.fix_type)

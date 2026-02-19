@@ -1,6 +1,5 @@
 import json
 from datetime import datetime
-from typing import Dict, List
 
 import pandas as pd
 import yaml
@@ -102,9 +101,9 @@ class HtmlReport:
                 f.write(html_content)
         return html_content
 
-    def _group_alerts_by_type(self, issues: List[Dict]) -> Dict[str, List[Dict]]:
+    def _group_alerts_by_type(self, issues: list[dict]) -> dict[str, list[dict]]:
         """Group issues into display categories for the alerts section."""
-        groups: Dict[str, List[Dict]] = {}
+        groups: dict[str, list[dict]] = {}
 
         for issue in issues:
             alert_type = self.ALERT_TYPE_MAPPING.get(issue["category"], "Other")
@@ -114,7 +113,7 @@ class HtmlReport:
 
         return groups
 
-    def _generate_config(self, summary) -> Dict:
+    def _generate_config(self, summary) -> dict:
         """Generate configuration dict for download."""
         reproduction_info = summary["summaries"].get("reproduction_info", {})
         return {

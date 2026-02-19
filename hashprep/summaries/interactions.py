@@ -1,6 +1,6 @@
+import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency, f_oneway
-import numpy as np
 
 
 def summarize_interactions(df):
@@ -14,11 +14,7 @@ def summarize_interactions(df):
 
 def _scatter_plots_numeric(df):
     numeric_columns = df.select_dtypes(include="number").columns.tolist()
-    pairs = [
-        (c1, c2)
-        for i, c1 in enumerate(numeric_columns)
-        for c2 in numeric_columns[i + 1 :]
-    ]
+    pairs = [(c1, c2) for i, c1 in enumerate(numeric_columns) for c2 in numeric_columns[i + 1 :]]
     return pairs
 
 
