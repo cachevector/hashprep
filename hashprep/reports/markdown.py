@@ -2,11 +2,12 @@ import base64
 import os
 
 import pandas as pd
+
+import hashprep
+
 from ..utils.logging import get_logger
 
 _log = get_logger("reports.markdown")
-
-import hashprep
 
 
 class MarkdownReport:
