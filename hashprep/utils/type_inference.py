@@ -3,6 +3,7 @@ import pandas as pd
 from ..config import DEFAULT_CONFIG
 
 _TYPE_CFG = DEFAULT_CONFIG.type_inference
+_DT_CFG = DEFAULT_CONFIG.datetime
 CONFIG = {
     "cat_cardinality_threshold": _TYPE_CFG.cat_cardinality_threshold,
     "cat_percentage_threshold": _TYPE_CFG.cat_percentage_threshold,
@@ -11,10 +12,20 @@ CONFIG = {
 }
 
 
+def _looks_like_datetime(series: pd.Series) -> bool:
+    """Return True if an object/string column parses as datetime above the threshold."""
+    sample = series.dropna().head(200)
+    if len(sample) == 0:
+        return False
+    parsed = pd.to_datetime(sample, errors="coerce")
+    parse_ratio = parsed.notna().mean()
+    return float(parse_ratio) >= _DT_CFG.parse_threshold
+
+
 def infer_types(df: pd.DataFrame) -> dict[str, str]:
     """
     Infer semantic types per ydata logic.
-    Returns: {col: 'Numeric' | 'Categorical' | 'Text' | 'Unsupported'}
+    Returns: {col: 'Numeric' | 'Categorical' | 'Text' | 'DateTime' | 'Boolean' | 'Unsupported'}
     """
     types = {}
     for col in df.columns:
@@ -23,21 +34,31 @@ def infer_types(df: pd.DataFrame) -> dict[str, str]:
             types[col] = "Unsupported"
             continue
 
+        # DateTime: native datetime64 dtype
+        if pd.api.types.is_datetime64_any_dtype(series):
+            types[col] = "DateTime"
+
         # Numeric inference (ydata's Numeric.contains_op + numeric_is_category)
-        if pd.api.types.is_numeric_dtype(series) and not pd.api.types.is_bool_dtype(series):
+        elif pd.api.types.is_numeric_dtype(series) and not pd.api.types.is_bool_dtype(series):
             n_unique = series.nunique()
             if 1 <= n_unique <= CONFIG["num_low_cat_threshold"]:
                 types[col] = "Categorical"  # Low-card numeric → Categorical (e.g., SibSp, Parch)
             else:
                 types[col] = "Numeric"  # High-card numeric (e.g., Age, Fare)
 
+        # Boolean dtype
+        elif pd.api.types.is_bool_dtype(series):
+            types[col] = "Categorical"
+
         # String/Text inference (ydata's Text.contains_op + string_is_category)
         elif pd.api.types.is_string_dtype(series) or pd.api.types.is_object_dtype(series):
             n_unique = series.nunique()
             unique_pct = n_unique / len(series)
-            is_bool = all(s.lower() in CONFIG["bool_mappings"] for s in series[:5])  # Quick bool check
+            is_bool = all(str(s).lower() in CONFIG["bool_mappings"] for s in series[:5])
             if is_bool:
-                types[col] = "Categorical"  # Bool-like → Categorical
+                types[col] = "Categorical"
+            elif _looks_like_datetime(series):
+                types[col] = "DateTime"  # String dates → DateTime (checked before cardinality)
             elif (
                 1 <= n_unique <= CONFIG["cat_cardinality_threshold"] and unique_pct < CONFIG["cat_percentage_threshold"]
             ):

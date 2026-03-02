@@ -1,6 +1,7 @@
 from .columns import _check_duplicates, _check_high_cardinality, _check_mixed_data_types, _check_single_value_columns
 from .core import Issue as Issue
 from .correlations import calculate_correlations
+from .datetime_checks import _check_datetime_future_dates, _check_datetime_gaps, _check_datetime_monotonicity
 from .distribution import _check_uniform_distribution, _check_unique_values
 from .drift import check_drift
 from .imbalance import _check_class_imbalance
@@ -45,6 +46,9 @@ CHECKS = {
     "high_zero_counts": _check_high_zero_counts,
     "extreme_text_lengths": _check_extreme_text_lengths,
     "datetime_skew": _check_datetime_skew,
+    "datetime_future_dates": _check_datetime_future_dates,
+    "datetime_gaps": _check_datetime_gaps,
+    "datetime_monotonicity": _check_datetime_monotonicity,
     "missing_patterns": _check_missing_patterns,
     "skewness": _check_skewness,
     "dataset_drift": _check_dataset_drift,
