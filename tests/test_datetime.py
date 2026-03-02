@@ -2,7 +2,6 @@
 
 import numpy as np
 import pandas as pd
-import pytest
 
 from hashprep import DatasetAnalyzer
 from hashprep.checks.datetime_checks import (
@@ -12,7 +11,6 @@ from hashprep.checks.datetime_checks import (
 )
 from hashprep.summaries.variables import _summarize_datetime
 from hashprep.utils.type_inference import infer_types
-
 
 # ---------------------------------------------------------------------------
 # Type inference
