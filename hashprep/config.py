@@ -127,6 +127,21 @@ class ImbalanceThresholds:
 
 
 @dataclass(frozen=True)
+class DateTimeThresholds:
+    """Thresholds for datetime-specific checks."""
+
+    # Ratio of parseable values to classify an object column as DateTime
+    parse_threshold: float = 0.8
+    # Any future-dated values trigger a warning (ratio > 0 → warn, ratio > this → critical)
+    future_date_critical_ratio: float = 0.05
+    # A gap is anomalous if it exceeds this multiple of the median gap
+    gap_multiplier_warning: float = 5.0
+    gap_multiplier_critical: float = 20.0
+    # Minimum number of rows needed to run gap/monotonicity checks
+    min_rows_for_gap_check: int = 10
+
+
+@dataclass(frozen=True)
 class TypeInferenceConfig:
     """Configuration for type inference."""
 
@@ -175,6 +190,7 @@ class HashPrepConfig:
     drift: DriftThresholds = field(default_factory=DriftThresholds)
     distribution: DistributionThresholds = field(default_factory=DistributionThresholds)
     imbalance: ImbalanceThresholds = field(default_factory=ImbalanceThresholds)
+    datetime: DateTimeThresholds = field(default_factory=DateTimeThresholds)
     type_inference: TypeInferenceConfig = field(default_factory=TypeInferenceConfig)
     sampling: SamplingDefaults = field(default_factory=SamplingDefaults)
     summaries: SummaryDefaults = field(default_factory=SummaryDefaults)

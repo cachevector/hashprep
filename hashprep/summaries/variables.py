@@ -324,9 +324,14 @@ def _summarize_categorical(df, col):
 
 
 def _summarize_datetime(df, col):
-    dt_series = pd.to_datetime(df[col], errors="coerce")
+    if pd.api.types.is_datetime64_any_dtype(df[col]):
+        dt_series = df[col]
+        parse_fails = 0
+    else:
+        dt_series = pd.to_datetime(df[col], errors="coerce")
+        parse_fails = int((dt_series.isna() & df[col].notna()).sum())
+
     valid_series = dt_series.dropna()
-    parse_fails = int((dt_series.isna() & df[col].notna()).sum())
     invalid_percentage = (parse_fails / len(df) * 100) if len(df) > 0 else 0.0
 
     if valid_series.empty:
@@ -337,15 +342,48 @@ def _summarize_datetime(df, col):
             "invalid_count": parse_fails,
             "invalid_percentage": invalid_percentage,
             "counts": None,
+            "gap_stats": None,
+            "monotonicity": None,
+            "future_count": None,
         }
 
     min_dt = valid_series.min()
     max_dt = valid_series.max()
     range_delta = max_dt - min_dt
+    now = pd.Timestamp.now()
 
-    year_counts = valid_series.dt.year.value_counts().to_dict()
-    month_counts = valid_series.dt.month.value_counts().to_dict()
-    day_counts = valid_series.dt.day.value_counts().to_dict()
+    year_counts = {int(k): int(v) for k, v in valid_series.dt.year.value_counts().items()}
+    month_counts = {int(k): int(v) for k, v in valid_series.dt.month.value_counts().items()}
+    weekday_counts = {int(k): int(v) for k, v in valid_series.dt.dayofweek.value_counts().items()}
+    day_counts = {int(k): int(v) for k, v in valid_series.dt.day.value_counts().items()}
+
+    # Sub-day precision: include hour distribution if values have non-zero hours
+    has_time = bool((valid_series.dt.hour != 0).any() or (valid_series.dt.minute != 0).any())
+    hour_counts = {int(k): int(v) for k, v in valid_series.dt.hour.value_counts().items()} if has_time else None
+
+    # Gap statistics (sorted diffs)
+    sorted_series = valid_series.sort_values()
+    diffs = sorted_series.diff().dropna()
+    gap_stats = None
+    if len(diffs) > 0:
+        diff_seconds = diffs.dt.total_seconds()
+        gap_stats = {
+            "median_gap_seconds": float(diff_seconds.median()),
+            "max_gap_seconds": float(diff_seconds.max()),
+            "min_gap_seconds": float(diff_seconds.min()),
+            "mean_gap_seconds": float(diff_seconds.mean()),
+        }
+
+    # Monotonicity
+    if valid_series.is_monotonic_increasing:
+        monotonicity = "increasing"
+    elif valid_series.is_monotonic_decreasing:
+        monotonicity = "decreasing"
+    else:
+        monotonicity = "non-monotonic"
+
+    # Future dates
+    future_count = int((valid_series > now).sum())
 
     stats = {
         "minimum": str(min_dt),
@@ -353,11 +391,17 @@ def _summarize_datetime(df, col):
         "range_days": int(range_delta.days),
         "range_str": str(range_delta),
         "invalid_count": parse_fails,
-        "invalid_percentage": invalid_percentage,
+        "invalid_percentage": float(invalid_percentage),
+        "future_count": future_count,
+        "monotonicity": monotonicity,
+        "has_time_component": has_time,
+        "gap_stats": gap_stats,
         "counts": {
             "years": year_counts,
             "months": month_counts,
+            "weekdays": weekday_counts,
             "days": day_counts,
+            "hours": hour_counts,
         },
     }
     return stats
