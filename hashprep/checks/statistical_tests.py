@@ -55,9 +55,7 @@ def _check_normality(analyzer) -> list[Issue]:
                     category="normality",
                     severity=severity,
                     column=col,
-                    description=(
-                        f"Column '{col}' is non-normal ({test_label}: stat={stat:.4f}, p={p_val:.4g}, n={n})"
-                    ),
+                    description=(f"Column '{col}' is non-normal ({test_label}: stat={stat:.4f}, p={p_val:.4g}, n={n})"),
                     impact_score=impact,
                     quick_fix=(
                         "Options:\n"
