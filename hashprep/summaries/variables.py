@@ -4,11 +4,12 @@ from collections import Counter, defaultdict
 
 import numpy as np
 import pandas as pd
-from scipy.stats import median_abs_deviation
+from scipy.stats import median_abs_deviation, normaltest, shapiro
 
 from ..config import DEFAULT_CONFIG
 
 _SUMMARY = DEFAULT_CONFIG.summaries
+_ST = DEFAULT_CONFIG.statistical_tests
 
 
 def get_monotonicity(series: pd.Series) -> str:
@@ -85,10 +86,12 @@ def _summarize_numeric(df, col):
     zeros_percentage = zeros_count / n * 100
     negative_count = int((series < 0).sum())
     negative_percentage = negative_count / n * 100
-    mean_val = float(series.mean())
-    min_val = float(series.min())
-    max_val = float(series.max())
-    q = series.quantile([0, 0.05, 0.25, 0.5, 0.75, 0.95, 1.0])
+    # Use finite-only series for distribution statistics to avoid np.histogram crashing
+    finite = series[np.isfinite(series)]
+    mean_val = float(finite.mean()) if not finite.empty else float("nan")
+    min_val = float(finite.min()) if not finite.empty else float("nan")
+    max_val = float(finite.max()) if not finite.empty else float("nan")
+    q = finite.quantile([0, 0.05, 0.25, 0.5, 0.75, 0.95, 1.0])
     quantiles = {
         "minimum": float(q[0]),
         "p5": float(q[0.05]),
@@ -100,29 +103,47 @@ def _summarize_numeric(df, col):
         "range": float(q[1.0] - q[0]),
         "iqr": float(q[0.75] - q[0.25]),
     }
-    cv = float(series.std() / abs(mean_val)) if mean_val != 0 else None
+    cv = float(finite.std() / abs(mean_val)) if mean_val != 0 else None
     descriptive = {
-        "standard_deviation": float(series.std()),
+        "standard_deviation": float(finite.std()),
         "coefficient_of_variation": cv,
-        "kurtosis": float(series.kurtosis()),
+        "kurtosis": float(finite.kurtosis()),
         "mean": mean_val,
-        "mad": float(median_abs_deviation(series)),
-        "skewness": float(series.skew()),
-        "sum": float(series.sum()),
-        "variance": float(series.var()),
-        "monotonicity": get_monotonicity(series),
+        "mad": float(median_abs_deviation(finite)),
+        "skewness": float(finite.skew()),
+        "sum": float(finite.sum()),
+        "variance": float(finite.var()),
+        "monotonicity": get_monotonicity(finite),
     }
-    hist, bin_edges = np.histogram(series, bins=_SUMMARY.histogram_bins, range=(min_val, max_val))
+    hist, bin_edges = np.histogram(finite, bins=_SUMMARY.histogram_bins, range=(min_val, max_val))
     histogram = {
         "bin_edges": [float(x) for x in bin_edges],
         "counts": [int(x) for x in hist],
     }
-    vc = series.value_counts().head(_SUMMARY.top_n_values)
+    vc = finite.value_counts().head(_SUMMARY.top_n_values)
     common_values = {str(v): {"count": int(c), "percentage": float(c / n * 100)} for v, c in vc.items()}
     extremes = {
-        "minimum_10": [float(x) for x in sorted(series)[: _SUMMARY.extreme_values_count]],
-        "maximum_10": [float(x) for x in sorted(series)[-_SUMMARY.extreme_values_count :]],
+        "minimum_10": [float(x) for x in sorted(finite)[: _SUMMARY.extreme_values_count]],
+        "maximum_10": [float(x) for x in sorted(finite)[-_SUMMARY.extreme_values_count :]],
     }
+    # Normality test (Shapiro-Wilk for small n, D'Agostino-Pearson for large n)
+    normality = None
+    if n >= _ST.normality_min_n and series.nunique() > 1:
+        finite = series[np.isfinite(series)]
+        if len(finite) >= _ST.normality_min_n:
+            if len(finite) <= _ST.shapiro_max_n:
+                norm_stat, norm_p = shapiro(finite)
+                norm_test = "shapiro_wilk"
+            else:
+                norm_stat, norm_p = normaltest(finite)
+                norm_test = "dagostino_pearson"
+            normality = {
+                "test": norm_test,
+                "statistic": float(norm_stat),
+                "p_value": float(norm_p),
+                "is_normal": float(norm_p) >= _ST.normality_p_value,
+            }
+
     stats = {
         "infinite_count": infinite_count,
         "infinite_percentage": float(infinite_percentage),
@@ -137,6 +158,7 @@ def _summarize_numeric(df, col):
         "histogram": histogram,
         "common_values": common_values,
         "extreme_values": extremes,
+        "normality": normality,
     }
     return stats
 

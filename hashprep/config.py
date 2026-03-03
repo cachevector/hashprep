@@ -127,6 +127,22 @@ class ImbalanceThresholds:
 
 
 @dataclass(frozen=True)
+class StatisticalTestThresholds:
+    """Thresholds for normality and variance homogeneity tests."""
+
+    # p-value below which we flag non-normality
+    normality_p_value: float = 0.05
+    # Shapiro-Wilk is used up to this sample size; D'Agostino-Pearson above it
+    shapiro_max_n: int = 5000
+    # Minimum samples to run any normality test
+    normality_min_n: int = 8
+    # p-value below which Levene's test flags unequal variances across groups
+    levene_p_value: float = 0.05
+    # Minimum group size to include a target group in Levene's test
+    levene_min_group_size: int = 8
+
+
+@dataclass(frozen=True)
 class DateTimeThresholds:
     """Thresholds for datetime-specific checks."""
 
@@ -190,6 +206,7 @@ class HashPrepConfig:
     drift: DriftThresholds = field(default_factory=DriftThresholds)
     distribution: DistributionThresholds = field(default_factory=DistributionThresholds)
     imbalance: ImbalanceThresholds = field(default_factory=ImbalanceThresholds)
+    statistical_tests: StatisticalTestThresholds = field(default_factory=StatisticalTestThresholds)
     datetime: DateTimeThresholds = field(default_factory=DateTimeThresholds)
     type_inference: TypeInferenceConfig = field(default_factory=TypeInferenceConfig)
     sampling: SamplingDefaults = field(default_factory=SamplingDefaults)
