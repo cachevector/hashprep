@@ -7,17 +7,18 @@ from .core import Issue
 _THRESHOLDS = DEFAULT_CONFIG.outliers
 
 
-def _check_outliers(analyzer, z_threshold: float = _THRESHOLDS.z_score):
+def _check_outliers(analyzer):
+    _cfg = analyzer.config.outliers
     issues = []
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
         if len(series) == 0:
             continue
         z_scores = (series - series.mean()) / series.std(ddof=0)
-        outlier_count = int((abs(z_scores) > z_threshold).sum())
+        outlier_count = int((abs(z_scores) > _cfg.z_score).sum())
         if outlier_count > 0:
             outlier_ratio = float(outlier_count / len(series))
-            severity = "critical" if outlier_ratio > _THRESHOLDS.outlier_ratio_critical else "warning"
+            severity = "critical" if outlier_ratio > _cfg.outlier_ratio_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
             quick_fix = (
                 "Options: \n- Remove outliers: Improves model stability (Pros: Reduces noise; Cons: Loses data).\n- Winsorize: Cap extreme values (Pros: Retains data; Cons: Alters distribution).\n- Transform: Apply log/sqrt to reduce impact (Pros: Preserves info; Cons: Changes interpretation)."
@@ -37,19 +38,16 @@ def _check_outliers(analyzer, z_threshold: float = _THRESHOLDS.z_score):
     return issues
 
 
-def _check_high_zero_counts(
-    analyzer,
-    threshold: float = _THRESHOLDS.zero_count_warning,
-    critical_threshold: float = _THRESHOLDS.zero_count_critical,
-):
+def _check_high_zero_counts(analyzer):
+    _cfg = analyzer.config.outliers
     issues = []
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
         if len(series) == 0:
             continue
         zero_pct = float((series == 0).mean())
-        if zero_pct > threshold:
-            severity = "critical" if zero_pct > critical_threshold else "warning"
+        if zero_pct > _cfg.zero_count_warning:
+            severity = "critical" if zero_pct > _cfg.zero_count_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
             quick_fix = (
                 "Options: \n- Drop column: If zeros are not meaningful (Pros: Simplifies model; Cons: Loses info).\n- Transform: Use binary indicator or log transform (Pros: Retains info; Cons: Changes interpretation).\n- Verify zeros: Check if valid or errors (Pros: Ensures accuracy; Cons: Time-consuming)."
@@ -69,18 +67,17 @@ def _check_high_zero_counts(
     return issues
 
 
-def _check_extreme_text_lengths(
-    analyzer, max_threshold: int = _THRESHOLDS.text_length_max, min_threshold: int = _THRESHOLDS.text_length_min
-):
+def _check_extreme_text_lengths(analyzer):
+    _cfg = analyzer.config.outliers
     issues = []
     for col in analyzer.df.select_dtypes(include="object").columns:
         series = analyzer.df[col].dropna().astype(str)
         if series.empty:
             continue
         lengths = series.str.len()
-        if lengths.max() > max_threshold or lengths.min() < min_threshold:
-            extreme_ratio = float(((lengths > max_threshold) | (lengths < min_threshold)).mean())
-            severity = "critical" if extreme_ratio > _THRESHOLDS.extreme_ratio_critical else "warning"
+        if lengths.max() > _cfg.text_length_max or lengths.min() < _cfg.text_length_min:
+            extreme_ratio = float(((lengths > _cfg.text_length_max) | (lengths < _cfg.text_length_min)).mean())
+            severity = "critical" if extreme_ratio > _cfg.extreme_ratio_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
             quick_fix = (
                 "Options: \n- Truncate values: Cap extreme lengths (Pros: Stabilizes model; Cons: Loses info).\n- Filter outliers: Remove extreme entries (Pros: Reduces noise; Cons: Loses data).\n- Transform: Normalize lengths (e.g., log) (Pros: Retains info; Cons: Changes interpretation)."
@@ -100,21 +97,18 @@ def _check_extreme_text_lengths(
     return issues
 
 
-def _check_skewness(
-    analyzer,
-    skew_threshold: float = _THRESHOLDS.skewness_warning,
-    critical_skew_threshold: float = _THRESHOLDS.skewness_critical,
-):
+def _check_skewness(analyzer):
+    _cfg = analyzer.config.outliers
     issues = []
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
-        if len(series) < _THRESHOLDS.min_sample_size:
+        if len(series) < _cfg.min_sample_size:
             continue
         skewness = float(series.skew())
         abs_skew = abs(skewness)
 
-        if abs_skew > skew_threshold:
-            severity = "critical" if abs_skew > critical_skew_threshold else "warning"
+        if abs_skew > _cfg.skewness_warning:
+            severity = "critical" if abs_skew > _cfg.skewness_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
             quick_fix = (
                 "Options: \n- Log transformation: Handles right skew (Pros: Normalizes; Cons: Only for positive).\n- Box-Cox/Yeo-Johnson: General power transforms (Pros: Robust; Cons: More complex).\n- Retain: Some models (trees) handle skewness well."
@@ -134,14 +128,15 @@ def _check_skewness(
     return issues
 
 
-def _check_datetime_skew(analyzer, threshold: float = _THRESHOLDS.datetime_skew):
+def _check_datetime_skew(analyzer):
+    _cfg = analyzer.config.outliers
     issues = []
     for col in analyzer.df.select_dtypes(include="datetime64").columns:
         series = pd.to_datetime(analyzer.df[col], errors="coerce").dropna()
         if series.empty:
             continue
         year_counts = series.dt.year.value_counts(normalize=True)
-        if year_counts.max() > threshold:
+        if year_counts.max() > _cfg.datetime_skew:
             issues.append(
                 Issue(
                     category="datetime_skew",
@@ -155,15 +150,15 @@ def _check_datetime_skew(analyzer, threshold: float = _THRESHOLDS.datetime_skew)
     return issues
 
 
-def _check_infinite_values(analyzer, threshold: float = _THRESHOLDS.infinite_ratio_critical):
-    """Detect columns with infinite values."""
+def _check_infinite_values(analyzer):
+    _cfg = analyzer.config.outliers
     issues = []
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col]
         inf_count = int(np.isinf(series).sum())
         if inf_count > 0:
             inf_ratio = inf_count / len(series)
-            severity = "critical" if inf_ratio > threshold else "warning"
+            severity = "critical" if inf_ratio > _cfg.infinite_ratio_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
             issues.append(
                 Issue(
@@ -183,17 +178,17 @@ def _check_infinite_values(analyzer, threshold: float = _THRESHOLDS.infinite_rat
     return issues
 
 
-def _check_constant_length(analyzer, threshold: float = _THRESHOLDS.constant_length_ratio):
-    """Detect string columns where all values have the same length (e.g., IDs, codes)."""
+def _check_constant_length(analyzer):
+    _cfg = analyzer.config.outliers
     issues = []
     for col in analyzer.df.select_dtypes(include="object").columns:
         series = analyzer.df[col].dropna().astype(str)
-        if len(series) < _THRESHOLDS.min_sample_size:
+        if len(series) < _cfg.min_sample_size:
             continue
         lengths = series.str.len()
         most_common_length_ratio = lengths.value_counts(normalize=True).iloc[0] if len(lengths) > 0 else 0
 
-        if most_common_length_ratio >= threshold:
+        if most_common_length_ratio >= _cfg.constant_length_ratio:
             most_common_length = int(lengths.mode().iloc[0])
             issues.append(
                 Issue(

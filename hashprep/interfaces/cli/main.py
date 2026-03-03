@@ -13,6 +13,7 @@ from hashprep.preparers.codegen import CodeGenerator
 from hashprep.preparers.pipeline_builder import PipelineBuilder
 from hashprep.preparers.suggestions import SuggestionProvider
 from hashprep.reports import generate_report
+from hashprep.utils.config_loader import load_config
 from hashprep.utils.sampling import SamplingConfig
 
 
@@ -70,7 +71,14 @@ def version():
     help="Max rows for sampling (default: 100000)",
 )
 @click.option("--no-sample", is_flag=True, help="Disable automatic sampling")
-def scan(file_path, critical_only, quiet, json_out, target, checks, comparison, sample_size, no_sample):
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path to config file (.yaml, .toml, .json)",
+)
+def scan(file_path, critical_only, quiet, json_out, target, checks, comparison, sample_size, no_sample, config_path):
     df = pd.read_csv(file_path)
     comparison_df = pd.read_csv(comparison) if comparison else None
 
@@ -90,6 +98,7 @@ def scan(file_path, critical_only, quiet, json_out, target, checks, comparison, 
     if not no_sample and sample_size:
         sampling_config = SamplingConfig(max_rows=sample_size)
 
+    config = load_config(config_path) if config_path else None
     analyzer = DatasetAnalyzer(
         df,
         target_col=target,
@@ -97,6 +106,7 @@ def scan(file_path, critical_only, quiet, json_out, target, checks, comparison, 
         comparison_df=comparison_df,
         sampling_config=sampling_config,
         auto_sample=not no_sample,
+        config=config,
     )
     summary = analyzer.analyze()
 
@@ -165,7 +175,14 @@ def scan(file_path, critical_only, quiet, json_out, target, checks, comparison, 
     help="Max rows for sampling (default: 100000)",
 )
 @click.option("--no-sample", is_flag=True, help="Disable automatic sampling")
-def details(file_path, target, checks, comparison, sample_size, no_sample):
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path to config file (.yaml, .toml, .json)",
+)
+def details(file_path, target, checks, comparison, sample_size, no_sample, config_path):
     df = pd.read_csv(file_path)
     comparison_df = pd.read_csv(comparison) if comparison else None
 
@@ -185,6 +202,7 @@ def details(file_path, target, checks, comparison, sample_size, no_sample):
     if not no_sample and sample_size:
         sampling_config = SamplingConfig(max_rows=sample_size)
 
+    config = load_config(config_path) if config_path else None
     analyzer = DatasetAnalyzer(
         df,
         target_col=target,
@@ -192,6 +210,7 @@ def details(file_path, target, checks, comparison, sample_size, no_sample):
         comparison_df=comparison_df,
         sampling_config=sampling_config,
         auto_sample=not no_sample,
+        config=config,
     )
     summary = analyzer.analyze()
 
@@ -276,6 +295,13 @@ def details(file_path, target, checks, comparison, sample_size, no_sample):
     help="Max rows for sampling (default: 100000)",
 )
 @click.option("--no-sample", is_flag=True, help="Disable automatic sampling")
+@click.option(
+    "--config",
+    "config_path",
+    type=click.Path(exists=True),
+    default=None,
+    help="Path to config file (.yaml, .toml, .json)",
+)
 def report(
     file_path,
     with_code,
@@ -288,6 +314,7 @@ def report(
     comparison,
     sample_size,
     no_sample,
+    config_path,
 ):
     df = pd.read_csv(file_path)
     comparison_df = pd.read_csv(comparison) if comparison else None
@@ -308,6 +335,7 @@ def report(
     if not no_sample and sample_size:
         sampling_config = SamplingConfig(max_rows=sample_size)
 
+    config = load_config(config_path) if config_path else None
     analyzer = DatasetAnalyzer(
         df,
         target_col=target,
@@ -316,6 +344,7 @@ def report(
         comparison_df=comparison_df,
         sampling_config=sampling_config,
         auto_sample=not no_sample,
+        config=config,
     )
     summary = analyzer.analyze()
 

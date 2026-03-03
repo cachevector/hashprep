@@ -6,6 +6,7 @@ import pandas as pd
 from scipy.stats import ConstantInputWarning
 
 from ..checks import run_checks
+from ..config import DEFAULT_CONFIG, HashPrepConfig
 from ..summaries import (
     add_reproduction_info,
     get_dataset_preview,
@@ -74,6 +75,7 @@ class DatasetAnalyzer:
         comparison_df: pd.DataFrame | None = None,
         sampling_config: SamplingConfig | None = None,
         auto_sample: bool = True,
+        config: HashPrepConfig | None = None,
     ):
         if not isinstance(df, pd.DataFrame):
             raise TypeError(f"Expected pandas DataFrame, got {type(df).__name__}")
@@ -84,6 +86,7 @@ class DatasetAnalyzer:
         if comparison_df is not None and not isinstance(comparison_df, pd.DataFrame):
             raise TypeError(f"comparison_df must be a pandas DataFrame, got {type(comparison_df).__name__}")
 
+        self.config = config if config is not None else DEFAULT_CONFIG
         self.comparison_df = comparison_df
         self.target_col = target_col
         self.selected_checks = selected_checks

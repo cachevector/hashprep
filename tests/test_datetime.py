@@ -67,8 +67,11 @@ class _FakeAnalyzer:
     """Minimal stand-in for DatasetAnalyzer used in unit tests."""
 
     def __init__(self, df, column_types):
+        from hashprep.config import DEFAULT_CONFIG
+
         self.df = df
         self.column_types = column_types
+        self.config = DEFAULT_CONFIG
 
 
 class TestFutureDatesCheck:

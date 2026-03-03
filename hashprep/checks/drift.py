@@ -9,14 +9,13 @@ from .core import Issue
 _log = get_logger("checks.drift")
 
 _DRIFT = DEFAULT_CONFIG.drift
-CRITICAL_P_VALUE = _DRIFT.critical_p_value
-MAX_CATEGORIES_FOR_CHI2 = _DRIFT.max_categories_for_chi2
 
 
 def check_drift(
     df_train: pd.DataFrame,
     df_test: pd.DataFrame,
     threshold: float = _DRIFT.p_value,
+    config=None,
 ) -> list[Issue]:
     """
     Check for distribution shift between two datasets.
@@ -25,10 +24,11 @@ def check_drift(
     if not isinstance(df_train, pd.DataFrame) or not isinstance(df_test, pd.DataFrame):
         raise TypeError("Both df_train and df_test must be pandas DataFrames")
 
+    drift_cfg = config if config is not None else _DRIFT
     issues = []
 
-    issues.extend(_check_numeric_drift(df_train, df_test, threshold))
-    issues.extend(_check_categorical_drift(df_train, df_test, threshold))
+    issues.extend(_check_numeric_drift(df_train, df_test, threshold, drift_cfg))
+    issues.extend(_check_categorical_drift(df_train, df_test, threshold, drift_cfg))
 
     return issues
 
@@ -37,6 +37,7 @@ def _check_numeric_drift(
     df_train: pd.DataFrame,
     df_test: pd.DataFrame,
     threshold: float,
+    drift_cfg,
 ) -> list[Issue]:
     """Check numeric columns for distribution drift using KS-test."""
     issues = []
@@ -55,7 +56,7 @@ def _check_numeric_drift(
         stat, p_val = ks_2samp(train_vals, test_vals)
 
         if p_val < threshold:
-            severity = "critical" if p_val < CRITICAL_P_VALUE else "warning"
+            severity = "critical" if p_val < drift_cfg.critical_p_value else "warning"
             issues.append(
                 Issue(
                     category="dataset_drift",
@@ -74,6 +75,7 @@ def _check_categorical_drift(
     df_train: pd.DataFrame,
     df_test: pd.DataFrame,
     threshold: float,
+    drift_cfg,
 ) -> list[Issue]:
     """Check categorical columns for distribution drift using Chi-square test."""
     issues = []
@@ -88,20 +90,20 @@ def _check_categorical_drift(
 
         new_categories = set(test_counts.index) - set(train_counts.index)
         if new_categories:
-            sample_new = list(new_categories)[: _DRIFT.max_new_category_samples]
+            sample_new = list(new_categories)[: drift_cfg.max_new_category_samples]
             issues.append(
                 Issue(
                     category="dataset_drift",
                     severity="warning",
                     column=col,
-                    description=f"New categories in test set for '{col}': {sample_new}{'...' if len(new_categories) > _DRIFT.max_new_category_samples else ''}",
+                    description=f"New categories in test set for '{col}': {sample_new}{'...' if len(new_categories) > drift_cfg.max_new_category_samples else ''}",
                     impact_score="medium",
                     quick_fix="Handle unseen categories in preprocessing pipeline (e.g., OrdinalEncoder with unknown_value).",
                 )
             )
 
         all_cats = list(set(train_counts.index) | set(test_counts.index))
-        if len(all_cats) > MAX_CATEGORIES_FOR_CHI2:
+        if len(all_cats) > drift_cfg.max_categories_for_chi2:
             continue
 
         train_total = train_counts.sum()
@@ -127,7 +129,7 @@ def _check_categorical_drift(
             chi2_stat, p_val = chisquare(observed_arr, f_exp=expected_arr)
 
             if p_val < threshold:
-                severity = "critical" if p_val < CRITICAL_P_VALUE else "warning"
+                severity = "critical" if p_val < drift_cfg.critical_p_value else "warning"
                 issues.append(
                     Issue(
                         category="dataset_drift",

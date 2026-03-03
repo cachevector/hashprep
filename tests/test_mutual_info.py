@@ -20,9 +20,12 @@ rng = np.random.default_rng(0)
 
 class _FakeAnalyzer:
     def __init__(self, df, target_col=None):
+        from hashprep.config import DEFAULT_CONFIG
+
         self.df = df
         self.target_col = target_col
         self.column_types = infer_types(df)
+        self.config = DEFAULT_CONFIG
 
 
 # ---------------------------------------------------------------------------

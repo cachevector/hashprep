@@ -4,15 +4,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency, kendalltau, pearsonr, spearmanr
 
-from ..config import DEFAULT_CONFIG
 from ..utils.type_inference import is_usable_for_corr
 from .core import Issue
 from .discretizer import DiscretizationType, Discretizer
-
-_CORR = DEFAULT_CONFIG.correlations
-CORR_THRESHOLDS = _CORR.as_nested_dict()
-CAT_MAX_DISTINCT = _CORR.max_distinct_categories
-LOW_CARD_NUM_THRESHOLD = _CORR.low_cardinality_numeric
 
 
 def _cramers_v_corrected(table: pd.DataFrame) -> float:
@@ -37,8 +31,9 @@ def calculate_correlations(analyzer, thresholds=None):
     Compute correlations using internal defaults: Spearman + Pearson for numerics,
     with Kendall added automatically for low-cardinality pairs.
     """
+    _cfg = analyzer.config.correlations
     if thresholds is None:
-        thresholds = CORR_THRESHOLDS
+        thresholds = _cfg.as_nested_dict()
 
     inferred_types = analyzer.column_types  # Use analyzer.column_types for inferred types dict
     issues = []
@@ -50,7 +45,7 @@ def calculate_correlations(analyzer, thresholds=None):
         col
         for col, typ in inferred_types.items()
         if typ == "Categorical"
-        and 1 < analyzer.df[col].nunique() <= CAT_MAX_DISTINCT
+        and 1 < analyzer.df[col].nunique() <= _cfg.max_distinct_categories
         and is_usable_for_corr(analyzer.df[col])
     ]
 
@@ -62,6 +57,7 @@ def calculate_correlations(analyzer, thresholds=None):
 
 
 def _check_numeric_correlation(analyzer, numeric_cols: list, thresholds: dict):
+    _cfg = analyzer.config.correlations
     issues = []
     if len(numeric_cols) < 2:
         return issues
@@ -85,7 +81,9 @@ def _check_numeric_correlation(analyzer, numeric_cols: list, thresholds: dict):
 
         # Kendall (only for low-cardinality numerics)
         kendall_corr, kendall_p = None, None
-        is_low_card = series1.nunique() <= LOW_CARD_NUM_THRESHOLD or series2.nunique() <= LOW_CARD_NUM_THRESHOLD
+        is_low_card = (
+            series1.nunique() <= _cfg.low_cardinality_numeric or series2.nunique() <= _cfg.low_cardinality_numeric
+        )
         if is_low_card:
             kendall_corr, kendall_p = kendalltau(series1, series2)
             kendall_corr = abs(kendall_corr)
