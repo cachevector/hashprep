@@ -17,6 +17,7 @@ from ..summaries import (
     summarize_variable_types,
     summarize_variables,
 )
+from ..summaries.mutual_info import summarize_mutual_information
 from ..utils.sampling import DatasetSampler, SamplingConfig
 from ..utils.type_inference import infer_types
 from .visualizations import (
@@ -61,6 +62,7 @@ class DatasetAnalyzer:
         "constant_length",
         "normality",
         "variance_homogeneity",
+        "low_mutual_information",
     ]
 
     def __init__(
@@ -124,6 +126,11 @@ class DatasetAnalyzer:
         self.summaries["variables"] = summarize_variables(self.df, column_types=self.column_types)
         self.summaries.update(summarize_interactions(self.df))
         self.summaries.update(summarize_missing_values(self.df))
+
+        if self.target_col is not None:
+            mi_result = summarize_mutual_information(self.df, self.target_col, self.column_types)
+            if mi_result:
+                self.summaries["mutual_information"] = mi_result
 
         if self.sampler:
             self.summaries["sampling_info"] = self.sampler.get_sampling_info()

@@ -12,6 +12,7 @@ from .missing_values import (
     _check_high_missing_values,
     _check_missing_patterns,
 )
+from .mutual_info import _check_low_mutual_information
 from .outliers import (
     _check_constant_length,
     _check_datetime_skew,
@@ -60,6 +61,7 @@ CHECKS = {
     "empty_dataset": _check_empty_dataset,
     "normality": _check_normality,
     "variance_homogeneity": _check_variance_homogeneity,
+    "low_mutual_information": _check_low_mutual_information,
 }
 
 CORRELATION_CHECKS = {"feature_correlation", "categorical_correlation", "mixed_correlation"}
