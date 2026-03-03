@@ -4,11 +4,8 @@ Near-zero MI means the feature carries almost no information about the target
 and is likely useless (or worse — noise) for a predictive model.
 """
 
-from ..config import DEFAULT_CONFIG
 from ..summaries.mutual_info import summarize_mutual_information
 from .core import Issue
-
-_MI = DEFAULT_CONFIG.mutual_info
 
 
 def _check_low_mutual_information(analyzer) -> list[Issue]:
@@ -23,12 +20,13 @@ def _check_low_mutual_information(analyzer) -> list[Issue]:
     if not mi_result or not mi_result.get("scores"):
         return []
 
+    _cfg = analyzer.config.mutual_info
     issues = []
     scores = mi_result["scores"]
     task = mi_result["task"]
 
     for col, score in scores.items():
-        if score < _MI.low_mi_warning:
+        if score < _cfg.low_mi_warning:
             issues.append(
                 Issue(
                     category="low_mutual_information",

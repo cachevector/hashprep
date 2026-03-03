@@ -29,7 +29,13 @@ from .statistical_tests import _check_normality, _check_variance_homogeneity
 def _check_dataset_drift(analyzer):
     """Wrapper for drift detection that uses analyzer's comparison_df."""
     if hasattr(analyzer, "comparison_df") and analyzer.comparison_df is not None:
-        return check_drift(analyzer.df, analyzer.comparison_df)
+        drift_cfg = analyzer.config.drift
+        return check_drift(
+            analyzer.df,
+            analyzer.comparison_df,
+            threshold=drift_cfg.p_value,
+            config=drift_cfg,
+        )
     return []
 
 

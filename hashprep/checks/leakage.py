@@ -2,11 +2,9 @@ import numpy as np
 import pandas as pd
 from scipy.stats import chi2_contingency, f_oneway
 
-from ..config import DEFAULT_CONFIG
 from ..utils.logging import get_logger
 from .core import Issue
 
-_LEAK = DEFAULT_CONFIG.leakage
 _log = get_logger("checks.leakage")
 
 _LEAKAGE_CRITICAL_FIX = (
@@ -42,6 +40,7 @@ def _check_data_leakage(analyzer):
 
 
 def _check_target_leakage_patterns(analyzer):
+    _leak = analyzer.config.leakage
     issues = []
     if analyzer.target_col and analyzer.target_col in analyzer.df.columns:
         target = analyzer.df[analyzer.target_col]
@@ -55,9 +54,9 @@ def _check_target_leakage_patterns(analyzer):
                 for col, corr in corrs.items():
                     severity = (
                         "critical"
-                        if corr > _LEAK.numeric_critical
+                        if corr > _leak.numeric_critical
                         else "warning"
-                        if corr > _LEAK.numeric_warning
+                        if corr > _leak.numeric_warning
                         else None
                     )
                     if severity:
@@ -86,9 +85,9 @@ def _check_target_leakage_patterns(analyzer):
                     cramers_v = np.sqrt(phi2 / min(k - 1, r - 1))
                     severity = (
                         "critical"
-                        if cramers_v > _LEAK.categorical_critical
+                        if cramers_v > _leak.categorical_critical
                         else "warning"
-                        if cramers_v > _LEAK.categorical_warning
+                        if cramers_v > _leak.categorical_warning
                         else None
                     )
                     if severity:
@@ -122,9 +121,9 @@ def _check_target_leakage_patterns(analyzer):
                     f_stat, p_val = f_oneway(*groups)
                     severity = (
                         "critical"
-                        if f_stat > _LEAK.f_stat_critical and p_val < _LEAK.f_stat_p_value
+                        if f_stat > _leak.f_stat_critical and p_val < _leak.f_stat_p_value
                         else "warning"
-                        if f_stat > _LEAK.f_stat_warning and p_val < _LEAK.f_stat_p_value
+                        if f_stat > _leak.f_stat_warning and p_val < _leak.f_stat_p_value
                         else None
                     )
                     if severity:

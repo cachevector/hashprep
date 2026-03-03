@@ -15,11 +15,13 @@ from hashprep.summaries.variables import _summarize_numeric
 
 class _FakeAnalyzer:
     def __init__(self, df, target_col=None):
-        self.df = df
-        self.target_col = target_col
+        from hashprep.config import DEFAULT_CONFIG
         from hashprep.utils.type_inference import infer_types
 
+        self.df = df
+        self.target_col = target_col
         self.column_types = infer_types(df)
+        self.config = DEFAULT_CONFIG
 
 
 rng = np.random.default_rng(42)

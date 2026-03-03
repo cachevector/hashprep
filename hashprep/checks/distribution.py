@@ -1,21 +1,19 @@
 from scipy.stats import kstest
 
-from ..config import DEFAULT_CONFIG
 from .core import Issue
 
-_DIST = DEFAULT_CONFIG.distribution
 
-
-def _check_uniform_distribution(analyzer, p_threshold: float = _DIST.uniform_p_value) -> list[Issue]:
+def _check_uniform_distribution(analyzer) -> list[Issue]:
     """
     Detect uniformly distributed numeric columns using Kolmogorov-Smirnov test.
     Uniform distributions often indicate synthetic IDs or sequential data.
     """
+    _cfg = analyzer.config.distribution
     issues = []
 
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
-        if len(series) < _DIST.uniform_min_samples:
+        if len(series) < _cfg.uniform_min_samples:
             continue
 
         min_val, max_val = series.min(), series.max()
@@ -26,7 +24,7 @@ def _check_uniform_distribution(analyzer, p_threshold: float = _DIST.uniform_p_v
         _, p_val = kstest(normalized, "uniform")
         is_monotonic = series.is_monotonic_increasing or series.is_monotonic_decreasing
 
-        if p_val > p_threshold or is_monotonic:
+        if p_val > _cfg.uniform_p_value or is_monotonic:
             monotonic_note = " and monotonic" if is_monotonic else ""
             issues.append(
                 Issue(
@@ -47,22 +45,23 @@ def _check_uniform_distribution(analyzer, p_threshold: float = _DIST.uniform_p_v
     return issues
 
 
-def _check_unique_values(analyzer, threshold: float = _DIST.unique_value_ratio) -> list[Issue]:
+def _check_unique_values(analyzer) -> list[Issue]:
     """
     Detect columns where nearly all values are unique.
     High uniqueness often indicates identifiers, names, or free-text fields.
     """
+    _cfg = analyzer.config.distribution
     issues = []
 
     for col in analyzer.df.columns:
         series = analyzer.df[col].dropna()
-        if len(series) < _DIST.unique_min_samples:
+        if len(series) < _cfg.unique_min_samples:
             continue
 
         unique_count = series.nunique()
         unique_ratio = unique_count / len(series)
 
-        if unique_ratio >= threshold:
+        if unique_ratio >= _cfg.unique_value_ratio:
             issues.append(
                 Issue(
                     category="unique_values",

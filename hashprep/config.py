@@ -7,6 +7,7 @@ All magic numbers and thresholds are defined here to make them:
 """
 
 from dataclasses import dataclass, field
+from dataclasses import fields as _fields
 
 
 @dataclass(frozen=True)
@@ -230,3 +231,27 @@ class HashPrepConfig:
 
 # Global default config instance
 DEFAULT_CONFIG = HashPrepConfig()
+
+
+def config_from_dict(d: dict) -> "HashPrepConfig":
+    """Build a HashPrepConfig from a (possibly partial) nested dict.
+
+    Unknown keys are silently ignored; missing keys fall back to defaults.
+    """
+    default = HashPrepConfig()
+
+    def _merge(cls, default_obj, overrides: dict):
+        kwargs = {}
+        for f in _fields(cls):
+            if f.name not in overrides:
+                kwargs[f.name] = getattr(default_obj, f.name)
+            else:
+                val = overrides[f.name]
+                field_default = getattr(default_obj, f.name)
+                if hasattr(field_default, "__dataclass_fields__") and isinstance(val, dict):
+                    kwargs[f.name] = _merge(type(field_default), field_default, val)
+                else:
+                    kwargs[f.name] = val
+        return cls(**kwargs)
+
+    return _merge(HashPrepConfig, default, d)

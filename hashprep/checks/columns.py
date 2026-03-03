@@ -1,7 +1,4 @@
-from ..config import DEFAULT_CONFIG
 from .core import Issue
-
-_COL_THRESHOLDS = DEFAULT_CONFIG.columns
 
 
 def _check_single_value_columns(analyzer):
@@ -28,18 +25,15 @@ def _check_single_value_columns(analyzer):
     return issues
 
 
-def _check_high_cardinality(
-    analyzer,
-    threshold: int = _COL_THRESHOLDS.high_cardinality_count,
-    critical_threshold: float = _COL_THRESHOLDS.high_cardinality_ratio_critical,
-):
+def _check_high_cardinality(analyzer):
+    _cfg = analyzer.config.columns
     issues = []
     categorical_cols = analyzer.df.select_dtypes(include="object").columns.tolist()
     for col in categorical_cols:
         unique_count = int(analyzer.df[col].nunique())
         unique_ratio = float(unique_count / len(analyzer.df))
-        if unique_count > threshold:
-            severity = "critical" if unique_ratio > critical_threshold else "warning"
+        if unique_count > _cfg.high_cardinality_count:
+            severity = "critical" if unique_ratio > _cfg.high_cardinality_ratio_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
             quick_fix = (
                 "Options: \n- Drop column: Avoids overfitting from unique identifiers (Pros: Simplifies model; Cons: Loses potential info).\n- Engineer feature: Extract patterns (e.g., titles from names) (Pros: Retains useful info; Cons: Requires domain knowledge).\n- Use hashing: Reduce dimensionality (Pros: Scalable; Cons: May lose interpretability)."
@@ -61,10 +55,11 @@ def _check_high_cardinality(
 
 def _check_duplicates(analyzer):
     issues = []
+    _cfg = analyzer.config.columns
     duplicate_rows = int(analyzer.df.duplicated().sum())
     if duplicate_rows > 0:
         duplicate_ratio = float(duplicate_rows / len(analyzer.df))
-        severity = "critical" if duplicate_ratio > _COL_THRESHOLDS.duplicate_ratio_critical else "warning"
+        severity = "critical" if duplicate_ratio > _cfg.duplicate_ratio_critical else "warning"
         impact = "high" if severity == "critical" else "medium"
         quick_fix = (
             "Options: \n- Drop duplicates: Ensures data integrity (Pros: Cleaner data; Cons: May lose valid repeats).\n- Verify duplicates: Check if intentional (e.g., time-series) (Pros: Validates data; Cons: Time-consuming)."

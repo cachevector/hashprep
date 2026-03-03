@@ -6,19 +6,16 @@ variance homogeneity (Levene's test across target-column groups).
 import numpy as np
 from scipy.stats import levene, normaltest, shapiro
 
-from ..config import DEFAULT_CONFIG
 from .core import Issue
 
-_ST = DEFAULT_CONFIG.statistical_tests
 
-
-def _run_normality_test(series) -> tuple[str, float, float]:
+def _run_normality_test(series, shapiro_max_n: int) -> tuple[str, float, float]:
     """
     Return (test_name, statistic, p_value) for the most appropriate normality test.
     Uses Shapiro-Wilk for n <= shapiro_max_n, D'Agostino-Pearson otherwise.
     """
     n = len(series)
-    if n <= _ST.shapiro_max_n:
+    if n <= shapiro_max_n:
         stat, p = shapiro(series)
         return "shapiro_wilk", float(stat), float(p)
     else:
@@ -32,19 +29,20 @@ def _check_normality(analyzer) -> list[Issue]:
     Uses Shapiro-Wilk for n <= 5000, D'Agostino-Pearson for larger samples.
     Non-normality matters for linear models, t-tests, and certain imputation strategies.
     """
+    _cfg = analyzer.config.statistical_tests
     issues = []
 
     for col in analyzer.df.select_dtypes(include="number").columns:
         series = analyzer.df[col].dropna()
         n = len(series)
-        if n < _ST.normality_min_n:
+        if n < _cfg.normality_min_n:
             continue
         if series.nunique() <= 1:
             continue
 
-        test_name, stat, p_val = _run_normality_test(series)
+        test_name, stat, p_val = _run_normality_test(series, _cfg.shapiro_max_n)
 
-        if p_val < _ST.normality_p_value:
+        if p_val < _cfg.normality_p_value:
             # Severity: very small p → critical (strong evidence), otherwise warning
             severity = "critical" if p_val < 0.001 else "warning"
             impact = "high" if severity == "critical" else "medium"
@@ -80,6 +78,7 @@ def _check_variance_homogeneity(analyzer) -> list[Issue]:
     Only runs when a target column is set and has at least 2 groups with
     sufficient data.
     """
+    _cfg = analyzer.config.statistical_tests
     issues = []
 
     if analyzer.target_col is None:
@@ -99,7 +98,7 @@ def _check_variance_homogeneity(analyzer) -> list[Issue]:
         for label in groups_labels:
             mask = analyzer.df[analyzer.target_col] == label
             grp = series[mask].dropna().values
-            if len(grp) >= _ST.levene_min_group_size:
+            if len(grp) >= _cfg.levene_min_group_size:
                 groups.append(grp)
 
         if len(groups) < 2:
@@ -110,7 +109,7 @@ def _check_variance_homogeneity(analyzer) -> list[Issue]:
         except ValueError:
             continue
 
-        if p_val < _ST.levene_p_value:
+        if p_val < _cfg.levene_p_value:
             # Compute per-group stds to add colour to the description
             stds = [float(np.std(g, ddof=1)) for g in groups]
             std_ratio = max(stds) / min(stds) if min(stds) > 0 else float("inf")

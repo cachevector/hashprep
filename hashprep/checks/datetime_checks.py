@@ -1,10 +1,7 @@
 import numpy as np
 import pandas as pd
 
-from ..config import DEFAULT_CONFIG
 from .core import Issue
-
-_DT_CFG = DEFAULT_CONFIG.datetime
 
 
 def _coerce_datetime(series: pd.Series) -> pd.Series:
@@ -21,6 +18,7 @@ def _datetime_cols(analyzer) -> list[str]:
 
 def _check_datetime_future_dates(analyzer) -> list[Issue]:
     """Flag datetime columns that contain values in the future (likely data errors)."""
+    _cfg = analyzer.config.datetime
     issues = []
     now = pd.Timestamp.now()
 
@@ -34,7 +32,7 @@ def _check_datetime_future_dates(analyzer) -> list[Issue]:
             continue
 
         future_ratio = future_count / len(dt)
-        severity = "critical" if future_ratio > _DT_CFG.future_date_critical_ratio else "warning"
+        severity = "critical" if future_ratio > _cfg.future_date_critical_ratio else "warning"
         impact = "high" if severity == "critical" else "medium"
         issues.append(
             Issue(
@@ -59,11 +57,12 @@ def _check_datetime_future_dates(analyzer) -> list[Issue]:
 
 def _check_datetime_gaps(analyzer) -> list[Issue]:
     """Detect anomalously large gaps in datetime columns (broken time series)."""
+    _cfg = analyzer.config.datetime
     issues = []
 
     for col in _datetime_cols(analyzer):
         dt = _coerce_datetime(analyzer.df[col]).sort_values()
-        if len(dt) < _DT_CFG.min_rows_for_gap_check:
+        if len(dt) < _cfg.min_rows_for_gap_check:
             continue
 
         diffs = dt.diff().dropna()
@@ -79,8 +78,8 @@ def _check_datetime_gaps(analyzer) -> list[Issue]:
         max_gap = float(diff_seconds.max())
         ratio = max_gap / median_gap
 
-        if ratio >= _DT_CFG.gap_multiplier_warning:
-            severity = "critical" if ratio >= _DT_CFG.gap_multiplier_critical else "warning"
+        if ratio >= _cfg.gap_multiplier_warning:
+            severity = "critical" if ratio >= _cfg.gap_multiplier_critical else "warning"
             impact = "high" if severity == "critical" else "medium"
 
             # Locate the gap for a human-readable description
@@ -113,11 +112,12 @@ def _check_datetime_gaps(analyzer) -> list[Issue]:
 
 def _check_datetime_monotonicity(analyzer) -> list[Issue]:
     """Warn when a datetime column that looks like a time-series index is non-monotonic."""
+    _cfg = analyzer.config.datetime
     issues = []
 
     for col in _datetime_cols(analyzer):
         dt = _coerce_datetime(analyzer.df[col])
-        if len(dt) < _DT_CFG.min_rows_for_gap_check:
+        if len(dt) < _cfg.min_rows_for_gap_check:
             continue
 
         # Only flag if the column has mostly unique values (i.e., likely an index/timestamp)
