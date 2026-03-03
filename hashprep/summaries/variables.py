@@ -10,6 +10,32 @@ from ..config import DEFAULT_CONFIG
 
 _SUMMARY = DEFAULT_CONFIG.summaries
 _ST = DEFAULT_CONFIG.statistical_tests
+_MI = DEFAULT_CONFIG.mutual_info
+
+
+def _shannon_entropy(series: pd.Series, bins: int | None = None) -> dict | None:
+    """
+    Compute Shannon entropy (bits) for a series.
+    - Categorical/text: uses value-count probabilities directly.
+    - Numeric: discretises into `bins` equal-width bins first.
+    Returns a dict with 'entropy_bits' and 'normalized_entropy' (0–1),
+    or None when there are fewer than 2 distinct values.
+    """
+    if series.empty:
+        return None
+    if bins is not None:
+        # Discretise numeric series into bins
+        try:
+            series = pd.cut(series, bins=bins, labels=False, duplicates="drop")
+        except Exception:
+            return None
+    probs = series.dropna().value_counts(normalize=True)
+    if len(probs) < 2:
+        return None
+    entropy_bits = float(-np.sum(probs * np.log2(probs)))
+    max_entropy = float(np.log2(len(probs)))
+    normalized = entropy_bits / max_entropy if max_entropy > 0 else 0.0
+    return {"entropy_bits": entropy_bits, "normalized_entropy": normalized}
 
 
 def get_monotonicity(series: pd.Series) -> str:
@@ -159,6 +185,7 @@ def _summarize_numeric(df, col):
         "common_values": common_values,
         "extreme_values": extremes,
         "normality": normality,
+        "entropy": _shannon_entropy(finite, bins=_MI.entropy_bins),
     }
     return stats
 
@@ -341,6 +368,7 @@ def _summarize_categorical(df, col):
         },
         "words": text_summary["words"],
         "characters": text_summary["characters"],
+        "entropy": _shannon_entropy(series),
     }
     return stats
 

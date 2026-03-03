@@ -18,4 +18,5 @@ from .dataset import (
 )
 from .interactions import summarize_interactions as summarize_interactions
 from .missing import summarize_missing_values as summarize_missing_values
+from .mutual_info import summarize_mutual_information as summarize_mutual_information
 from .variables import summarize_variables as summarize_variables

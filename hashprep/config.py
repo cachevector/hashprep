@@ -127,6 +127,20 @@ class ImbalanceThresholds:
 
 
 @dataclass(frozen=True)
+class MutualInfoThresholds:
+    """Thresholds for mutual information and entropy checks."""
+
+    # MI score below this value (nats) flags a feature as potentially uninformative
+    low_mi_warning: float = 0.01
+    # Maximum number of categories to include a column in MI computation
+    max_categories_for_mi: int = 50
+    # Minimum number of samples required to compute MI
+    min_samples_for_mi: int = 20
+    # Number of bins used to discretize numeric columns when computing entropy
+    entropy_bins: int = 10
+
+
+@dataclass(frozen=True)
 class StatisticalTestThresholds:
     """Thresholds for normality and variance homogeneity tests."""
 
@@ -206,6 +220,7 @@ class HashPrepConfig:
     drift: DriftThresholds = field(default_factory=DriftThresholds)
     distribution: DistributionThresholds = field(default_factory=DistributionThresholds)
     imbalance: ImbalanceThresholds = field(default_factory=ImbalanceThresholds)
+    mutual_info: MutualInfoThresholds = field(default_factory=MutualInfoThresholds)
     statistical_tests: StatisticalTestThresholds = field(default_factory=StatisticalTestThresholds)
     datetime: DateTimeThresholds = field(default_factory=DateTimeThresholds)
     type_inference: TypeInferenceConfig = field(default_factory=TypeInferenceConfig)
