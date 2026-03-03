@@ -22,6 +22,7 @@ from .outliers import (
     _check_outliers,
     _check_skewness,
 )
+from .statistical_tests import _check_normality, _check_variance_homogeneity
 
 
 def _check_dataset_drift(analyzer):
@@ -57,6 +58,8 @@ CHECKS = {
     "infinite_values": _check_infinite_values,
     "constant_length": _check_constant_length,
     "empty_dataset": _check_empty_dataset,
+    "normality": _check_normality,
+    "variance_homogeneity": _check_variance_homogeneity,
 }
 
 CORRELATION_CHECKS = {"feature_correlation", "categorical_correlation", "mixed_correlation"}

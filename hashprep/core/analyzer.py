@@ -59,6 +59,8 @@ class DatasetAnalyzer:
         "unique_values",
         "infinite_values",
         "constant_length",
+        "normality",
+        "variance_homogeneity",
     ]
 
     def __init__(
