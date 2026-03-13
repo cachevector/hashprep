@@ -10,6 +10,8 @@ from pathlib import Path
 
 import pytest
 
+from hashprep.reports import get_generators
+
 
 @pytest.fixture
 def titanic_csv():
@@ -31,6 +33,10 @@ def run_cli(args, cwd=None):
         cwd = Path(__file__).parent.parent
     result = subprocess.run(cmd, capture_output=True, text=True, cwd=cwd)
     return result
+
+
+_GENERATORS = get_generators()
+_PDF_AVAILABLE = _GENERATORS.get("pdf") is not None
 
 
 class TestCLIScan:
@@ -176,14 +182,20 @@ class TestCLIReport:
         """Test PDF report generation."""
         result = run_cli(["report", titanic_csv, "--format", "pdf", "--full"], cwd=temp_output_dir)
 
-        assert result.returncode == 0
-        assert "train_hashprep_report.pdf" in result.stdout
+        if not _PDF_AVAILABLE:
+            # When PDF generation is unavailable, the CLI should exit non-zero
+            # with a clear error message propagated from generate_report.
+            assert result.returncode != 0
+            assert "PDF report generation is unavailable" in (result.stderr + result.stdout)
+        else:
+            assert result.returncode == 0
+            assert "train_hashprep_report.pdf" in result.stdout
 
-        report_file = os.path.join(temp_output_dir, "train_hashprep_report.pdf")
-        assert os.path.exists(report_file)
-        # Check PDF magic number
-        with open(report_file, "rb") as f:
-            assert f.read(4) == b"%PDF"
+            report_file = os.path.join(temp_output_dir, "train_hashprep_report.pdf")
+            assert os.path.exists(report_file)
+            # Check PDF magic number
+            with open(report_file, "rb") as f:
+                assert f.read(4) == b"%PDF"
 
     def test_report_with_code_generation(self, titanic_csv, temp_output_dir):
         """Test report with code generation."""
@@ -280,7 +292,12 @@ class TestCLIIntegration:
         # Step 3: Generate all report formats
         for fmt in ["md", "json", "html", "pdf"]:
             result = run_cli(["report", titanic_csv, "--format", fmt, "--full"], cwd=temp_output_dir)
-            assert result.returncode == 0
+            if fmt == "pdf" and not _PDF_AVAILABLE:
+                # In environments without PDF support, CLI should fail cleanly
+                assert result.returncode != 0
+                assert "PDF report generation is unavailable" in (result.stderr + result.stdout)
+            else:
+                assert result.returncode == 0
 
         # Step 4: Generate code
         result = run_cli(["report", titanic_csv, "--with-code"], cwd=temp_output_dir)

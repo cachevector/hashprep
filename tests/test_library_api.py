@@ -11,8 +11,12 @@ import pandas as pd
 import pytest
 
 from hashprep import DatasetAnalyzer
-from hashprep.reports import generate_report
+from hashprep.reports import generate_report, get_generators
 from hashprep.utils.sampling import SamplingConfig
+
+
+_GENERATORS = get_generators()
+_PDF_AVAILABLE = _GENERATORS.get("pdf") is not None
 
 
 @pytest.fixture
@@ -226,6 +230,9 @@ class TestReportGeneration:
             output_file = f.name
 
         try:
+            if not _PDF_AVAILABLE:
+                pytest.skip("PDF generation is unavailable in this environment")
+
             report = generate_report(summary, format="pdf", full=True, output_file=output_file)
 
             assert report is not None
@@ -394,6 +401,9 @@ class TestRealDataset:
                 output_file = f.name
 
             try:
+                if fmt == "pdf" and not _PDF_AVAILABLE:
+                    pytest.skip("PDF generation is unavailable in this environment")
+
                 if fmt == "html":
                     report = generate_report(summary, format=fmt, full=True, output_file=output_file, theme="minimal")
                 else:
