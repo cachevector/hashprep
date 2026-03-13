@@ -27,7 +27,7 @@
 </div>
 
 > [!NOTE]
-> HashPrep is in **beta** (v0.1.0b2). Core features are fully tested with CI. The API may still evolve based on community feedback.
+> HashPrep is in **beta** (v0.1.0b3). Core features are fully tested with CI. The API may still evolve based on community feedback.
 
 ## Overview
 
