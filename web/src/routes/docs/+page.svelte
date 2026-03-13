@@ -655,12 +655,12 @@ summary = analyzer.analyze()</code></pre>
     inset-inline-end: 10px;
     padding: 2px 8px;
     border-radius: 999px;
-    border: 1px solid rgba(148, 163, 184, 0.4);
+    border: 1px solid var(--border-secondary);
     font-size: 0.65rem;
     letter-spacing: 0.16em;
     text-transform: uppercase;
     color: var(--text-tertiary);
-    background: rgba(15, 23, 42, 0.02);
+    background: var(--bg-secondary);
   }
 
   pre[data-lang="bash"]::before {
@@ -671,7 +671,7 @@ summary = analyzer.analyze()</code></pre>
     content: 'Python';
   }
 
-  /* Syntax highlighting */
+  /* Syntax highlighting — light-mode defaults */
   .hl-comment {
     color: #64748b;
   }
@@ -682,28 +682,38 @@ summary = analyzer.analyze()</code></pre>
 
   .hl-arg,
   .hl-flag {
-    color: #22c55e;
+    color: #15803d;
   }
 
   .hl-operator {
-    color: #e5e7eb;
+    color: #6b7280;
   }
 
   .hl-value {
-    color: #eab308;
+    color: #a16207;
   }
 
   .hl-keyword {
-    color: #a855f7;
+    color: #7c3aed;
   }
 
   .hl-string {
-    color: #f97316;
+    color: #c2410c;
   }
 
   .hl-builtin {
-    color: #0ea5e9;
+    color: #0369a1;
   }
+
+  /* Syntax highlighting — dark-mode overrides */
+  :global([data-theme="dark"]) .hl-comment { color: #94a3b8; }
+  :global([data-theme="dark"]) .hl-arg,
+  :global([data-theme="dark"]) .hl-flag { color: #22c55e; }
+  :global([data-theme="dark"]) .hl-operator { color: #e5e7eb; }
+  :global([data-theme="dark"]) .hl-value { color: #eab308; }
+  :global([data-theme="dark"]) .hl-keyword { color: #a855f7; }
+  :global([data-theme="dark"]) .hl-string { color: #f97316; }
+  :global([data-theme="dark"]) .hl-builtin { color: #0ea5e9; }
 
   @media (max-width: 960px) {
     .docs-layout {
