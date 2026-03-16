@@ -13,12 +13,13 @@
 		/>
 		<script>
 			(function() {
-				var pref = localStorage.getItem('hashprep-theme') || 'system';
-				var theme = pref;
-				if (pref === 'system') {
-					theme = window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
-				}
+				var pref;
+				try { pref = localStorage.getItem('hashprep-theme') || 'system'; } catch(e) { pref = 'system'; }
+				var theme = pref === 'system'
+					? (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light')
+					: pref;
 				document.documentElement.setAttribute('data-theme', theme);
+				document.documentElement.style.colorScheme = theme;
 			})();
 		</script>
 		%sveltekit.head%

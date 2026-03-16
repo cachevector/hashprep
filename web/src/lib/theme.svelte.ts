@@ -2,6 +2,16 @@ import { browser } from '$app/environment';
 
 type Theme = 'light' | 'dark';
 
+function safeLocalStorage(action: 'get' | 'set', key: string, value?: string): string | null {
+  try {
+    if (action === 'get') return localStorage.getItem(key);
+    localStorage.setItem(key, value!);
+    return null;
+  } catch {
+    return null;
+  }
+}
+
 function getSystemTheme(): Theme {
   if (!browser) return 'light';
   return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
@@ -9,7 +19,7 @@ function getSystemTheme(): Theme {
 
 function getStoredPreference(): 'light' | 'dark' | 'system' {
   if (!browser) return 'system';
-  return (localStorage.getItem('hashprep-theme') as 'light' | 'dark' | 'system') || 'system';
+  return (safeLocalStorage('get', 'hashprep-theme') as 'light' | 'dark' | 'system') || 'system';
 }
 
 let preference = $state<'light' | 'dark' | 'system'>(getStoredPreference());
@@ -18,12 +28,15 @@ let resolved = $derived<Theme>(preference === 'system' ? getSystemTheme() : pref
 function apply(t: Theme) {
   if (!browser) return;
   document.documentElement.setAttribute('data-theme', t);
+  // Safari needs color-scheme set explicitly to reliably trigger a full
+  // style recalculation when the theme attribute changes on <html>.
+  document.documentElement.style.colorScheme = t;
 }
 
 function setPreference(pref: 'light' | 'dark' | 'system') {
   preference = pref;
   if (browser) {
-    localStorage.setItem('hashprep-theme', pref);
+    safeLocalStorage('set', 'hashprep-theme', pref);
   }
   apply(pref === 'system' ? getSystemTheme() : pref);
 }

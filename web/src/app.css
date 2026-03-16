@@ -37,6 +37,7 @@
 
 /* ---- Light Theme (default) ---- */
 :root, [data-theme="light"] {
+  color-scheme: light;
   --bg-primary: #fdfbff;
   --bg-secondary: #f9f4fb;
   --bg-tertiary: #f2e9f4;
@@ -78,6 +79,7 @@
 
 /* ---- Dark Theme ---- */
 [data-theme="dark"] {
+  color-scheme: dark;
   --bg-primary: #0f1117;
   --bg-secondary: #151821;
   --bg-tertiary: #1a1d28;
