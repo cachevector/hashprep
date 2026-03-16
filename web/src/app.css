@@ -242,6 +242,26 @@ p {
   color: white;
 }
 
+/* ---- Docs syntax highlighting ---- */
+.hl-comment  { color: #64748b; }
+.hl-command  { color: var(--accent); }
+.hl-arg,
+.hl-flag     { color: #15803d; }
+.hl-operator { color: #6b7280; }
+.hl-value    { color: #a16207; }
+.hl-keyword  { color: #7c3aed; }
+.hl-string   { color: #c2410c; }
+.hl-builtin  { color: #0369a1; }
+
+[data-theme="dark"] .hl-comment  { color: #94a3b8; }
+[data-theme="dark"] .hl-arg,
+[data-theme="dark"] .hl-flag     { color: #22c55e; }
+[data-theme="dark"] .hl-operator { color: #e5e7eb; }
+[data-theme="dark"] .hl-value    { color: #eab308; }
+[data-theme="dark"] .hl-keyword  { color: #a855f7; }
+[data-theme="dark"] .hl-string   { color: #f97316; }
+[data-theme="dark"] .hl-builtin  { color: #0ea5e9; }
+
 /* Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
