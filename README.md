@@ -96,8 +96,10 @@ hashprep scan dataset.csv
 - `--json`: Output in JSON format
 - `--target COLUMN`: Specify target column for ML-specific checks
 - `--checks CHECKS`: Run specific checks (comma-separated)
+- `--comparison FILE`: Compare with another dataset for drift detection
 - `--sample-size N`: Limit analysis to N rows
 - `--no-sample`: Disable automatic sampling
+- `--config FILE`: Load thresholds from a YAML/TOML/JSON config file
 
 **Example:**
 ```bash
@@ -114,7 +116,7 @@ Get comprehensive details about all detected issues.
 hashprep details dataset.csv
 ```
 
-**Options:** Same as `scan` command
+**Options:** Same as `scan` command (including `--config`)
 
 **Example:**
 ```bash
@@ -138,6 +140,7 @@ hashprep report dataset.csv --format html --theme minimal
 - `--comparison FILE`: Compare with another dataset for drift detection
 - `--sample-size N`: Limit analysis to N rows
 - `--no-sample`: Disable automatic sampling
+- `--config FILE`: Load thresholds from a YAML/TOML/JSON config file
 
 **Examples:**
 ```bash
@@ -190,6 +193,12 @@ hashprep version
 - `constant_length` - String columns with constant character length
 - `extreme_text_lengths` - Text columns with extreme value lengths
 - `datetime_skew` - Datetime columns concentrated in one period
+- `datetime_future_dates` - Datetime columns with values in the future
+- `datetime_gaps` - Anomalous gaps in datetime sequences
+- `datetime_monotonicity` - Non-monotonic datetime columns
+- `normality` - Non-normal numeric distributions (Shapiro-Wilk / D'Agostino-Pearson)
+- `variance_homogeneity` - Unequal variances across target groups (Levene's test, requires --target)
+- `low_mutual_information` - Features with near-zero mutual information with the target (requires --target)
 - `empty_dataset` - Empty or all-missing datasets
 
 ---
@@ -339,6 +348,31 @@ pipeline_code = builder.generate_pipeline_code()
 with open('pipeline.py', 'w') as f:
     f.write(pipeline_code)
 ```
+
+#### Load Config from File
+```python
+from hashprep.utils.config_loader import load_config
+from hashprep import DatasetAnalyzer
+
+# Load thresholds from YAML, TOML, or JSON
+config = load_config("hashprep.yaml")  # or .toml / .json
+
+analyzer = DatasetAnalyzer(df, config=config)
+summary = analyzer.analyze()
+```
+
+Example `hashprep.yaml`:
+```yaml
+missing_values:
+  warning: 0.3
+  critical: 0.6
+outliers:
+  z_score: 3.5
+statistical_tests:
+  normality_p_value: 0.01
+```
+
+Only the keys you specify are overridden; all others fall back to defaults.
 
 #### Custom Sampling
 ```python

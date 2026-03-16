@@ -33,6 +33,7 @@
           <a href="#cli-reference">CLI reference</a>
           <a href="#python-api">Python API</a>
           <a href="#checks">Available checks</a>
+          <a href="#configuration">Configuration</a>
           <a href="#contributing">Contributing</a>
         </div>
       </aside>
@@ -192,9 +193,12 @@ generate_report(
             <ul>
               <li><code>--target COLUMN</code> &mdash; target column for ML checks (class imbalance, leakage, etc.)</li>
               <li><code>--checks LIST</code> &mdash; comma-separated list of checks to run</li>
+              <li><code>--comparison FILE</code> &mdash; compare with another dataset for drift detection</li>
               <li><code>--critical-only</code> &mdash; hide warnings and show only critical issues</li>
               <li><code>--json</code> &mdash; emit JSON instead of human-readable text</li>
               <li><code>--quiet</code> &mdash; minimal output, useful in CI</li>
+              <li><code>--sample-size N</code> / <code>--no-sample</code> &mdash; control automatic sampling</li>
+              <li><code>--config FILE</code> &mdash; load thresholds from a YAML, TOML, or JSON file</li>
             </ul>
           </div>
 
@@ -206,7 +210,7 @@ generate_report(
             </p>
             <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">details</span> <span class="hl-value">dataset.csv</span> <span class="hl-flag">--target</span> <span class="hl-value">Survived</span></code></pre>
             <p>
-              Accepts the same options as <code>scan</code> and is best used when you are actively debugging a dataset
+              Accepts the same options as <code>scan</code> (including <code>--comparison</code> and <code>--config</code>) and is best used when you are actively debugging a dataset
               or deciding which columns to drop or transform.
             </p>
           </div>
@@ -224,6 +228,7 @@ generate_report(
               <li><code>--with-code</code> &mdash; write companion <code>_fixes.py</code> and <code>_pipeline.py</code> files</li>
               <li><code>--comparison FILE</code> &mdash; compare two datasets for drift (train vs test, etc.)</li>
               <li><code>--sample-size N</code> / <code>--no-sample</code> &mdash; control automatic sampling</li>
+              <li><code>--config FILE</code> &mdash; load thresholds from a YAML, TOML, or JSON file</li>
             </ul>
           </div>
 
@@ -329,6 +334,7 @@ pipeline_code = builder.generate_pipeline_code()</code></pre>
 )
 summary = analyzer.analyze()</code></pre>
           </div>
+
         </section>
 
         <section id="checks">
@@ -338,29 +344,94 @@ summary = analyzer.analyze()</code></pre>
             <div>
               <h3>Data quality</h3>
               <ul>
-                <li><code>missing_values</code> &mdash; overall missingness patterns</li>
+                <li><code>dataset_missingness</code> &mdash; overall missing data patterns</li>
                 <li><code>high_missing_values</code> &mdash; columns with heavy missingness</li>
+                <li><code>missing_patterns</code> &mdash; correlated missing value patterns</li>
                 <li><code>duplicates</code> &mdash; duplicate rows</li>
+                <li><code>empty_columns</code> &mdash; completely empty columns</li>
+                <li><code>empty_dataset</code> &mdash; empty or all-missing datasets</li>
                 <li><code>single_value_columns</code> &mdash; near-constant features</li>
+                <li><code>mixed_data_types</code> &mdash; columns with mixed data types</li>
               </ul>
             </div>
             <div>
-              <h3>Distribution</h3>
+              <h3>Distribution &amp; statistics</h3>
               <ul>
-                <li><code>outliers</code> &mdash; IQR-based outlier detection</li>
-                <li><code>high_cardinality</code> &mdash; categorical columns with too many uniques</li>
+                <li><code>outliers</code> &mdash; z-score outlier detection</li>
+                <li><code>skewness</code> &mdash; highly skewed numeric distributions</li>
+                <li><code>high_cardinality</code> &mdash; too many unique categorical values</li>
                 <li><code>uniform_distribution</code> &mdash; uniformly distributed numeric columns</li>
-                <li><code>many_zeros</code> &mdash; features dominated by zeros</li>
+                <li><code>unique_values</code> &mdash; columns where &gt;95% values are unique</li>
+                <li><code>high_zero_counts</code> &mdash; features dominated by zeros</li>
+                <li><code>infinite_values</code> &mdash; columns containing infinite values</li>
+                <li><code>constant_length</code> &mdash; string columns with constant character length</li>
+                <li><code>extreme_text_lengths</code> &mdash; text columns with extreme value lengths</li>
+                <li><code>normality</code> &mdash; non-normal distributions (Shapiro-Wilk / D&rsquo;Agostino-Pearson)</li>
+                <li><code>variance_homogeneity</code> &mdash; unequal variances across target groups (Levene&rsquo;s test)</li>
               </ul>
             </div>
             <div>
               <h3>ML-specific</h3>
               <ul>
                 <li><code>class_imbalance</code> &mdash; target imbalance (requires <code>--target</code>)</li>
-                <li><code>feature_correlation</code> &mdash; highly correlated features</li>
-                <li><code>target_leakage</code> &mdash; features leaking target information</li>
-                <li><code>dataset_drift</code> &mdash; drift between train / test datasets</li>
+                <li><code>feature_correlation</code> &mdash; highly correlated numeric features</li>
+                <li><code>categorical_correlation</code> &mdash; highly associated categorical features</li>
+                <li><code>mixed_correlation</code> &mdash; numeric-categorical associations</li>
+                <li><code>data_leakage</code> &mdash; columns identical to target</li>
+                <li><code>target_leakage_patterns</code> &mdash; features leaking target information</li>
+                <li><code>low_mutual_information</code> &mdash; near-zero MI with target (requires <code>--target</code>)</li>
+                <li><code>dataset_drift</code> &mdash; drift between train / test datasets (requires <code>--comparison</code>)</li>
+                <li><code>datetime_skew</code> &mdash; datetime columns concentrated in one period</li>
+                <li><code>datetime_future_dates</code> &mdash; datetime values in the future</li>
+                <li><code>datetime_gaps</code> &mdash; anomalous gaps in datetime sequences</li>
+                <li><code>datetime_monotonicity</code> &mdash; non-monotonic datetime columns</li>
               </ul>
+            </div>
+          </div>
+        </section>
+
+        <section id="configuration">
+          <h2>Configuration</h2>
+          <p>
+            Every detection threshold in HashPrep has a sensible default. You can override any of them at runtime by
+            providing a config file &mdash; no code changes required.
+          </p>
+
+          <div class="docs-card">
+            <h3>Supported formats</h3>
+            <p>Config files can be written in YAML (<code>.yaml</code> / <code>.yml</code>), TOML (<code>.toml</code>),
+            or JSON (<code>.json</code>). Only the keys you specify are changed; everything else falls back to
+            defaults.</p>
+            <pre data-lang="bash"><code><span class="hl-comment"># hashprep.yaml</span>
+missing_values:
+  warning: 0.3
+  critical: 0.6
+outliers:
+  z_score: 3.5
+statistical_tests:
+  normality_p_value: 0.01
+mutual_info:
+  low_mi_warning: 0.05</code></pre>
+          </div>
+
+          <div class="docs-grid-2">
+            <div class="docs-card">
+              <h3>Via CLI</h3>
+              <pre data-lang="bash"><code><span class="hl-command">hashprep</span> <span class="hl-arg">scan</span> <span class="hl-value">dataset.csv</span> <span class="hl-operator">\</span>
+  <span class="hl-flag">--config</span> <span class="hl-value">hashprep.yaml</span>
+
+<span class="hl-command">hashprep</span> <span class="hl-arg">report</span> <span class="hl-value">dataset.csv</span> <span class="hl-operator">\</span>
+  <span class="hl-flag">--format</span> <span class="hl-value">html</span> <span class="hl-operator">\</span>
+  <span class="hl-flag">--config</span> <span class="hl-value">hashprep.toml</span></code></pre>
+            </div>
+            <div class="docs-card">
+              <h3>Via Python</h3>
+              <pre data-lang="python"><code><span class="hl-keyword">from</span> hashprep.utils.config_loader <span class="hl-keyword">import</span> load_config
+<span class="hl-keyword">from</span> hashprep <span class="hl-keyword">import</span> DatasetAnalyzer
+
+config = load_config(<span class="hl-string">"hashprep.yaml"</span>)
+analyzer = DatasetAnalyzer(df, config=config)
+summary = analyzer.analyze()</code></pre>
             </div>
           </div>
         </section>
