@@ -63,9 +63,7 @@ jobs:
         run: uv build
 
       - name: Check build artifacts
-        run: |
-          uv pip install twine
-          uv run twine check dist/*
+        run: uvx twine check dist/*
 
   web-check:
     runs-on: ubuntu-latest
