@@ -2,12 +2,12 @@
 
 ## Supported Versions
 
-hashprep is currently in beta (`0.1.0bX`). Only the latest beta release on the `main` branch receives security updates. Older pre-releases are not patched — please upgrade to the newest version to pick up fixes.
+hashprep has reached a stable `0.1.0` release. Only the latest minor release is supported for security updates.
 
 | Version    | Supported          |
 | ---------- | ------------------ |
-| `0.1.0b3`  | :white_check_mark: |
-| `< 0.1.0b3`| :x:                |
+| `0.1.0`    | :white_check_mark: |
+| `< 0.1.0`  | :x:                |
 
 Once hashprep reaches a stable `0.1.0` release, this table will be updated to reflect supported minor versions.
 

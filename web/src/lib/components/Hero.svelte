@@ -45,7 +45,7 @@
       </div>
       <div class="terminal-body">
         <pre><code><span class="term-prompt">$</span> <span class="term-cmd">pip install hashprep</span>
-<span class="term-output">Successfully installed hashprep-0.1.0b3</span>
+<span class="term-output">Successfully installed hashprep-0.1.0</span>
 
 <span class="term-prompt">$</span> <span class="term-cmd">hashprep scan train.csv --target Survived</span>
 

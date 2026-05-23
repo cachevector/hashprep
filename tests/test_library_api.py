@@ -15,6 +15,20 @@ from hashprep.reports import generate_report
 from hashprep.utils.sampling import SamplingConfig
 
 
+def has_pdf_deps():
+    try:
+        from hashprep.reports.pdf import PdfReport
+
+        # Try to initialize it to catch weasyprint dependency issues
+        PdfReport()
+        return True
+    except Exception:
+        return False
+
+
+skip_pdf = pytest.mark.skipif(not has_pdf_deps(), reason="PDF dependencies (weasyprint/libgobject) missing")
+
+
 @pytest.fixture
 def sample_dataframe():
     """Create a sample DataFrame for testing."""
@@ -217,6 +231,7 @@ class TestReportGeneration:
             if os.path.exists(output_file):
                 os.remove(output_file)
 
+    @skip_pdf
     def test_pdf_report(self, sample_dataframe):
         """Test PDF report generation."""
         analyzer = DatasetAnalyzer(sample_dataframe)
@@ -390,6 +405,9 @@ class TestRealDataset:
 
         formats = ["md", "json", "html", "pdf"]
         for fmt in formats:
+            if fmt == "pdf" and not has_pdf_deps():
+                continue
+
             with tempfile.NamedTemporaryFile(mode="w", suffix=f".{fmt}", delete=False) as f:
                 output_file = f.name
 

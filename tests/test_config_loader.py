@@ -44,13 +44,14 @@ class TestConfigFromDict:
         assert cfg.correlations == DEFAULT_CONFIG.correlations
 
     def test_unknown_keys_are_ignored(self):
-        # Should not raise
-        cfg = config_from_dict({"nonexistent_section": {"foo": 1}})
-        assert cfg == DEFAULT_CONFIG
+        """Unknown keys should now raise ValueError."""
+        with pytest.raises(ValueError, match="Unknown configuration key"):
+            config_from_dict({"nonexistent_section": {"foo": 1}})
 
     def test_unknown_nested_keys_are_ignored(self):
-        cfg = config_from_dict({"outliers": {"z_score": 3.0, "nonexistent": 99}})
-        assert cfg.outliers.z_score == 3.0
+        """Unknown nested keys should now raise ValueError."""
+        with pytest.raises(ValueError, match="Unknown configuration key"):
+            config_from_dict({"outliers": {"z_score": 3.0, "nonexistent": 99}})
 
     def test_returns_hashprepconfig_instance(self):
         cfg = config_from_dict({})

@@ -27,7 +27,7 @@
 </div>
 
 > [!NOTE]
-> HashPrep is in **beta** (v0.1.0b3). Core features are fully tested with CI. The API may still evolve based on community feedback.
+> HashPrep is now in its first stable release (v0.1.0). Core features are fully tested with CI.
 
 ## Overview
 
@@ -130,6 +130,7 @@ hashprep report dataset.csv --format html --theme minimal
 ```
 
 **Options:**
+- `--output PATH`, `-o PATH`: Custom output file path
 - `--format {md,json,html,pdf}`: Report format (default: md)
 - `--theme {minimal,neubrutalism}`: HTML report theme (default: minimal)
 - `--with-code`: Generate Python scripts for fixes and pipelines
@@ -153,6 +154,9 @@ hashprep report dataset.csv --format pdf --no-visualizations
 # Generate report with automatic fix scripts
 hashprep report dataset.csv --with-code
 
+# Generate report with custom output path
+hashprep report dataset.csv --format html --output my_reports/analysis.html
+
 # This creates:
 # - dataset_hashprep_report.md (or .html/.pdf/.json)
 # - dataset_hashprep_report_fixes.py (pandas script)
@@ -162,7 +166,13 @@ hashprep report dataset.csv --with-code
 hashprep report train.csv --comparison test.csv --format html
 ```
 
-#### 4. Version
+#### 4. List Available Checks
+Discover all data quality checks that HashPrep can perform.
+```bash
+hashprep checks
+```
+
+#### 5. Version
 Check HashPrep version.
 ```bash
 hashprep version

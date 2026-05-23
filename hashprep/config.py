@@ -236,21 +236,44 @@ DEFAULT_CONFIG = HashPrepConfig()
 def config_from_dict(d: dict) -> "HashPrepConfig":
     """Build a HashPrepConfig from a (possibly partial) nested dict.
 
-    Unknown keys are silently ignored; missing keys fall back to defaults.
+    Raises ValueError for unknown keys or wrong value types.
     """
     default = HashPrepConfig()
 
-    def _merge(cls, default_obj, overrides: dict):
+    def _merge(cls, default_obj, overrides: dict, path=""):
         kwargs = {}
+        # Check for unknown keys
+        allowed_keys = {f.name for f in _fields(cls)}
+        for k in overrides:
+            if k not in allowed_keys:
+                full_path = f"{path}.{k}" if path else k
+                raise ValueError(f"Unknown configuration key: {full_path}")
+
         for f in _fields(cls):
             if f.name not in overrides:
                 kwargs[f.name] = getattr(default_obj, f.name)
             else:
                 val = overrides[f.name]
                 field_default = getattr(default_obj, f.name)
-                if hasattr(field_default, "__dataclass_fields__") and isinstance(val, dict):
-                    kwargs[f.name] = _merge(type(field_default), field_default, val)
+                full_path = f"{path}.{f.name}" if path else f.name
+
+                if hasattr(field_default, "__dataclass_fields__"):
+                    if not isinstance(val, dict):
+                        raise TypeError(f"Configuration key '{full_path}' must be a mapping, got {type(val).__name__}")
+                    kwargs[f.name] = _merge(type(field_default), field_default, val, full_path)
                 else:
+                    # Basic type validation
+                    # Note: f.type might be a string if from __future__ import annotations is used,
+                    # but here we can check against the default value's type.
+                    expected_type = type(field_default)
+                    if field_default is not None and not isinstance(val, expected_type):
+                        # Allow float for int if it's a whole number
+                        if expected_type is float and isinstance(val, int):
+                            val = float(val)
+                        else:
+                            raise TypeError(
+                                f"Configuration key '{full_path}' expected type {expected_type.__name__}, got {type(val).__name__}"
+                            )
                     kwargs[f.name] = val
         return cls(**kwargs)
 
