@@ -24,8 +24,11 @@ def load_config(path: str | Path) -> HashPrepConfig:
             import yaml
         except ImportError as e:
             raise ImportError("pyyaml is required for YAML config files: pip install pyyaml") from e
-        with open(path) as f:
-            raw = yaml.safe_load(f) or {}
+        try:
+            with open(path) as f:
+                raw = yaml.safe_load(f) or {}
+        except yaml.YAMLError as e:
+            raise ValueError(f"Malformed YAML config file: {path}\n{e}") from e
     elif suffix == ".toml":
         try:
             import tomllib
@@ -36,11 +39,17 @@ def load_config(path: str | Path) -> HashPrepConfig:
                 raise ImportError(
                     "tomllib (Python 3.11+) or tomli is required for TOML config files: pip install tomli"
                 ) from e
-        with open(path, "rb") as f:
-            raw = tomllib.load(f)
+        try:
+            with open(path, "rb") as f:
+                raw = tomllib.load(f)
+        except Exception as e:
+            raise ValueError(f"Malformed TOML config file: {path}\n{e}") from e
     elif suffix == ".json":
-        with open(path) as f:
-            raw = json.load(f)
+        try:
+            with open(path) as f:
+                raw = json.load(f)
+        except json.JSONDecodeError as e:
+            raise ValueError(f"Malformed JSON config file: {path}\n{e}") from e
     else:
         raise ValueError(f"Unsupported config file format: {suffix!r}. Use .yaml, .yml, .toml, or .json")
 

@@ -1,5 +1,7 @@
 import json
 import os
+import sys
+from contextlib import contextmanager
 
 import click
 import fuzzybunny
@@ -37,6 +39,42 @@ def suggest_check_names(invalid_check, valid_checks, cutoff=0.4):
     return suggestions
 
 
+@contextmanager
+def error_handler():
+    try:
+        yield
+    except FileNotFoundError as e:
+        click.secho(f"Error: {e}", fg="red", err=True)
+        sys.exit(1)
+    except pd.errors.EmptyDataError:
+        click.secho("Error: The CSV file is empty or has no columns to parse.", fg="red", err=True)
+        sys.exit(1)
+    except pd.errors.ParserError as e:
+        click.secho(f"Error: Failed to parse CSV: {e}", fg="red", err=True)
+        sys.exit(1)
+    except ValueError as e:
+        click.secho(f"Error: {e}", fg="red", err=True)
+        sys.exit(1)
+    except TypeError as e:
+        click.secho(f"Error: {e}", fg="red", err=True)
+        sys.exit(1)
+    except ImportError as e:
+        click.secho(f"Error: {e}", fg="red", err=True)
+        sys.exit(1)
+    except ZeroDivisionError:
+        click.secho(
+            "Error: Division by zero occurred during analysis. This often happens with empty or single-row datasets.",
+            fg="red",
+            err=True,
+        )
+        sys.exit(1)
+    except Exception as e:
+        click.secho(f"An unexpected error occurred: {e}", fg="red", err=True)
+        if os.environ.get("HASHPREP_DEBUG"):
+            raise
+        sys.exit(1)
+
+
 @click.group()
 def cli():
     pass
@@ -45,6 +83,15 @@ def cli():
 @cli.command()
 def version():
     click.echo(f"HashPrep Version: {hashprep.__version__}")
+
+
+@cli.command()
+def checks():
+    """List all available data quality checks."""
+    click.echo("Available Checks:")
+    for check in sorted(DatasetAnalyzer.ALL_CHECKS):
+        click.echo(f"- {check}")
+    click.echo("\nUse these with the --checks option in 'scan', 'details', or 'report'.")
 
 
 @cli.command()
@@ -79,79 +126,80 @@ def version():
     help="Path to config file (.yaml, .toml, .json)",
 )
 def scan(file_path, critical_only, quiet, json_out, target, checks, comparison, sample_size, no_sample, config_path):
-    df = pd.read_csv(file_path)
-    comparison_df = pd.read_csv(comparison) if comparison else None
+    with error_handler():
+        df = pd.read_csv(file_path)
+        comparison_df = pd.read_csv(comparison) if comparison else None
 
-    selected_checks = checks.split(",") if checks else None
-    valid_checks = DatasetAnalyzer.ALL_CHECKS
-    if selected_checks:
-        invalid_checks = [c for c in selected_checks if c not in valid_checks]
-        if invalid_checks:
-            click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
-            for invalid in invalid_checks:
-                suggestions = suggest_check_names(invalid, valid_checks)
-                if suggestions:
-                    click.echo(f"  Did you mean: {', '.join(suggestions)}?")
-            selected_checks = [c for c in selected_checks if c in valid_checks]
+        selected_checks = checks.split(",") if checks else None
+        valid_checks = DatasetAnalyzer.ALL_CHECKS
+        if selected_checks:
+            invalid_checks = [c for c in selected_checks if c not in valid_checks]
+            if invalid_checks:
+                click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
+                for invalid in invalid_checks:
+                    suggestions = suggest_check_names(invalid, valid_checks)
+                    if suggestions:
+                        click.echo(f"  Did you mean: {', '.join(suggestions)}?")
+                selected_checks = [c for c in selected_checks if c in valid_checks]
 
-    sampling_config = None
-    if not no_sample and sample_size:
-        sampling_config = SamplingConfig(max_rows=sample_size)
+        sampling_config = None
+        if not no_sample and sample_size:
+            sampling_config = SamplingConfig(max_rows=sample_size)
 
-    config = load_config(config_path) if config_path else None
-    analyzer = DatasetAnalyzer(
-        df,
-        target_col=target,
-        selected_checks=selected_checks,
-        comparison_df=comparison_df,
-        sampling_config=sampling_config,
-        auto_sample=not no_sample,
-        config=config,
-    )
-    summary = analyzer.analyze()
+        config = load_config(config_path) if config_path else None
+        analyzer = DatasetAnalyzer(
+            df,
+            target_col=target,
+            selected_checks=selected_checks,
+            comparison_df=comparison_df,
+            sampling_config=sampling_config,
+            auto_sample=not no_sample,
+            config=config,
+        )
+        summary = analyzer.analyze()
 
-    issues = summary["issues"]
-    critical = [i for i in issues if i["severity"] == "critical"]
-    warnings = [i for i in issues if i["severity"] == "warning"]
+        issues = summary["issues"]
+        critical = [i for i in issues if i["severity"] == "critical"]
+        warnings = [i for i in issues if i["severity"] == "warning"]
 
-    if json_out:
-        json_data = {
-            "critical_issues": len(critical),
-            "warnings": len(warnings),
-            "issues": [{"type": i["severity"], **i} for i in issues],
-            "recommendations": [i["quick_fix"] for i in issues],
-        }
-        if "sampling_info" in summary:
-            json_data["sampling_info"] = summary["sampling_info"]
-        click.echo(json.dumps(json_data, default=json_numpy_handler))
-        return
+        if json_out:
+            json_data = {
+                "critical_issues": len(critical),
+                "warnings": len(warnings),
+                "issues": [{"type": i["severity"], **i} for i in issues],
+                "recommendations": [i["quick_fix"] for i in issues],
+            }
+            if "sampling_info" in summary:
+                json_data["sampling_info"] = summary["sampling_info"]
+            click.echo(json.dumps(json_data, default=json_numpy_handler))
+            return
 
-    if quiet:
-        click.echo(f"CRITICAL ISSUES: {len(critical)}, WARNINGS: {len(warnings)}")
-        return
+        if quiet:
+            click.echo(f"CRITICAL ISSUES: {len(critical)}, WARNINGS: {len(warnings)}")
+            return
 
-    click.echo(f"Dataset Health Check: {file_path}")
-    click.echo(
-        f"Size: {summary['summaries']['dataset_info']['rows']} rows x {summary['summaries']['dataset_info']['columns']} columns"
-    )
+        click.echo(f"Dataset Health Check: {file_path}")
+        click.echo(
+            f"Size: {summary['summaries']['dataset_info']['rows']} rows x {summary['summaries']['dataset_info']['columns']} columns"
+        )
 
-    if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
-        info = summary["sampling_info"]
-        click.echo(f"Sampled: {info['sample_fraction'] * 100:.1f}% of {info['original_rows']} rows")
+        if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
+            info = summary["sampling_info"]
+            click.echo(f"Sampled: {info['sample_fraction'] * 100:.1f}% of {info['original_rows']} rows")
 
-    if critical_only:
+        if critical_only:
+            click.echo("Critical Issues:")
+            for i, issue in enumerate(critical, 1):
+                click.echo(f"{i}. {issue['description']}")
+            return
+
         click.echo("Critical Issues:")
-        for i, issue in enumerate(critical, 1):
-            click.echo(f"{i}. {issue['description']}")
-        return
-
-    click.echo("Critical Issues:")
-    for issue in critical:
-        click.echo(f"- {issue['description']}")
-    click.echo("Warnings:")
-    for issue in warnings:
-        click.echo(f"- {issue['description']}")
-    click.echo("Next steps: Run 'hashprep details' or 'hashprep report' for more info.")
+        for issue in critical:
+            click.echo(f"- {issue['description']}")
+        click.echo("Warnings:")
+        for issue in warnings:
+            click.echo(f"- {issue['description']}")
+        click.echo("Next steps: Run 'hashprep details' or 'hashprep report' for more info.")
 
 
 @cli.command()
@@ -183,90 +231,92 @@ def scan(file_path, critical_only, quiet, json_out, target, checks, comparison, 
     help="Path to config file (.yaml, .toml, .json)",
 )
 def details(file_path, target, checks, comparison, sample_size, no_sample, config_path):
-    df = pd.read_csv(file_path)
-    comparison_df = pd.read_csv(comparison) if comparison else None
+    with error_handler():
+        df = pd.read_csv(file_path)
+        comparison_df = pd.read_csv(comparison) if comparison else None
 
-    selected_checks = checks.split(",") if checks else None
-    valid_checks = DatasetAnalyzer.ALL_CHECKS
-    if selected_checks:
-        invalid_checks = [c for c in selected_checks if c not in valid_checks]
-        if invalid_checks:
-            click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
-            for invalid in invalid_checks:
-                suggestions = suggest_check_names(invalid, valid_checks)
-                if suggestions:
-                    click.echo(f"  Did you mean: {', '.join(suggestions)}?")
-            selected_checks = [c for c in selected_checks if c in valid_checks]
+        selected_checks = checks.split(",") if checks else None
+        valid_checks = DatasetAnalyzer.ALL_CHECKS
+        if selected_checks:
+            invalid_checks = [c for c in selected_checks if c not in valid_checks]
+            if invalid_checks:
+                click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
+                for invalid in invalid_checks:
+                    suggestions = suggest_check_names(invalid, valid_checks)
+                    if suggestions:
+                        click.echo(f"  Did you mean: {', '.join(suggestions)}?")
+                selected_checks = [c for c in selected_checks if c in valid_checks]
 
-    sampling_config = None
-    if not no_sample and sample_size:
-        sampling_config = SamplingConfig(max_rows=sample_size)
+        sampling_config = None
+        if not no_sample and sample_size:
+            sampling_config = SamplingConfig(max_rows=sample_size)
 
-    config = load_config(config_path) if config_path else None
-    analyzer = DatasetAnalyzer(
-        df,
-        target_col=target,
-        selected_checks=selected_checks,
-        comparison_df=comparison_df,
-        sampling_config=sampling_config,
-        auto_sample=not no_sample,
-        config=config,
-    )
-    summary = analyzer.analyze()
-
-    issues = summary["issues"]
-    critical = [i for i in issues if i["severity"] == "critical"]
-    warnings = [i for i in issues if i["severity"] == "warning"]
-
-    click.echo(f"Detailed Analysis: {file_path}")
-
-    if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
-        info = summary["sampling_info"]
-        click.echo(
-            f"Note: Analysis performed on {info['sample_fraction'] * 100:.1f}% sample ({int(info['original_rows'] * info['sample_fraction'])} of {info['original_rows']} rows)"
+        config = load_config(config_path) if config_path else None
+        analyzer = DatasetAnalyzer(
+            df,
+            target_col=target,
+            selected_checks=selected_checks,
+            comparison_df=comparison_df,
+            sampling_config=sampling_config,
+            auto_sample=not no_sample,
+            config=config,
         )
+        summary = analyzer.analyze()
 
-    click.echo("\nCritical Issues:")
-    for i, issue in enumerate(critical, 1):
-        click.echo(f"{i}. {issue['category'].upper()} - '{issue['column']}'")
-        click.echo(f"   Description: {issue['description']}")
-        click.echo(f"   Impact: {issue['impact_score'].capitalize()}")
-        click.echo(f"   Quick fix: {issue['quick_fix']}")
+        issues = summary["issues"]
+        critical = [i for i in issues if i["severity"] == "critical"]
+        warnings = [i for i in issues if i["severity"] == "warning"]
 
-    click.echo("\nWarnings:")
-    for i, issue in enumerate(warnings, 1):
-        click.echo(f"{i}. {issue['category'].upper()}")
-        click.echo(f"   Description: {issue['description']}")
-        click.echo(f"   Impact: {issue['impact_score'].capitalize()}")
-        click.echo(f"   Quick fix: {issue['quick_fix']}")
+        click.echo(f"Detailed Analysis: {file_path}")
 
-    click.echo("\nDataset Summary:")
-    info = summary["summaries"]["dataset_info"]
-    click.echo(f"- Rows: {info['rows']}")
-    click.echo(f"- Columns: {info['columns']}")
-    click.echo(f"- Memory: ~{info['memory_mb']} MB")
-    click.echo(f"- Missing: {info['missing_cells']} ({info['missing_percentage']} %)")
-    click.echo("- Variable Types:")
-    for col, typ in summary["summaries"]["variable_types"].items():
-        click.echo(f"  {col}: {typ}")
-    click.echo("- Missing Values (by column):")
-    for col, pct in sorted(
-        summary["summaries"]["missing_values"]["percentage"].items(),
-        key=lambda x: x[1],
-        reverse=True,
-    ):
-        if pct > 0:
-            click.echo(f"  {col}: {pct}%")
-    repro = summary["summaries"]["reproduction_info"]
-    click.echo(f"- Dataset Hash: {repro['dataset_hash']}")
-    if "analysis_started" in repro and repro["analysis_started"]:
-        click.echo(f"- Analysis Started: {repro['analysis_started'][:19]}")
-    if "duration_seconds" in repro:
-        click.echo(f"- Duration: {repro['duration_seconds']} seconds")
+        if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
+            info = summary["sampling_info"]
+            click.echo(
+                f"Note: Analysis performed on {info['sample_fraction'] * 100:.1f}% sample ({int(info['original_rows'] * info['sample_fraction'])} of {info['original_rows']} rows)"
+            )
+
+        click.echo("\nCritical Issues:")
+        for i, issue in enumerate(critical, 1):
+            click.echo(f"{i}. {issue['category'].upper()} - '{issue['column']}'")
+            click.echo(f"   Description: {issue['description']}")
+            click.echo(f"   Impact: {issue['impact_score'].capitalize()}")
+            click.echo(f"   Quick fix: {issue['quick_fix']}")
+
+        click.echo("\nWarnings:")
+        for i, issue in enumerate(warnings, 1):
+            click.echo(f"{i}. {issue['category'].upper()}")
+            click.echo(f"   Description: {issue['description']}")
+            click.echo(f"   Impact: {issue['impact_score'].capitalize()}")
+            click.echo(f"   Quick fix: {issue['quick_fix']}")
+
+        click.echo("\nDataset Summary:")
+        info = summary["summaries"]["dataset_info"]
+        click.echo(f"- Rows: {info['rows']}")
+        click.echo(f"- Columns: {info['columns']}")
+        click.echo(f"- Memory: ~{info['memory_mb']} MB")
+        click.echo(f"- Missing: {info['missing_cells']} ({info['missing_percentage']} %)")
+        click.echo("- Variable Types:")
+        for col, typ in summary["summaries"]["variable_types"].items():
+            click.echo(f"  {col}: {typ}")
+        click.echo("- Missing Values (by column):")
+        for col, pct in sorted(
+            summary["summaries"]["missing_values"]["percentage"].items(),
+            key=lambda x: x[1],
+            reverse=True,
+        ):
+            if pct > 0:
+                click.echo(f"  {col}: {pct}%")
+        repro = summary["summaries"]["reproduction_info"]
+        click.echo(f"- Dataset Hash: {repro['dataset_hash']}")
+        if "analysis_started" in repro and repro["analysis_started"]:
+            click.echo(f"- Analysis Started: {repro['analysis_started'][:19]}")
+        if "duration_seconds" in repro:
+            click.echo(f"- Duration: {repro['duration_seconds']} seconds")
 
 
 @cli.command()
 @click.argument("file_path", type=click.Path(exists=True))
+@click.option("--output", "-o", default=None, help="Output file path for the report")
 @click.option("--with-code", is_flag=True, help="Generate fixes.py and pipeline.py scripts")
 @click.option("--full/--no-full", default=True, help="Include full summaries in report (default: True)")
 @click.option("--format", default="md", help="Report format: md, json, html, pdf")
@@ -304,6 +354,7 @@ def details(file_path, target, checks, comparison, sample_size, no_sample, confi
 )
 def report(
     file_path,
+    output,
     with_code,
     full,
     format,
@@ -316,80 +367,84 @@ def report(
     no_sample,
     config_path,
 ):
-    df = pd.read_csv(file_path)
-    comparison_df = pd.read_csv(comparison) if comparison else None
+    with error_handler():
+        df = pd.read_csv(file_path)
+        comparison_df = pd.read_csv(comparison) if comparison else None
 
-    selected_checks = checks.split(",") if checks else None
-    valid_checks = DatasetAnalyzer.ALL_CHECKS
-    if selected_checks:
-        invalid_checks = [c for c in selected_checks if c not in valid_checks]
-        if invalid_checks:
-            click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
-            for invalid in invalid_checks:
-                suggestions = suggest_check_names(invalid, valid_checks)
-                if suggestions:
-                    click.echo(f"  Did you mean: {', '.join(suggestions)}?")
-            selected_checks = [c for c in selected_checks if c in valid_checks]
+        selected_checks = checks.split(",") if checks else None
+        valid_checks = DatasetAnalyzer.ALL_CHECKS
+        if selected_checks:
+            invalid_checks = [c for c in selected_checks if c not in valid_checks]
+            if invalid_checks:
+                click.echo(f"Warning: Invalid checks ignored: {', '.join(invalid_checks)}")
+                for invalid in invalid_checks:
+                    suggestions = suggest_check_names(invalid, valid_checks)
+                    if suggestions:
+                        click.echo(f"  Did you mean: {', '.join(suggestions)}?")
+                selected_checks = [c for c in selected_checks if c in valid_checks]
 
-    sampling_config = None
-    if not no_sample and sample_size:
-        sampling_config = SamplingConfig(max_rows=sample_size)
+        sampling_config = None
+        if not no_sample and sample_size:
+            sampling_config = SamplingConfig(max_rows=sample_size)
 
-    config = load_config(config_path) if config_path else None
-    analyzer = DatasetAnalyzer(
-        df,
-        target_col=target,
-        selected_checks=selected_checks,
-        include_plots=visualizations,
-        comparison_df=comparison_df,
-        sampling_config=sampling_config,
-        auto_sample=not no_sample,
-        config=config,
-    )
-    summary = analyzer.analyze()
-
-    base_name = os.path.splitext(os.path.basename(file_path))[0] + "_hashprep_report"
-    # Save to current working directory by default
-    report_file = f"{base_name}.{format}"
-
-    generate_report(
-        summary,
-        format=format,
-        full=full,
-        output_file=report_file,
-        theme=theme,
-    )
-    click.echo(f"Report saved to: {report_file}")
-    click.echo(f"Summary: {summary['critical_count']} critical, {summary['warning_count']} warnings")
-
-    if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
-        info = summary["sampling_info"]
-        click.echo(f"Note: Analysis performed on {info['sample_fraction'] * 100:.1f}% sample")
-
-    if with_code:
-        issues = [Issue(**i) for i in summary["issues"]]
-        column_types = summary.get("column_types", {})
-
-        provider = SuggestionProvider(
-            issues=issues,
-            column_types=column_types,
+        config = load_config(config_path) if config_path else None
+        analyzer = DatasetAnalyzer(
+            df,
             target_col=target,
+            selected_checks=selected_checks,
+            include_plots=visualizations,
+            comparison_df=comparison_df,
+            sampling_config=sampling_config,
+            auto_sample=not no_sample,
+            config=config,
         )
-        suggestions = provider.get_suggestions()
+        summary = analyzer.analyze()
 
-        codegen = CodeGenerator(suggestions)
-        fixes_file = f"{base_name}_fixes.py"
-        fixes_code = codegen.generate_pandas_script()
-        with open(fixes_file, "w") as f:
-            f.write(fixes_code)
-        click.echo(f"Pandas fixes script saved to: {fixes_file}")
+        if output:
+            report_file = output
+        else:
+            base_name = os.path.splitext(os.path.basename(file_path))[0] + "_hashprep_report"
+            # Save to current working directory by default
+            report_file = f"{base_name}.{format}"
 
-        builder = PipelineBuilder(suggestions)
-        pipeline_file = f"{base_name}_pipeline.py"
-        pipeline_code = builder.generate_pipeline_code()
-        with open(pipeline_file, "w") as f:
-            f.write(pipeline_code)
-        click.echo(f"sklearn pipeline script saved to: {pipeline_file}")
+        generate_report(
+            summary,
+            format=format,
+            full=full,
+            output_file=report_file,
+            theme=theme,
+        )
+        click.echo(f"Report saved to: {report_file}")
+        click.echo(f"Summary: {summary['critical_count']} critical, {summary['warning_count']} warnings")
+
+        if "sampling_info" in summary and summary["sampling_info"].get("was_sampled"):
+            info = summary["sampling_info"]
+            click.echo(f"Note: Analysis performed on {info['sample_fraction'] * 100:.1f}% sample")
+
+        if with_code:
+            issues = [Issue(**i) for i in summary["issues"]]
+            column_types = summary.get("column_types", {})
+
+            provider = SuggestionProvider(
+                issues=issues,
+                column_types=column_types,
+                target_col=target,
+            )
+            suggestions = provider.get_suggestions()
+
+            codegen = CodeGenerator(suggestions)
+            fixes_file = f"{base_name}_fixes.py"
+            fixes_code = codegen.generate_pandas_script()
+            with open(fixes_file, "w") as f:
+                f.write(fixes_code)
+            click.echo(f"Pandas fixes script saved to: {fixes_file}")
+
+            builder = PipelineBuilder(suggestions)
+            pipeline_file = f"{base_name}_pipeline.py"
+            pipeline_code = builder.generate_pipeline_code()
+            with open(pipeline_file, "w") as f:
+                f.write(pipeline_code)
+            click.echo(f"sklearn pipeline script saved to: {pipeline_file}")
 
 
 if __name__ == "__main__":

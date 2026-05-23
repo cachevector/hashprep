@@ -40,7 +40,7 @@ class SuggestionProvider:
                     suggestions.append(suggestion)
                     seen_columns.add(col_key)
 
-        return sorted(suggestions, key=lambda s: s.priority)
+        return sorted(suggestions, key=lambda s: (s.priority, s.columns[0] if s.columns else ""))
 
     def get_suggestions_by_type(self) -> dict[str, list[FixSuggestion]]:
         """Group suggestions by fix type for organized output."""

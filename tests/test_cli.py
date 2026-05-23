@@ -11,6 +11,20 @@ from pathlib import Path
 import pytest
 
 
+def has_pdf_deps():
+    try:
+        # We need to check if we can actually run a PDF report
+        from hashprep.reports.pdf import PdfReport
+
+        PdfReport()
+        return True
+    except Exception:
+        return False
+
+
+skip_pdf = pytest.mark.skipif(not has_pdf_deps(), reason="PDF dependencies missing")
+
+
 @pytest.fixture
 def titanic_csv():
     """Path to titanic dataset."""
@@ -172,6 +186,7 @@ class TestCLIReport:
         assert result.returncode == 0
         assert "train_hashprep_report.html" in result.stdout
 
+    @skip_pdf
     def test_report_pdf(self, titanic_csv, temp_output_dir):
         """Test PDF report generation."""
         result = run_cli(["report", titanic_csv, "--format", "pdf", "--full"], cwd=temp_output_dir)
@@ -247,6 +262,30 @@ class TestCLIErrorHandling:
 
         assert result.returncode != 0
 
+    def test_empty_csv(self, temp_output_dir):
+        """Test with empty CSV."""
+        empty_file = os.path.join(temp_output_dir, "empty.csv")
+        with open(empty_file, "w"):
+            pass
+        result = run_cli(["scan", empty_file])
+        assert result.returncode != 0
+        assert "empty" in result.stderr.lower()
+
+    def test_bad_target(self, titanic_csv):
+        """Test with non-existent target column."""
+        result = run_cli(["scan", titanic_csv, "--target", "nonexistent"])
+        assert result.returncode != 0
+        assert "not found" in result.stderr.lower()
+
+    def test_malformed_config(self, titanic_csv, temp_output_dir):
+        """Test with malformed YAML config."""
+        bad_config = os.path.join(temp_output_dir, "bad.yaml")
+        with open(bad_config, "w") as f:
+            f.write("invalid: yaml: [")
+        result = run_cli(["scan", titanic_csv, "--config", bad_config])
+        assert result.returncode != 0
+        assert "malformed" in result.stderr.lower()
+
     def test_invalid_format(self, titanic_csv):
         """Test with invalid report format."""
         result = run_cli(["report", titanic_csv, "--format", "invalid"])
@@ -260,8 +299,6 @@ class TestCLIErrorHandling:
 
         assert result.returncode == 0
         assert "Warning: Invalid checks ignored" in result.stdout
-        # Fuzzy suggestion feature (if merged)
-        # assert 'Did you mean' in result.stdout
 
 
 class TestCLIIntegration:
@@ -279,6 +316,8 @@ class TestCLIIntegration:
 
         # Step 3: Generate all report formats
         for fmt in ["md", "json", "html", "pdf"]:
+            if fmt == "pdf" and not has_pdf_deps():
+                continue
             result = run_cli(["report", titanic_csv, "--format", fmt, "--full"], cwd=temp_output_dir)
             assert result.returncode == 0
 

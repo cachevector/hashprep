@@ -8,31 +8,44 @@ class ReportGenerator(ABC):
 
 
 # Lazy loading report classes
-def _load_generators():
-    from .html import HtmlReport
-    from .json import JsonReport
-    from .markdown import MarkdownReport
-    from .pdf import PdfReport
+def _load_generator(format_name):
+    if format_name == "md":
+        from .markdown import MarkdownReport
 
-    return {
-        "md": MarkdownReport(),
-        "json": JsonReport(),
-        "html": HtmlReport(),
-        "pdf": PdfReport(),
-    }
+        return MarkdownReport()
+    elif format_name == "json":
+        from .json import JsonReport
+
+        return JsonReport()
+    elif format_name == "html":
+        from .html import HtmlReport
+
+        return HtmlReport()
+    elif format_name == "pdf":
+        try:
+            from .pdf import PdfReport
+
+            return PdfReport()
+        except Exception as e:
+            # Re-raise as a cleaner error for the CLI to catch
+            raise ImportError(f"PDF generation is unavailable because of a missing dependency: {e}") from e
+    return None
 
 
 # get generators dictionary
 def get_generators():
     if not hasattr(get_generators, "cache"):
-        get_generators.cache = _load_generators()
+        get_generators.cache = {}
     return get_generators.cache
 
 
 def generate_report(summary, format="md", full=False, output_file=None, theme="minimal"):
     generators = get_generators()
     if format not in generators:
-        raise ValueError(f"Unsupported format: {format}")
+        gen = _load_generator(format)
+        if gen is None:
+            raise ValueError(f"Unsupported format: {format}")
+        generators[format] = gen
 
     if format in ["html", "pdf"]:
         return generators[format].generate(summary, full, output_file, theme=theme)
