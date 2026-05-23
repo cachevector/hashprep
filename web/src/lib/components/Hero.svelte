@@ -4,7 +4,7 @@
 <section class="hero">
   <div class="container hero-inner">
     <div class="hero-badge">
-      <span class="badge">Beta v0.1.0b3</span>
+      <span class="badge">v0.1.0</span>
     </div>
 
     <h1 class="hero-title">
